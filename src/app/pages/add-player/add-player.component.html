@@ -1,0 +1,72 @@
+<div class="add-player-page">
+
+  <form
+    class="form-card"
+    [formGroup]="playerForm"
+    (ngSubmit)="createPlayer()">
+
+    <h1>
+      Crear Jugador ⚽
+    </h1>
+
+    <div class="form-grid">
+
+      <!-- NAME -->
+
+      <div>
+
+        <input
+          type="text"
+          placeholder="Nombre"
+          formControlName="name"
+        >
+
+      </div>
+
+      <!-- PHOTO -->
+
+      <div>
+
+        <input
+          type="text"
+          placeholder="Foto URL"
+          formControlName="photo"
+        >
+
+      </div>
+
+      <!-- POSITION -->
+
+      <div>
+
+        <input
+          type="text"
+          placeholder="Posición"
+          formControlName="position"
+        >
+
+      </div>
+
+      <!-- FOOT -->
+
+      <div>
+
+        <input
+          type="text"
+          placeholder="Pierna hábil"
+          formControlName="preferredFoot"
+        >
+
+      </div>
+
+    </div>
+
+    <button type="submit">
+
+      Crear Jugador
+
+    </button>
+
+  </form>
+
+</div>

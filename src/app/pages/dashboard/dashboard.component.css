@@ -1,0 +1,448 @@
+.dashboard-page {
+
+  min-height: 100vh;
+
+  background: #020617;
+
+  display: flex;
+
+  color: white;
+
+}
+
+/* SIDEBAR */
+
+.sidebar {
+
+  width: 280px;
+
+  background: rgba(15,23,42,.95);
+
+  border-right: 1px solid rgba(255,255,255,.05);
+
+  padding: 2rem 1.5rem;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: space-between;
+
+}
+
+.logo-section {
+
+  text-align: center;
+
+}
+
+.logo-circle {
+
+  width: 80px;
+  height: 80px;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(135deg,
+    #39ff14,
+    #16c60c);
+
+  margin: auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 2rem;
+
+  margin-bottom: 1rem;
+
+}
+
+.logo-section h2 {
+
+  font-weight: 800;
+
+}
+
+.menu {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 1rem;
+
+}
+
+.menu-item {
+
+  height: 55px;
+
+  border-radius: 16px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+
+  padding: 0 1rem;
+
+  cursor: pointer;
+
+  transition: .3s ease;
+
+  color: rgba(255,255,255,.7);
+
+}
+
+.menu-item:hover,
+.menu-item.active {
+
+  background: rgba(57,255,20,.12);
+
+  color: #39ff14;
+
+}
+
+.profile-card {
+
+  background: rgba(255,255,255,.04);
+
+  border-radius: 20px;
+
+  padding: 1rem;
+
+  display: flex;
+  align-items: center;
+
+  gap: 1rem;
+
+}
+
+.profile-card img {
+
+  width: 55px;
+  height: 55px;
+
+  border-radius: 50%;
+
+}
+
+/* MAIN */
+
+.main-content {
+
+  flex: 1;
+
+  padding: 2rem;
+
+}
+
+.topbar {
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+}
+
+.topbar p {
+
+  color: rgba(255,255,255,.6);
+
+}
+
+.match-btn {
+
+  border: none;
+
+  height: 50px;
+
+  padding: 0 1.5rem;
+
+  border-radius: 16px;
+
+  background:
+    linear-gradient(135deg,
+    #39ff14,
+    #16c60c);
+
+  font-weight: 700;
+
+}
+
+/* HERO */
+
+.hero-section {
+
+  margin-top: 2rem;
+
+}
+
+.hero-card {
+
+  background:
+    linear-gradient(135deg,
+    rgba(57,255,20,.15),
+    rgba(255,255,255,.03));
+
+  border: 1px solid rgba(255,255,255,.06);
+
+  border-radius: 30px;
+
+  padding: 2rem;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+}
+
+.hero-card img {
+
+  width: 140px;
+
+  opacity: .8;
+
+}
+
+.hero-badge {
+
+  color: #39ff14;
+
+  font-size: .8rem;
+
+  letter-spacing: 3px;
+
+}
+
+.hero-card h2 {
+
+  font-size: 2.5rem;
+
+  font-weight: 800;
+
+  margin-top: 10px;
+
+}
+
+.hero-card p {
+
+  color: rgba(255,255,255,.7);
+
+  max-width: 500px;
+
+}
+
+.hero-card button {
+
+  margin-top: 1rem;
+
+  border: none;
+
+  height: 50px;
+
+  padding: 0 1.5rem;
+
+  border-radius: 14px;
+
+  background: white;
+
+  font-weight: 700;
+
+}
+
+/* STATS */
+
+.stats-grid {
+
+  margin-top: 2rem;
+
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 1.5rem;
+
+}
+
+.stat-card {
+
+  background: rgba(255,255,255,.04);
+
+  border-radius: 24px;
+
+  padding: 1.5rem;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  border: 1px solid rgba(255,255,255,.05);
+
+}
+
+.stat-card span {
+
+  color: rgba(255,255,255,.6);
+
+}
+
+.stat-card h3 {
+
+  font-size: 2rem;
+
+  margin-top: 10px;
+
+}
+
+.stat-card i {
+
+  font-size: 2rem;
+
+  color: #39ff14;
+
+}
+
+/* TITLE */
+
+.section-title {
+
+  margin-top: 3rem;
+
+  margin-bottom: 1.5rem;
+
+  font-size: 1.5rem;
+
+  font-weight: 800;
+
+}
+
+/* PLAYERS */
+
+.players-grid {
+
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 1.5rem;
+
+}
+
+.player-card {
+
+  background: rgba(255,255,255,.04);
+
+  border-radius: 26px;
+
+  padding: 1.5rem;
+
+  border: 1px solid rgba(255,255,255,.05);
+
+}
+
+.player-top {
+
+  display: flex;
+  align-items: center;
+
+  gap: 1rem;
+
+}
+
+.player-top img {
+
+  width: 70px;
+  height: 70px;
+
+  border-radius: 50%;
+
+}
+
+.player-top span {
+
+  color: rgba(255,255,255,.6);
+
+}
+
+.player-stats {
+
+  margin-top: 1.5rem;
+
+  display: flex;
+  justify-content: space-between;
+
+}
+
+.player-stats strong {
+
+  display: block;
+
+  font-size: 1.4rem;
+
+  color: #39ff14;
+
+}
+
+.player-stats span {
+
+  color: rgba(255,255,255,.6);
+
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1200px){
+
+  .stats-grid {
+
+    grid-template-columns: repeat(2,1fr);
+
+  }
+
+  .players-grid {
+
+    grid-template-columns: repeat(2,1fr);
+
+  }
+
+}
+
+@media(max-width:992px){
+
+  .sidebar {
+
+    display: none;
+
+  }
+
+}
+
+@media(max-width:768px){
+
+  .hero-card {
+
+    flex-direction: column;
+
+    text-align: center;
+
+    gap: 2rem;
+
+  }
+
+  .stats-grid {
+
+    grid-template-columns: 1fr;
+
+  }
+
+  .players-grid {
+
+    grid-template-columns: 1fr;
+
+  }
+
+}

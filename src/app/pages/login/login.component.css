@@ -1,0 +1,266 @@
+.login-page {
+
+  min-height: 100vh;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.85)),
+    url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1974&auto=format&fit=crop');
+
+  background-size: cover;
+  background-position: center;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.overlay {
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(circle at top left,
+    rgba(57,255,20,.12),
+    transparent 25%);
+
+}
+
+.stadium-lights {
+
+  position: absolute;
+
+  width: 800px;
+  height: 800px;
+
+  background:
+    radial-gradient(circle,
+    rgba(57,255,20,.10),
+    transparent 70%);
+
+  top: -300px;
+  right: -200px;
+
+  filter: blur(40px);
+
+}
+
+.login-card {
+
+  position: relative;
+  z-index: 10;
+
+  background: rgba(15, 23, 42, 0.70);
+
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  border-radius: 30px;
+
+  padding: 3rem 2rem;
+
+  box-shadow:
+    0 0 40px rgba(0,0,0,.45),
+    0 0 20px rgba(57,255,20,.08);
+
+}
+
+.logo-container {
+
+  width: 90px;
+  height: 90px;
+
+  margin: auto;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(135deg,
+    #39ff14,
+    #16c60c);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 2.8rem;
+
+  box-shadow:
+    0 0 30px rgba(57,255,20,.35);
+
+}
+
+.badge-title {
+
+  color: #39ff14;
+
+  font-size: .8rem;
+
+  letter-spacing: 4px;
+
+}
+
+.main-title {
+
+  font-size: clamp(2.5rem, 5vw, 4rem);
+
+  font-weight: 900;
+
+  color: white;
+
+  margin-top: 10px;
+
+}
+
+.main-title span {
+
+  color: #39ff14;
+
+}
+
+.subtitle {
+
+  color: rgba(255,255,255,.7);
+
+  font-size: 1rem;
+
+}
+
+.features {
+
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 1rem;
+
+}
+
+.feature-box {
+
+  background: rgba(255,255,255,.03);
+
+  border: 1px solid rgba(255,255,255,.05);
+
+  border-radius: 18px;
+
+  padding: 1rem;
+
+  text-align: center;
+
+  transition: .3s ease;
+
+  color: white;
+
+}
+
+.feature-box:hover {
+
+  transform: translateY(-5px);
+
+  background: rgba(255,255,255,.07);
+
+}
+
+.feature-box i {
+
+  font-size: 1.6rem;
+
+  color: #39ff14;
+
+  display: block;
+
+  margin-bottom: 10px;
+
+}
+
+.google-btn {
+
+  width: 100%;
+
+  height: 60px;
+
+  border: none;
+
+  border-radius: 18px;
+
+  background: white;
+
+  font-weight: 700;
+
+  font-size: 1rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+
+  transition: .3s ease;
+
+}
+
+.google-btn:hover {
+
+  transform: scale(1.02);
+
+}
+
+.stats-box {
+
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 1rem;
+
+}
+
+.stat-item {
+
+  text-align: center;
+
+}
+
+.stat-item h3 {
+
+  color: #39ff14;
+
+  font-weight: 800;
+
+}
+
+.stat-item span {
+
+  color: rgba(255,255,255,.6);
+
+  font-size: .9rem;
+
+}
+
+@media(max-width:768px){
+
+  .login-card {
+
+    padding: 2rem 1.5rem;
+
+  }
+
+  .features {
+
+    grid-template-columns: 1fr;
+
+  }
+
+  .stats-box {
+
+    grid-template-columns: 1fr;
+
+  }
+
+}

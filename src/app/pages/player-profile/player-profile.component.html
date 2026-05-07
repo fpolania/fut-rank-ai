@@ -1,0 +1,181 @@
+<div class="profile-page">
+
+  <!-- HERO -->
+
+  <section class="hero-section">
+
+    <div class="hero-left">
+
+      <img
+        src="https://i.pravatar.cc/300?img=11"
+      >
+
+      <div>
+
+        <span class="position-badge">
+          DELANTERO
+        </span>
+
+        <h1>
+          Fabian Lasso
+        </h1>
+
+        <p>
+          “El rendimiento habla por ti.”
+        </p>
+
+        <div class="badges">
+
+          <span>🏆 MVP</span>
+          <span>⚡ Velocista</span>
+          <span>🔥 Killer</span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="hero-rating">
+
+      <span>Overall</span>
+
+      <h2>
+        9.2
+      </h2>
+
+    </div>
+
+  </section>
+
+  <!-- STATS -->
+
+  <section class="stats-grid">
+
+    <div class="stat-card">
+      <span>Partidos</span>
+      <h3>24</h3>
+    </div>
+
+    <div class="stat-card">
+      <span>Goles</span>
+      <h3>18</h3>
+    </div>
+
+    <div class="stat-card">
+      <span>Asistencias</span>
+      <h3>7</h3>
+    </div>
+
+    <div class="stat-card">
+      <span>MVPs</span>
+      <h3>9</h3>
+    </div>
+
+  </section>
+
+  <!-- CHARTS -->
+
+  <section class="charts-grid">
+
+    <div class="chart-card">
+
+      <div class="card-title">
+        ⚽ Rendimiento
+      </div>
+
+      <canvas
+        baseChart
+        [data]="radarChartData"
+        [type]="'radar'">
+      </canvas>
+
+    </div>
+
+    <div class="chart-card">
+
+      <div class="card-title">
+        📈 Evolución
+      </div>
+
+      <canvas
+        baseChart
+        [data]="lineChartData"
+        [type]="'line'">
+      </canvas>
+
+    </div>
+
+  </section>
+
+  <!-- AI -->
+
+  <section class="ai-card">
+
+    <div class="ai-title">
+      🤖 AI Analysis
+    </div>
+
+    <div class="ai-content">
+
+      <p>
+        Fabian ha mejorado notablemente en presión ofensiva y definición.
+      </p>
+
+      <p>
+        Su rendimiento promedio aumentó un 18% en los últimos 5 partidos.
+      </p>
+
+      <p>
+        Debe mejorar retorno defensivo y resistencia física.
+      </p>
+
+    </div>
+
+  </section>
+
+  <!-- COMMENTS -->
+
+  <section class="comments-section">
+
+    <div class="section-title">
+      💬 Comentarios del Equipo
+    </div>
+
+    <div class="comments-grid">
+
+      <div class="comment-card">
+
+        <span>🔥</span>
+
+        <p>
+          Muy rápido por banda y buena definición.
+        </p>
+
+      </div>
+
+      <div class="comment-card">
+
+        <span>⚠️</span>
+
+        <p>
+          Debe mejorar la presión al perder el balón.
+        </p>
+
+      </div>
+
+      <div class="comment-card">
+
+        <span>🧠</span>
+
+        <p>
+          Excelente visión de juego.
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</div>

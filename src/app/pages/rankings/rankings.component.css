@@ -1,0 +1,413 @@
+.rankings-page {
+
+    min-height: 100vh;
+
+    background: #020617;
+
+    color: white;
+
+    padding: 2rem;
+
+}
+
+/* TOP */
+
+.top-section {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+}
+
+.badge-title {
+
+    color: #39ff14;
+
+    letter-spacing: 3px;
+
+    font-size: .8rem;
+
+}
+
+.top-section h1 {
+
+    font-size: clamp(2rem, 4vw, 4rem);
+
+    font-weight: 900;
+
+    margin-top: 10px;
+
+}
+
+.top-section p {
+
+    color: rgba(255, 255, 255, .6);
+
+}
+
+.season-btn {
+
+    border: none;
+
+    height: 55px;
+
+    padding: 0 2rem;
+
+    border-radius: 18px;
+
+    font-weight: 700;
+
+    background:
+        linear-gradient(135deg,
+            #39ff14,
+            #16c60c);
+
+}
+
+/* PODIUM */
+
+.podium-section {
+
+    margin-top: 3rem;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: end;
+
+    gap: 1.5rem;
+
+}
+
+.podium-card {
+
+    width: 280px;
+
+    background: rgba(255, 255, 255, .04);
+
+    border-radius: 30px;
+
+    padding: 2rem;
+
+    text-align: center;
+
+    position: relative;
+
+    border: 1px solid rgba(255, 255, 255, .05);
+
+}
+
+.podium-card img {
+
+    width: 110px;
+    height: 110px;
+
+    border-radius: 50%;
+
+    margin-top: 1rem;
+
+}
+
+.podium-card h3 {
+
+    margin-top: 1rem;
+
+    font-size: 1.5rem;
+
+}
+
+.podium-card span {
+
+    color: rgba(255, 255, 255, .6);
+
+}
+
+.position {
+
+    font-size: 2rem;
+
+}
+
+.first {
+
+    transform: scale(1.05);
+
+    border-color: rgba(57, 255, 20, .25);
+
+    background:
+        linear-gradient(135deg,
+            rgba(57, 255, 20, .12),
+            rgba(255, 255, 255, .03));
+
+}
+
+.second {
+
+    margin-top: 5rem;
+
+}
+
+.third {
+
+    margin-top: 8rem;
+
+}
+
+.crown {
+
+    position: absolute;
+
+    top: -20px;
+    right: 20px;
+
+    font-size: 2rem;
+
+}
+
+.score {
+
+    margin-top: 1rem;
+
+    font-size: 2rem;
+
+    font-weight: 900;
+
+    color: #39ff14;
+
+}
+
+/* FILTERS */
+
+.filters-section {
+
+    margin-top: 3rem;
+
+    display: flex;
+
+    gap: 1rem;
+
+    flex-wrap: wrap;
+
+}
+
+.filter {
+
+    border: none;
+
+    height: 50px;
+
+    padding: 0 1.5rem;
+
+    border-radius: 30px;
+
+    background: rgba(255, 255, 255, .05);
+
+    color: white;
+
+    transition: .3s ease;
+
+}
+
+.filter.active,
+.filter:hover {
+
+    background: rgba(57, 255, 20, .15);
+
+    color: #39ff14;
+
+}
+
+/* TABLE */
+
+.table-section {
+
+    margin-top: 3rem;
+
+}
+
+.table-header,
+.table-row {
+
+    display: grid;
+
+    grid-template-columns:
+        .5fr 2fr 1fr 1fr 1fr 1fr;
+
+    align-items: center;
+
+    padding: 1.2rem;
+
+}
+
+.table-header {
+
+    background: rgba(255, 255, 255, .03);
+
+    border-radius: 20px;
+
+    color: rgba(255, 255, 255, .6);
+
+}
+
+.table-row {
+
+    margin-top: 1rem;
+
+    background: rgba(255, 255, 255, .04);
+
+    border-radius: 20px;
+
+}
+
+.player-cell {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 1rem;
+
+}
+
+.player-cell img {
+
+    width: 50px;
+    height: 50px;
+
+    border-radius: 50%;
+
+}
+
+.green {
+
+    color: #39ff14;
+
+    font-weight: 700;
+
+}
+
+.trend-up {
+
+    color: #39ff14;
+
+}
+
+.trend-down {
+
+    color: #ff4d4d;
+
+}
+
+/* AI */
+
+.ai-section {
+
+    margin-top: 3rem;
+
+}
+
+.section-title {
+
+    font-size: 1.5rem;
+
+    font-weight: 800;
+
+    margin-bottom: 1rem;
+
+}
+
+.ai-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 1.5rem;
+
+}
+
+.ai-card {
+
+    background:
+        linear-gradient(135deg,
+            rgba(57, 255, 20, .10),
+            rgba(255, 255, 255, .03));
+
+    border-radius: 24px;
+
+    padding: 1.5rem;
+
+}
+
+.ai-card span {
+
+    font-size: 2rem;
+
+}
+
+.ai-card p {
+
+    margin-top: 1rem;
+
+    color: rgba(255, 255, 255, .7);
+
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1200px) {
+
+    .podium-section {
+
+        flex-direction: column;
+
+        align-items: center;
+
+    }
+
+    .second,
+    .third {
+
+        margin-top: 0;
+
+    }
+
+    .ai-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+
+@media(max-width:768px) {
+
+    .top-section {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 1rem;
+
+    }
+
+    .table-header {
+
+        display: none;
+
+    }
+
+    .table-row {
+
+        grid-template-columns: 1fr;
+
+        gap: 1rem;
+
+    }
+
+}
