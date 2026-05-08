@@ -1,0 +1,141 @@
+<div class="rate-page">
+
+    <!-- HEADER -->
+
+    <div class="top-section">
+
+        <div>
+
+            <span class="match-badge">
+
+                {{ match?.type }}
+
+            </span>
+
+            <h1>
+
+                {{ match?.teamA }}
+
+                VS
+
+                {{ match?.teamB }}
+
+            </h1>
+
+            <p>
+                Califica el rendimiento
+                de los jugadores ⚽
+            </p>
+
+        </div>
+
+        <button class="send-btn" (click)="sendRatings()">
+
+            Enviar Calificaciones
+
+        </button>
+
+    </div>
+
+    <!-- PLAYERS -->
+
+    <div class="players-grid">
+
+        @for(player of players; track player.playerId){
+
+        <div class="player-card">
+
+            <!-- HEADER -->
+
+            <div class="player-header">
+
+                <div class="player-info">
+
+                    <img [src]="player.photo">
+
+                    <div>
+
+                        <h3>
+
+                            {{ player.name }}
+
+                        </h3>
+
+                        <span>
+
+                            {{ player.position }}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="rating-badge" [ngClass]="{
+
+                        elite:
+                        player.newRating >= 8,
+
+                        good:
+                        player.newRating >= 6
+                        &&
+                        player.newRating < 8,
+
+                        average:
+                        player.newRating < 6
+
+                      }">
+
+                    {{ player.newRating }}
+
+                </div>
+
+            </div>
+            <div class="slider-section">
+                <input type="range" min="1" max="10" step="0.1" [(ngModel)]="
+                        player.newRating
+                      " class="custom-slider" (change)="player.wasRated = true">
+
+                <div class="slider-labels">
+
+                    <span>1</span>
+                    <span>10</span>
+
+                </div>
+
+            </div>
+
+            <!-- TAGS -->
+
+            <div class="tags-section">
+
+                <span class="tag" [class.active]="
+                        player.isMvp
+                      " (click)="
+                        player.isMvp =
+                        !player.isMvp
+                      " player.wasRated=true>
+
+                    🔥 MVP
+
+                </span>
+
+            </div>
+
+            <!-- COMMENT -->
+
+            <textarea rows="4" [(ngModel)]="
+                    player.comment
+                  " placeholder="
+                    Comentario anónimo...
+                  " (ngModelChange)="player.wasRated = true">
+
+                </textarea>
+
+        </div>
+
+        }
+
+    </div>
+
+</div>

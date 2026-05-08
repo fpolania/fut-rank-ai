@@ -30,24 +30,34 @@
 
     <section class="filters-section">
 
-        <button class="filter active">
+        <!-- TODOS -->
+
+        <button class="filter" [class.active]="
+                selectedFilter === 'Todos'
+            " (click)="filterMatches('Todos')">
+
             Todos
+
         </button>
 
-        <button class="filter">
+        <!-- FUT 5 -->
+
+        <button class="filter" [class.active]="
+                selectedFilter === 'FUT 5'
+            " (click)="filterMatches('FUT 5')">
+
             FUT 5
+
         </button>
 
-        <button class="filter">
+        <!-- FUT 8 -->
+
+        <button class="filter" [class.active]="
+                selectedFilter === 'FUT 8'
+            " (click)="filterMatches('FUT 8')">
+
             FUT 8
-        </button>
 
-        <button class="filter">
-            Victorias
-        </button>
-
-        <button class="filter">
-            Derrotas
         </button>
 
     </section>
@@ -56,251 +66,140 @@
 
     <section class="matches-grid">
 
-        <!-- MATCH -->
+        @for(match of filteredMatches; track match.id){
 
         <div class="match-card">
+
+            <!-- HEADER -->
 
             <div class="match-header">
 
                 <span class="match-type">
-                    FUT 8
+
+                    {{ match.type }}
+
                 </span>
 
                 <span class="match-date">
-                    12 Abril 2026
+
+                    {{ match.date }}
+
                 </span>
 
             </div>
 
+            <!-- TEAMS -->
+
             <div class="teams-section">
+
+                <!-- TEAM A -->
 
                 <div class="team">
 
                     <h3>
-                        Atlético Barrio
+
+                        {{ match.teamA }}
+
                     </h3>
 
                     <span class="score">
-                        5
+
+                        {{ match.scoreA }}
+
                     </span>
 
                 </div>
 
                 <div class="vs">
+
                     VS
+
                 </div>
+
+                <!-- TEAM B -->
 
                 <div class="team">
 
                     <h3>
-                        Galácticos
+
+                        {{ match.teamB }}
+
                     </h3>
 
                     <span class="score">
-                        3
+
+                        {{ match.scoreB }}
+
                     </span>
 
                 </div>
 
             </div>
+
+            <!-- INFO -->
 
             <div class="match-info">
 
                 <div>
-                    📍 Cancha Praga
+
+                    📍 {{ match.field }}
+
                 </div>
 
                 <div>
-                    ⭐ MVP: Fabian
+
+                    ⭐ MVP:
+                    {{ getMvpName(match) }}
+
+                </div>
+
+                <div>
+
+                    🕒 {{ match.time }}
+
                 </div>
 
             </div>
+
+            <!-- TIMELINE -->
 
             <div class="timeline">
 
                 <div class="timeline-item">
+
                     ⚽ Partido creado
+
                 </div>
 
-                <div class="timeline-item">
-                    🏆 MVP seleccionado
-                </div>
+                @if(match.finished){
 
                 <div class="timeline-item">
-                    🤖 IA generó análisis
+
+                    🏁 Partido finalizado
+
+                </div>
+
+                }
+
+                <div class="timeline-item">
+
+                    🤖 IA analizando estadísticas
+
                 </div>
 
             </div>
 
-            <button class="analysis-btn">
+            <!-- BTN -->
+
+            <button class="analysis-btn" (click)="openMatch(match)">
+
                 Ver análisis
+
             </button>
 
         </div>
 
-        <!-- MATCH -->
-
-        <div class="match-card">
-
-            <div class="match-header">
-
-                <span class="match-type">
-                    FUT 5
-                </span>
-
-                <span class="match-date">
-                    8 Abril 2026
-                </span>
-
-            </div>
-
-            <div class="teams-section">
-
-                <div class="team">
-
-                    <h3>
-                        Real Praga
-                    </h3>
-
-                    <span class="score">
-                        2
-                    </span>
-
-                </div>
-
-                <div class="vs">
-                    VS
-                </div>
-
-                <div class="team">
-
-                    <h3>
-                        Titanes FC
-                    </h3>
-
-                    <span class="score">
-                        2
-                    </span>
-
-                </div>
-
-            </div>
-
-            <div class="match-info">
-
-                <div>
-                    📍 Sintética Central
-                </div>
-
-                <div>
-                    ⭐ MVP: Kevin
-                </div>
-
-            </div>
-
-            <div class="timeline">
-
-                <div class="timeline-item">
-                    ⚽ Partido creado
-                </div>
-
-                <div class="timeline-item">
-                    📈 Ranking actualizado
-                </div>
-
-                <div class="timeline-item">
-                    🤖 IA detectó mejora colectiva
-                </div>
-
-            </div>
-
-            <button class="analysis-btn">
-                Ver análisis
-            </button>
-
-        </div>
-
-        <!-- MATCH -->
-
-        <div class="match-card">
-
-            <div class="match-header">
-
-                <span class="match-type">
-                    FUT 8
-                </span>
-
-                <span class="match-date">
-                    2 Abril 2026
-                </span>
-
-            </div>
-
-            <div class="teams-section">
-
-                <div class="team">
-
-                    <h3>
-                        Atlético Elite
-                    </h3>
-
-                    <span class="score">
-                        7
-                    </span>
-
-                </div>
-
-                <div class="vs">
-                    VS
-                </div>
-
-                <div class="team">
-
-                    <h3>
-                        Barrio FC
-                    </h3>
-
-                    <span class="score">
-                        6
-                    </span>
-
-                </div>
-
-            </div>
-
-            <div class="match-info">
-
-                <div>
-                    📍 Cancha Norte
-                </div>
-
-                <div>
-                    ⭐ MVP: Juan
-                </div>
-
-            </div>
-
-            <div class="timeline">
-
-                <div class="timeline-item">
-                    ⚽ Partido creado
-                </div>
-
-                <div class="timeline-item">
-                    🧠 IA recomendó cambios tácticos
-                </div>
-
-                <div class="timeline-item">
-                    🏆 MVP seleccionado
-                </div>
-
-            </div>
-
-            <button class="analysis-btn">
-                Ver análisis
-            </button>
-
-        </div>
+        }
 
     </section>
 

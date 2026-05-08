@@ -42,7 +42,12 @@ export const routes: Routes = [
                     import('./pages/rate-players/rate-players.component')
                         .then(m => m.RatePlayersComponent)
             },
-
+            {
+                path: 'rate-players/:id',
+                loadComponent: () =>
+                    import('./pages/rate-player-detail/rate-player-detail.component')
+                        .then(m => m.RatePlayerDetailComponent)
+            },
             {
                 path: 'player-profile/:id',
                 loadComponent: () =>
