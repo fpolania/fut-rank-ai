@@ -15,20 +15,24 @@
             </h1>
 
             <p>
-                Organiza equipos, titulares y rendimiento.
+                Organiza equipos y selecciona jugadores.
             </p>
 
         </div>
 
-        <button class="create-btn">
+        <button class="create-btn" (click)="createMatch()">
+
             Crear Partido
+
         </button>
 
     </div>
 
     <!-- FORM -->
 
-    <div class="form-grid">
+    <form class="form-grid" [formGroup]="matchForm">
+
+        <!-- NAME -->
 
         <div class="input-card">
 
@@ -36,9 +40,11 @@
                 Nombre del Partido
             </label>
 
-            <input type="text" placeholder="Ej: Los Galácticos vs Barrio FC">
+            <input type="text" placeholder="Ej: Verdes vs Negros" formControlName="name">
 
         </div>
+
+        <!-- DATE -->
 
         <div class="input-card">
 
@@ -46,9 +52,11 @@
                 Fecha
             </label>
 
-            <input type="date">
+            <input type="date" formControlName="date">
 
         </div>
+
+        <!-- TIME -->
 
         <div class="input-card">
 
@@ -56,9 +64,11 @@
                 Hora
             </label>
 
-            <input type="time">
+            <input type="time" formControlName="time">
 
         </div>
+
+        <!-- FIELD -->
 
         <div class="input-card">
 
@@ -66,41 +76,33 @@
                 Cancha
             </label>
 
-            <input type="text" placeholder="Ej: Cancha Sintética Praga">
+            <input type="text" placeholder="Ej: Cancha Praga" formControlName="field">
 
         </div>
 
-    </div>
+    </form>
 
-    <!-- FORMATION -->
+    <!-- MATCH TYPE -->
 
     <section class="formation-section">
 
         <div class="section-title">
-            🧠 Formación
+            ⚽ Tipo de Partido
         </div>
 
         <div class="formations-grid">
 
-            <div class="formation-card active">
-                4-3-3
+            @for(type of matchTypes; track type){
+
+            <div class="formation-card" [class.active]="
+                  selectedMatchType === type
+                " (click)="selectMatchType(type)">
+
+                {{ type }}
+
             </div>
 
-            <div class="formation-card">
-                4-4-2
-            </div>
-
-            <div class="formation-card">
-                3-5-2
-            </div>
-
-            <div class="formation-card">
-                FUT 8
-            </div>
-
-            <div class="formation-card">
-                FUT 5
-            </div>
+            }
 
         </div>
 
@@ -110,149 +112,69 @@
 
     <section class="players-section">
 
-        <div class="section-title">
-            🔥 Seleccionar Jugadores
-        </div>
-
-        <div class="players-grid">
-
-            <!-- PLAYER -->
-
-            <div class="player-card selected">
-
-                <img src="https://i.pravatar.cc/150?img=11">
-
-                <h3>
-                    Fabian
-                </h3>
-
-                <span>
-                    Delantero
-                </span>
-
-                <div class="player-rating">
-                    ⭐ 9.2
-                </div>
-
-            </div>
-
-            <!-- PLAYER -->
-
-            <div class="player-card">
-
-                <img src="https://i.pravatar.cc/150?img=15">
-
-                <h3>
-                    Kevin
-                </h3>
-
-                <span>
-                    Mediocampo
-                </span>
-
-                <div class="player-rating">
-                    ⭐ 8.8
-                </div>
-
-            </div>
-
-            <!-- PLAYER -->
-
-            <div class="player-card selected">
-
-                <img src="https://i.pravatar.cc/150?img=18">
-
-                <h3>
-                    Juan
-                </h3>
-
-                <span>
-                    Defensa
-                </span>
-
-                <div class="player-rating">
-                    ⭐ 8.9
-                </div>
-
-            </div>
-
-            <!-- PLAYER -->
-
-            <div class="player-card">
-
-                <img src="https://i.pravatar.cc/150?img=32">
-
-                <h3>
-                    Camilo
-                </h3>
-
-                <span>
-                    Arquero
-                </span>
-
-                <div class="player-rating">
-                    ⭐ 8.4
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- AI -->
-
-    <section class="ai-section">
-
-        <div class="ai-header">
+        <div class="players-header">
 
             <div class="section-title">
-                🤖 IA Sugerida
+                🔥 Seleccionar Jugadores
             </div>
 
-            <span class="ai-live">
-                EN VIVO
+            <span class="selected-count">
+
+                {{
+                selectedPlayers.length
+                }}
+
+                /
+
+                {{
+                selectedMatchType ===
+                'FUT 5'
+                ? 10
+                : 16
+                }}
+
             </span>
 
         </div>
 
-        <div class="ai-grid">
+        <div class="players-grid">
 
-            <div class="ai-card">
+            @for(player of players; track player.id){
+
+            <div class="player-card" [class.selected]="
+                    isSelected(player)
+                  " (click)="togglePlayer(player)">
+
+                <!-- IMAGE -->
+
+                <img [src]="
+                        player.photo
+                      ">
+
+                <!-- INFO -->
+
+                <h3>
+                    {{ player.name }}
+                </h3>
 
                 <span>
-                    ⚽
+                    {{ player.position }}
                 </span>
 
-                <p>
-                    Fabian debería jugar como delantero centro.
-                </p>
+                <!-- RATING -->
+
+                <div class="player-rating">
+
+                    ⭐
+                    {{
+                    player.averageRating
+                    }}
+
+                </div>
 
             </div>
 
-            <div class="ai-card">
-
-                <span>
-                    🛡️
-                </span>
-
-                <p>
-                    Juan tiene mejor rendimiento como defensa central.
-                </p>
-
-            </div>
-
-            <div class="ai-card">
-
-                <span>
-                    🔥
-                </span>
-
-                <p>
-                    Kevin aumentó su rendimiento un 12% en los últimos partidos.
-                </p>
-
-            </div>
+            }
 
         </div>
 

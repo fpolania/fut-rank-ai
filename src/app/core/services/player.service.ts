@@ -7,7 +7,8 @@ import {
   collectionData,
   doc,
   docData,
-  updateDoc
+  updateDoc,
+  deleteDoc
 } from '@angular/fire/firestore';
 
 import { Observable } from 'rxjs';
@@ -76,4 +77,35 @@ export class PlayerService {
     );
   }
 
+  deletePlayer(id: string) {
+    const playerDoc =
+      doc(
+        this.firestore,
+        `players/${id}`
+      );
+
+    return deleteDoc(
+      playerDoc
+    );
+
+  }
+ 
+
+  updatePlayerStats(
+    playerId: string,
+    data: any
+  ) {
+
+    const playerDoc =
+      doc(
+        this.firestore,
+        `players/${playerId}`
+      );
+
+    return updateDoc(
+      playerDoc,
+      data
+    );
+
+  }
 }

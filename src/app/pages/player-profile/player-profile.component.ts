@@ -1,67 +1,175 @@
-import { Component } from '@angular/core';
 import {
-  BaseChartDirective
-} from 'ng2-charts';
+  Component,
+  OnInit,
+  inject
+} from '@angular/core';
 
 import {
-  Chart,
-  RadarController,
-  RadialLinearScale,
-  PointElement,
-  LineElement,
-  Filler,
-  CategoryScale,
-  LinearScale,
-  LineController
-} from 'chart.js';
+  CommonModule
+} from '@angular/common';
 
-Chart.register(
-  RadarController,
-  RadialLinearScale,
-  PointElement,
-  LineElement,
-  Filler,
-  CategoryScale,
-  LinearScale,
-  LineController
-);
+import {
+  ActivatedRoute
+} from '@angular/router';
+
+
+
+import { PlayerService }
+  from '../../core/services/player.service';
+
+import { Player }
+  from '../../core/interfaces/player.interface';
+import { FormsModule } from '@angular/forms';
+
+
 @Component({
   selector: 'app-player-profile',
-  imports: [BaseChartDirective],
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
   templateUrl: './player-profile.component.html',
   styleUrl: './player-profile.component.css'
 })
-export class PlayerProfileComponent {
- radarChartData = {
-    labels: [
-      'Velocidad',
-      'Definición',
-      'Pase',
-      'Defensa',
-      'Resistencia',
-      'Visión'
-    ],
-    datasets: [
-      {
-        data: [95, 92, 84, 60, 78, 88],
-        label: 'Stats'
+export class PlayerProfileComponent
+  implements OnInit {
+
+  /* INJECTS */
+
+  private route =
+    inject(ActivatedRoute);
+
+  private playerService =
+    inject(PlayerService);
+
+  /* DATA */
+
+  playerId: string | null =
+    null;
+
+  player!: Player;
+
+  doughnutChartData: any;
+
+  lineChartData: any;
+
+  /* CHART OPTIONS */
+
+  chartOptions = {
+
+    responsive: true,
+
+    plugins: {
+
+      legend: {
+
+        labels: {
+
+          color: 'white'
+
+        }
+
       }
-    ]
+
+    },
+
+    scales: {
+
+      x: {
+
+        ticks: {
+
+          color: 'white'
+
+        },
+
+        grid: {
+
+          color:
+            'rgba(255,255,255,.08)'
+
+        }
+
+      },
+
+      y: {
+
+        ticks: {
+
+          color: '#39ff14'
+
+        },
+
+        grid: {
+
+          color:
+            'rgba(255,255,255,.08)'
+
+        }
+
+      }
+
+    }
+
   };
 
-  lineChartData = {
-    labels: [
-      'P1',
-      'P2',
-      'P3',
-      'P4',
-      'P5'
-    ],
-    datasets: [
-      {
-        data: [6.8, 7.5, 8.2, 8.9, 9.2],
-        label: 'Performance'
-      }
-    ]
-  };
+  /* INIT */
+
+  ngOnInit(): void {
+
+    this.playerId =
+      this.route.snapshot
+        .paramMap.get('id');
+
+    if (this.playerId) {
+
+      this.getPlayer();
+
+    }
+
+  }
+
+  async updateAttribute() {
+    if (!this.playerId)
+      return;
+    try {
+      await this.playerService
+        .updatePlayer(
+          this.playerId,
+          {
+            speed:
+              this.player.speed,
+            finishing:
+              this.player.finishing,
+            vision:
+              this.player.vision,
+            stamina:
+              this.player.stamina,
+            defense:
+              this.player.defense,
+            dribbling:
+              this.player.dribbling
+          }
+        );
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  getPlayer() {
+    if (!this.playerId)
+      return;
+    this.playerService
+      .getPlayerById(this.playerId)
+      .subscribe({
+        next: (player: any) => {
+          this.player = player;
+        },
+        error: (error: any) => {
+          console.error(error);
+        }
+      });
+  }
+
+
 }

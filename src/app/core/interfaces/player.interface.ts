@@ -13,5 +13,11 @@ export interface Player {
     preferredFoot: string;
     active: boolean;
     createdAt: Timestamp;
+    speed: number;
+    finishing: number;
+    vision: number;
+    stamina: number;
+    defense: number;
+    dribbling: number;
 
 }

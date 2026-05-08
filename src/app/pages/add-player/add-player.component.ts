@@ -99,6 +99,12 @@ export class AddPlayerComponent implements OnInit {
             mvps: 0,
             matchesPlayed: 0,
             active: true,
+            speed: 80,
+            finishing: 80,
+            vision: 80,
+            stamina: 80,
+            defense: 80,
+            dribbling: 80,
             createdAt:
               Timestamp.now()
           });

@@ -46,7 +46,7 @@
             <div class="player-stats">
                 <div>
                     <strong>
-                        {{ player.rating }}
+                        {{ player.averageRating }}
                     </strong>
                     <span>
                         Rating
@@ -69,7 +69,7 @@
                     </span>
                 </div>
             </div>
-            <button class="profile-btn">
+            <button class="profile-btn" (click)="openProfile(player)">
                 Ver Perfil
             </button>
         </div>

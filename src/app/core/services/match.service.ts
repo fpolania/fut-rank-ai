@@ -1,4 +1,7 @@
-import { Injectable, inject }
+import {
+  Injectable,
+  inject
+}
   from '@angular/core';
 
 import {
@@ -7,67 +10,84 @@ import {
   addDoc,
   collectionData,
   doc,
-  updateDoc
-} from '@angular/fire/firestore';
-
-import { Observable }
-  from 'rxjs';
-
-import { Match }
-  from '../interfaces/match.interface';
+  docData,
+  updateDoc,
+  deleteDoc
+}
+  from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
+import { Match } from '../interfaces/match.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MatchService {
 
-  private firestore =
-    inject(Firestore);
-
+  private firestore = inject(Firestore);
   private matchesCollection =
     collection(
       this.firestore,
       'matches'
     );
 
-  /* CREATE MATCH */
-
   addMatch(match: Match) {
-
     return addDoc(
       this.matchesCollection,
       match
     );
-
   }
-
-  /* GET MATCHES */
 
   getMatches():
     Observable<Match[]> {
-
     return collectionData(
       this.matchesCollection,
       {
         idField: 'id'
       }
     ) as Observable<Match[]>;
+  }
+  getMatchById(id: string) {
+    const matchDoc =
+      doc(
+        this.firestore,
+        `matches/${id}`
+      );
+    return docData(
+      matchDoc,
+      {
+        idField: 'id'
+      }
+    );
 
   }
 
-  /* UPDATE SCORE */
+  updateMatch(
+    id: string,
+    data: any
+  ) {
 
+    const matchRef =
+      doc(
+        this.firestore,
+        `matches/${id}`
+      );
+
+    return updateDoc(
+      matchRef,
+      data
+    );
+
+  }
   updateMatchScore(
     matchId: string,
     scoreA: number,
     scoreB: number
   ) {
-
-    const matchRef = doc(
-      this.firestore,
-      `matches/${matchId}`
-    );
-
+    const matchRef =
+      doc(
+        this.firestore,
+        `matches/${matchId}`
+      );
     return updateDoc(
       matchRef,
       {
@@ -75,7 +95,15 @@ export class MatchService {
         scoreB
       }
     );
-
   }
-
+  deleteMatch(id: string) {
+    const matchRef =
+      doc(
+        this.firestore,
+        `matches/${id}`
+      );
+    return deleteDoc(
+      matchRef
+    );
+  }
 }

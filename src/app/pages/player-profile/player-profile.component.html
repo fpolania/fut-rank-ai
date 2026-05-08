@@ -1,34 +1,60 @@
 <div class="profile-page">
 
+  @if(player){
+
   <!-- HERO -->
 
   <section class="hero-section">
 
     <div class="hero-left">
 
-      <img
-        src="https://i.pravatar.cc/300?img=11"
-      >
+      <img [src]="player.photo">
 
       <div>
 
         <span class="position-badge">
-          DELANTERO
+
+          {{ player.position }}
+
         </span>
 
         <h1>
-          Fabian Lasso
+
+          {{ player.name }}
+
         </h1>
 
         <p>
           “El rendimiento habla por ti.”
         </p>
 
+        <!-- BADGES -->
+
         <div class="badges">
 
-          <span>🏆 MVP</span>
-          <span>⚡ Velocista</span>
-          <span>🔥 Killer</span>
+          @if(player.mvps >= 1){
+
+          <span>
+            🏆 MVP
+          </span>
+
+          }
+
+          @if(player.goals >= 5){
+
+          <span>
+            🔥 Killer
+          </span>
+
+          }
+
+          @if(player.assists >= 3){
+
+          <span>
+            🧠 Playmaker
+          </span>
+
+          }
 
         </div>
 
@@ -36,12 +62,18 @@
 
     </div>
 
+    <!-- OVERALL -->
+
     <div class="hero-rating">
 
-      <span>Overall</span>
+      <span>
+        Overall
+      </span>
 
       <h2>
-        9.2
+
+        {{ player.averageRating }}
+
       </h2>
 
     </div>
@@ -53,60 +85,194 @@
   <section class="stats-grid">
 
     <div class="stat-card">
-      <span>Partidos</span>
-      <h3>24</h3>
+
+      <span>
+        Partidos
+      </span>
+
+      <h3>
+
+        {{ player.matchesPlayed }}
+
+      </h3>
+
     </div>
 
     <div class="stat-card">
-      <span>Goles</span>
-      <h3>18</h3>
+
+      <span>
+        Goles
+      </span>
+
+      <h3>
+
+        {{ player.goals }}
+
+      </h3>
+
     </div>
 
     <div class="stat-card">
-      <span>Asistencias</span>
-      <h3>7</h3>
+
+      <span>
+        Asistencias
+      </span>
+
+      <h3>
+
+        {{ player.assists }}
+
+      </h3>
+
     </div>
 
     <div class="stat-card">
-      <span>MVPs</span>
-      <h3>9</h3>
+
+      <span>
+        MVPs
+      </span>
+
+      <h3>
+
+        {{ player.mvps }}
+
+      </h3>
+
     </div>
 
   </section>
 
-  <!-- CHARTS -->
+  <!-- ATTRIBUTES -->
+  <!-- ATTRIBUTES -->
 
-  <section class="charts-grid">
+  <section class="attributes-section">
 
-    <div class="chart-card">
+    <div class="section-title">
+      🎮 Player Attributes
+    </div>
 
-      <div class="card-title">
-        ⚽ Rendimiento
+    <!-- SPEED -->
+
+    <div class="attribute-item">
+
+      <div class="attribute-header">
+
+        <span>
+          ⚡ Velocidad
+        </span>
+
+        <strong>
+          {{ player.speed }}
+        </strong>
+
       </div>
 
-      <canvas
-        baseChart
-        [data]="radarChartData"
-        [type]="'radar'">
-      </canvas>
+      <input type="range" min="0" max="100" [(ngModel)]="player.speed" (change)="updateAttribute()">
 
     </div>
 
-    <div class="chart-card">
+    <!-- FINISHING -->
 
-      <div class="card-title">
-        📈 Evolución
+    <div class="attribute-item">
+
+      <div class="attribute-header">
+
+        <span>
+          🎯 Definición
+        </span>
+
+        <strong>
+          {{ player.finishing }}
+        </strong>
+
       </div>
 
-      <canvas
-        baseChart
-        [data]="lineChartData"
-        [type]="'line'">
-      </canvas>
+      <input type="range" min="0" max="100" [(ngModel)]="player.finishing" (change)="updateAttribute()">
+
+    </div>
+
+    <!-- VISION -->
+
+    <div class="attribute-item">
+
+      <div class="attribute-header">
+
+        <span>
+          🧠 Visión
+        </span>
+
+        <strong>
+          {{ player.vision }}
+        </strong>
+
+      </div>
+
+      <input type="range" min="0" max="100" [(ngModel)]="player.vision" (change)="updateAttribute()">
+
+    </div>
+
+    <!-- STAMINA -->
+
+    <div class="attribute-item">
+
+      <div class="attribute-header">
+
+        <span>
+          💪 Resistencia
+        </span>
+
+        <strong>
+          {{ player.stamina }}
+        </strong>
+
+      </div>
+
+      <input type="range" min="0" max="100" [(ngModel)]="player.stamina" (change)="updateAttribute()">
+
+    </div>
+
+    <!-- DEFENSE -->
+
+    <div class="attribute-item">
+
+      <div class="attribute-header">
+
+        <span>
+          🛡️ Defensa
+        </span>
+
+        <strong>
+          {{ player.defense }}
+        </strong>
+
+      </div>
+
+      <input type="range" min="0" max="100" [(ngModel)]="player.defense" (change)="updateAttribute()">
+
+    </div>
+
+    <!-- DRIBBLING -->
+
+    <div class="attribute-item">
+
+      <div class="attribute-header">
+
+        <span>
+          🎮 Regate
+        </span>
+
+        <strong>
+          {{ player.dribbling }}
+        </strong>
+
+      </div>
+
+      <input type="range" min="0" max="100" [(ngModel)]="player.dribbling" (change)="updateAttribute()">
 
     </div>
 
   </section>
+
 
   <!-- AI -->
 
@@ -119,15 +285,35 @@
     <div class="ai-content">
 
       <p>
-        Fabian ha mejorado notablemente en presión ofensiva y definición.
+
+        {{ player.name }}
+
+        ha mostrado gran rendimiento ofensivo.
+
       </p>
 
       <p>
-        Su rendimiento promedio aumentó un 18% en los últimos 5 partidos.
+
+        Actualmente tiene un promedio de
+
+        {{ player.averageRating }}
+
+        ⭐
+
       </p>
 
       <p>
-        Debe mejorar retorno defensivo y resistencia física.
+
+        Registra
+
+        {{ player.goals }}
+
+        goles y
+
+        {{ player.assists }}
+
+        asistencias.
+
       </p>
 
     </div>
@@ -146,30 +332,36 @@
 
       <div class="comment-card">
 
-        <span>🔥</span>
+        <span>
+          🔥
+        </span>
 
         <p>
-          Muy rápido por banda y buena definición.
+          Gran rendimiento ofensivo.
         </p>
 
       </div>
 
       <div class="comment-card">
 
-        <span>⚠️</span>
+        <span>
+          ⚡
+        </span>
 
         <p>
-          Debe mejorar la presión al perder el balón.
+          Jugador clave para Pull Request.
         </p>
 
       </div>
 
       <div class="comment-card">
 
-        <span>🧠</span>
+        <span>
+          🧠
+        </span>
 
         <p>
-          Excelente visión de juego.
+          Excelente lectura de juego.
         </p>
 
       </div>
@@ -177,5 +369,7 @@
     </div>
 
   </section>
+
+  }
 
 </div>

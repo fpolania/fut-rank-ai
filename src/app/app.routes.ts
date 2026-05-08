@@ -44,7 +44,7 @@ export const routes: Routes = [
             },
 
             {
-                path: 'player-profile',
+                path: 'player-profile/:id',
                 loadComponent: () =>
                     import('./pages/player-profile/player-profile.component')
                         .then(m => m.PlayerProfileComponent)
@@ -94,7 +94,19 @@ export const routes: Routes = [
                 loadComponent: () =>
                     import('./pages/add-player/add-player.component')
                         .then(m => m.AddPlayerComponent)
-            }
+            },
+            {
+                path: 'matches',
+                loadComponent: () =>
+                    import('./pages/matches/matches.component')
+                        .then(m => m.MatchesComponent)
+            },
+            {
+                path: 'match-detail/:id',
+                loadComponent: () =>
+                    import('./pages/match-detail/match-detail.component')
+                        .then(m => m.MatchDetailComponent)
+            },
 
         ]
 

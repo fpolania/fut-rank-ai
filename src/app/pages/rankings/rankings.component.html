@@ -32,29 +32,35 @@
 
         <!-- SECOND -->
 
+        @if(topPlayers[1]){
+
         <div class="podium-card second">
 
             <div class="position">
                 🥈
             </div>
 
-            <img src="https://i.pravatar.cc/200?img=18">
+            <img [src]="topPlayers[1].photo">
 
             <h3>
-                Juan
+                {{ topPlayers[1].name }}
             </h3>
 
             <span>
-                Defensa
+                {{ topPlayers[1].position }}
             </span>
 
             <div class="score">
-                8.9
+                {{ topPlayers[1].averageRating }}
             </div>
 
         </div>
 
+        }
+
         <!-- FIRST -->
+
+        @if(topPlayers[0]){
 
         <div class="podium-card first">
 
@@ -66,23 +72,27 @@
                 🥇
             </div>
 
-            <img src="https://i.pravatar.cc/200?img=11">
+            <img [src]="topPlayers[0].photo">
 
             <h3>
-                Fabian
+                {{ topPlayers[0].name }}
             </h3>
 
             <span>
-                Delantero
+                {{ topPlayers[0].position }}
             </span>
 
             <div class="score">
-                9.2
+                {{ topPlayers[0].averageRating }}
             </div>
 
         </div>
 
+        }
+
         <!-- THIRD -->
+
+        @if(topPlayers[2]){
 
         <div class="podium-card third">
 
@@ -90,46 +100,38 @@
                 🥉
             </div>
 
-            <img src="https://i.pravatar.cc/200?img=15">
+            <img [src]="topPlayers[2].photo">
 
             <h3>
-                Kevin
+                {{ topPlayers[2].name }}
             </h3>
 
             <span>
-                Mediocampo
+                {{ topPlayers[2].position }}
             </span>
 
             <div class="score">
-                8.7
+                {{ topPlayers[2].averageRating }}
             </div>
 
         </div>
 
+        }
+
     </section>
 
-    <!-- FILTERS -->
-
     <section class="filters-section">
-
-        <button class="filter active">
+        <button class="filter" [class.active]="
+        selectedFilter === 'Todos'
+      " (click)="filterRanking('Todos')">
             Todos
         </button>
+        <button class="filter" [class.active]="
+        selectedFilter === 'MVPs'
+      " (click)="filterRanking('MVPs')">
 
-        <button class="filter">
-            FUT 5
-        </button>
-
-        <button class="filter">
-            FUT 8
-        </button>
-
-        <button class="filter">
-            Últimos 5
-        </button>
-
-        <button class="filter">
             MVPs
+
         </button>
 
     </section>
@@ -151,94 +153,65 @@
 
         <!-- ROW -->
 
+        @for(player of players; track player.id; let i = $index){
+
         <div class="table-row">
 
-            <span>1</span>
+            <!-- POSITION -->
+
+            <span>
+
+                {{ i + 1 }}
+
+            </span>
+
+            <!-- PLAYER -->
 
             <div class="player-cell">
 
-                <img src="https://i.pravatar.cc/100?img=11">
+                <img [src]="player.photo">
 
                 <strong>
-                    Fabian
+                    {{ player.name }}
                 </strong>
 
             </div>
 
-            <span>DC</span>
+            <!-- POSITION -->
 
-            <span class="green">
-                9.2
+            <span>
+
+                {{ player.position }}
+
             </span>
 
-            <span>9</span>
+            <!-- RATING -->
+
+            <span class="green">
+
+                {{ player.averageRating }}
+
+            </span>
+
+            <!-- MVPS -->
+
+            <span>
+
+                {{ player.mvps }}
+
+            </span>
+
+            <!-- TREND -->
 
             <span class="trend-up">
-                ⬆ +1.2
+
+                🔥 Top Player
+
             </span>
 
         </div>
 
-        <!-- ROW -->
-
-        <div class="table-row">
-
-            <span>2</span>
-
-            <div class="player-cell">
-
-                <img src="https://i.pravatar.cc/100?img=18">
-
-                <strong>
-                    Juan
-                </strong>
-
-            </div>
-
-            <span>DFC</span>
-
-            <span class="green">
-                8.9
-            </span>
-
-            <span>7</span>
-
-            <span class="trend-up">
-                ⬆ +0.5
-            </span>
-
-        </div>
-
-        <!-- ROW -->
-
-        <div class="table-row">
-
-            <span>3</span>
-
-            <div class="player-cell">
-
-                <img src="https://i.pravatar.cc/100?img=15">
-
-                <strong>
-                    Kevin
-                </strong>
-
-            </div>
-
-            <span>MC</span>
-
-            <span class="green">
-                8.7
-            </span>
-
-            <span>5</span>
-
-            <span class="trend-down">
-                ⬇ -0.3
-            </span>
-
-        </div>
-
+        }
     </section>
 
     <!-- AI INSIGHTS -->

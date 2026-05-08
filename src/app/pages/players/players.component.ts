@@ -1,6 +1,7 @@
 import {
   Component,
-  inject
+  inject,
+  OnInit
 } from '@angular/core';
 
 import {
@@ -12,6 +13,7 @@ import {
   RouterLink
 } from '@angular/router';
 import { Player } from '../../core/interfaces/player.interface';
+import { PlayerService } from '../../core/services/player.service';
 
 @Component({
   selector: 'app-players',
@@ -22,52 +24,44 @@ import { Player } from '../../core/interfaces/player.interface';
   templateUrl: './players.component.html',
   styleUrl: './players.component.css'
 })
-export class PlayersComponent {
+export class PlayersComponent implements OnInit {
+  players: Player[] = [];
   private router = inject(Router);
-  players = [
+  private playerService = inject(PlayerService);
 
-    {
-      id: 'iJmJ5oGHBjILKkwxplZm',
-      name: 'Fabian',
-      position: 'Delantero',
-      rating: 9.4,
-      goals: 12,
-      mvps: 5,
-      photo:
-        'https://i.pravatar.cc/150?img=11'
-    },
+  ngOnInit() {
+    this.playerService
+      .getPlayers()
+      .subscribe({
+        next: (players) => {
+          this.players = players;
+        }
+      });
+  }
 
-    {
-      id: '2',
-      name: 'Kevin',
-      position: 'Mediocampo',
-      rating: 8.9,
-      goals: 6,
-      mvps: 3,
-      photo:
-        'https://i.pravatar.cc/150?img=12'
-    },
+  openProfile(player: Player) {
+    this.router.navigate([
+      '/player-profile',
+      player.id
+    ]);
 
-    {
-      id: '3',
-      name: 'Juan',
-      position: 'Defensa',
-      rating: 8.7,
-      goals: 2,
-      mvps: 2,
-      photo:
-        'https://i.pravatar.cc/150?img=15'
-    }
-
-  ];
+  }
   editPlayer(player: any) {
     this.router.navigate([
       '/add-player',
       player.id
     ])
   }
-  deletePlayer(player: any) {
-
+  async deletePlayer(player: any) {
+    try {
+      await this.playerService
+        .deletePlayer(player.id);
+      alert(
+        'Jugador eliminado 🔥'
+      );
+    } catch (error) {
+      console.error(error);
+    }
   }
 
 }
