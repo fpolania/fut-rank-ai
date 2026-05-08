@@ -82,6 +82,18 @@ export const routes: Routes = [
                 loadComponent: () =>
                     import('./pages/add-player/add-player.component')
                         .then(m => m.AddPlayerComponent)
+            },
+            {
+                path: 'players',
+                loadComponent: () =>
+                    import('./pages/players/players.component')
+                        .then(m => m.PlayersComponent)
+            },
+            {
+                path: 'add-player/:id',
+                loadComponent: () =>
+                    import('./pages/add-player/add-player.component')
+                        .then(m => m.AddPlayerComponent)
             }
 
         ]

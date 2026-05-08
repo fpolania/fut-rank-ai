@@ -1,6 +1,6 @@
 .add-player-page {
 
-    min-height: 100vh;
+    min-height: calc(100vh - 90px);
 
     display: flex;
 
@@ -18,11 +18,11 @@
 
     width: 100%;
 
-    max-width: 800px;
+    max-width: 950px;
 
     background:
         linear-gradient(135deg,
-            rgba(255, 255, 255, .06),
+            rgba(255, 255, 255, .05),
             rgba(255, 255, 255, .02));
 
     border:
@@ -30,26 +30,114 @@
 
     border-radius: 32px;
 
-    padding: 2.5rem;
+    padding: 3rem;
 
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(6px);
 
     box-shadow:
-        0 10px 40px rgba(0, 0, 0, .25);
+        0 15px 50px rgba(0, 0, 0, .35);
 
 }
 
-/* TITLE */
+/* HEADER */
 
-.form-card h1 {
+.form-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 2rem;
+
+    margin-bottom: 3rem;
+
+}
+
+.badge-title {
+
+    color: #39ff14;
+
+    font-size: .8rem;
+
+    letter-spacing: 3px;
+
+    text-transform: uppercase;
+
+}
+
+.form-header h1 {
 
     color: white;
 
-    font-size: clamp(2rem, 4vw, 3rem);
+    font-size: clamp(2rem, 4vw, 3.5rem);
 
     font-weight: 900;
 
-    margin-bottom: 2rem;
+    margin-top: .5rem;
+
+}
+
+/* PREVIEW */
+
+.preview-container {
+
+    position: relative;
+
+}
+
+.preview-img {
+
+    width: 140px;
+    height: 140px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    border:
+        4px solid rgba(57, 255, 20, .25);
+
+    box-shadow:
+        0 10px 25px rgba(57, 255, 20, .18);
+
+}
+
+.upload-btn {
+
+    width: 45px;
+    height: 45px;
+
+    border-radius: 50%;
+
+    position: absolute;
+
+    right: 0;
+    bottom: 0;
+
+    background:
+        linear-gradient(135deg,
+            #39ff14,
+            #16c60c);
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    cursor: pointer;
+
+    font-size: 1.1rem;
+
+    transition: .3s ease;
+
+}
+
+.upload-btn:hover {
+
+    transform: scale(1.08);
 
 }
 
@@ -65,7 +153,7 @@
 
 }
 
-/* INPUT WRAPPER */
+/* GROUP */
 
 .form-group {
 
@@ -75,55 +163,68 @@
 
 }
 
-/* INPUT */
+/* LABEL */
 
-.form-grid input {
+.form-group label {
+
+    color:
+        rgba(255, 255, 255, .65);
+
+    margin-bottom: .6rem;
+
+    font-size: .9rem;
+
+}
+
+/* INPUTS + SELECTS */
+
+.form-group input,
+.form-group select {
 
     width: 100%;
 
-    height: 60px;
+    height: 58px;
 
     border:
-        1px solid rgba(255, 255, 255, .05);
+        1px solid rgba(255, 255, 255, .06);
 
     border-radius: 18px;
-
-    padding: 0 1rem;
 
     background:
         rgba(255, 255, 255, .04);
 
+    padding: 0 1rem;
+
     color: white;
-
-    font-size: 1rem;
-
-    transition: .3s ease;
 
     outline: none;
 
+    transition: .3s ease;
+
+    font-size: .95rem;
+
 }
 
-/* PLACEHOLDER */
+/* OPTION */
 
-.form-grid input::placeholder {
+.form-group option {
 
-    color:
-        rgba(255, 255, 255, .35);
+    background: #020617;
+
+    color: white;
 
 }
 
 /* FOCUS */
 
-.form-grid input:focus {
+.form-group input:focus,
+.form-group select:focus {
 
     border-color:
         rgba(57, 255, 20, .45);
 
     box-shadow:
         0 0 0 4px rgba(57, 255, 20, .10);
-
-    background:
-        rgba(255, 255, 255, .06);
 
 }
 
@@ -133,13 +234,20 @@ button {
 
     width: 100%;
 
-    height: 60px;
+    height: 62px;
 
     border: none;
 
     border-radius: 20px;
 
-    margin-top: 2rem;
+    margin-top: 2.5rem;
+
+    background:
+        linear-gradient(135deg,
+            #39ff14,
+            #16c60c);
+
+    color: black;
 
     font-size: 1rem;
 
@@ -149,31 +257,22 @@ button {
 
     transition: .3s ease;
 
-    background:
-        linear-gradient(135deg,
-            #39ff14,
-            #16c60c);
-
-    color: black;
-
 }
-
-/* HOVER */
 
 button:hover {
 
-    transform: translateY(-3px);
+    transform: translateY(-2px);
 
     box-shadow:
-        0 10px 25px rgba(57, 255, 20, .25);
+        0 10px 30px rgba(57, 255, 20, .25);
 
 }
 
-/* ACTIVE */
+button:disabled {
 
-button:active {
+    opacity: .7;
 
-    transform: scale(.98);
+    cursor: not-allowed;
 
 }
 
@@ -181,15 +280,23 @@ button:active {
 
 @media(max-width:768px) {
 
-    .form-grid {
+    .form-card {
 
-        grid-template-columns: 1fr;
+        padding: 2rem 1.2rem;
 
     }
 
-    .form-card {
+    .form-header {
 
-        padding: 2rem 1.3rem;
+        flex-direction: column;
+
+        text-align: center;
+
+    }
+
+    .form-grid {
+
+        grid-template-columns: 1fr;
 
     }
 

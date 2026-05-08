@@ -1,0 +1,78 @@
+<div class="players-page">
+    <div class="players-top">
+        <div>
+            <span class="badge-title">
+                FUT RANK AI
+            </span>
+            <h1>
+                Jugadores ⚽
+            </h1>
+            <p>
+                Gestiona el rendimiento de tu equipo.
+            </p>
+        </div>
+
+        <a routerLink="/add-player" class="add-btn">
+            + Crear Jugador
+        </a>
+    </div>
+
+
+    <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input type="text" placeholder="Buscar jugador...">
+    </div>
+
+
+    <div class="players-grid">
+        @for(player of players; track player){
+        <div class="player-card">
+            <div class="card-actions">
+                <button (click)="editPlayer(player)">
+                    <i class="bi bi-pencil fs-2"></i>
+                </button>
+                <button class="delete" (click)="deletePlayer(player)">
+                    <i class="bi bi-trash fs-2"></i>
+                </button>
+            </div>
+            <img class="player-img" [src]="player.photo">
+            <h2>
+                {{ player.name }}
+            </h2>
+            <span class="position">
+                {{ player.position }}
+            </span>
+
+            <div class="player-stats">
+                <div>
+                    <strong>
+                        {{ player.rating }}
+                    </strong>
+                    <span>
+                        Rating
+                    </span>
+                </div>
+                <div>
+                    <strong>
+                        {{ player.goals }}
+                    </strong>
+                    <span>
+                        Goles
+                    </span>
+                </div>
+                <div>
+                    <strong>
+                        {{ player.mvps }}
+                    </strong>
+                    <span>
+                        MVPs
+                    </span>
+                </div>
+            </div>
+            <button class="profile-btn">
+                Ver Perfil
+            </button>
+        </div>
+        }
+    </div>
+</div>

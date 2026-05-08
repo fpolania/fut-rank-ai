@@ -34,6 +34,8 @@
 
     transition: .3s ease;
 
+    overflow-y: auto;
+
 }
 
 /* LOGO */
@@ -67,6 +69,9 @@
     align-items: center;
 
     font-size: 1.8rem;
+
+    box-shadow:
+        0 10px 25px rgba(57, 255, 20, .25);
 
 }
 
@@ -116,6 +121,12 @@
 
     font-weight: 600;
 
+    display: flex;
+
+    align-items: center;
+
+    gap: .8rem;
+
 }
 
 .menu a:hover,
@@ -125,6 +136,8 @@
         rgba(57, 255, 20, .12);
 
     color: #39ff14;
+
+    transform: translateX(5px);
 
 }
 
@@ -144,7 +157,8 @@
 
     height: 90px;
 
-    background: rgba(255, 255, 255, .03);
+    background:
+        rgba(255, 255, 255, .03);
 
     border-bottom:
         1px solid rgba(255, 255, 255, .05);
@@ -163,7 +177,7 @@
 
     z-index: 100;
 
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(6px);
 
 }
 
@@ -173,22 +187,121 @@
 
     margin: 0;
 
+    font-size: 1.4rem;
+
+    font-weight: 800;
+
 }
 
 .topbar span {
 
-    color: rgba(255, 255, 255, .5);
+    color:
+        rgba(255, 255, 255, .5);
 
 }
 
-/* PROFILE */
+/* PROFILE SECTION */
 
-.profile-section img {
+.profile-section {
 
-    width: 55px;
-    height: 55px;
+    display: flex;
+
+    align-items: center;
+
+    gap: 1rem;
+
+}
+
+/* USER CARD */
+
+.user-info {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: .8rem;
+
+    padding: .5rem 1rem;
+
+    border-radius: 18px;
+
+    background:
+        rgba(255, 255, 255, .04);
+
+    border:
+        1px solid rgba(255, 255, 255, .04);
+
+}
+
+.user-info img {
+
+    width: 50px;
+    height: 50px;
 
     border-radius: 50%;
+
+    object-fit: cover;
+
+}
+
+.user-text h4 {
+
+    margin: 0;
+
+    color: white;
+
+    font-size: .9rem;
+
+    font-weight: 800;
+
+}
+
+.user-text span {
+
+    color:
+        rgba(255, 255, 255, .45);
+
+    font-size: .75rem;
+
+}
+
+/* LOGOUT */
+
+.logout-btn {
+
+    width: 50px;
+    height: 50px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    background:
+        rgba(255, 255, 255, .04);
+
+    color: white;
+
+    font-size: 1.1rem;
+
+    transition: .3s ease;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+}
+
+.logout-btn:hover {
+
+    background:
+        rgba(255, 0, 0, .15);
+
+    color: #ff4d4d;
+
+    transform: translateY(-2px);
 
 }
 
@@ -200,7 +313,7 @@
 
 }
 
-/* MENU BTN */
+/* MENU BUTTON */
 
 .menu-btn {
 
@@ -219,6 +332,14 @@
     color: #39ff14;
 
     font-size: 1.3rem;
+
+    transition: .3s ease;
+
+}
+
+.menu-btn:hover {
+
+    transform: scale(1.05);
 
 }
 
@@ -257,6 +378,18 @@
     .topbar {
 
         padding: 0 1rem;
+
+    }
+
+    .user-text {
+
+        display: none;
+
+    }
+
+    .router-container {
+
+        padding: 1rem;
 
     }
 

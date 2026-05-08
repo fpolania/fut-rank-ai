@@ -40,7 +40,7 @@
 
             </a>
 
-            <a routerLink="/player-profile" routerLinkActive="active">
+            <a routerLink="/players" routerLinkActive="active">
 
                 👤 Jugadores
 
@@ -101,11 +101,33 @@
 
             <div class="profile-section">
 
-                <img [src]="(authService.currentUser | async)?.photoURL">
+                <div class="user-info">
+
+                    <img [src]="
+            (authService.currentUser | async)?.photoURL
+            || 'https://i.pravatar.cc/100'
+          ">
+
+                    <div class="user-text">
+
+                        <h4>
+                            {{
+                            ((authService.currentUser | async)?.displayName || '')
+                            .toUpperCase()
+                            }}
+                        </h4>
+
+                        <span>
+                            Player
+                        </span>
+
+                    </div>
+
+                </div>
 
                 <button class="logout-btn" (click)="logout()">
 
-                    🚪
+                    <i class="bi bi-box-arrow-right"></i>
 
                 </button>
 
