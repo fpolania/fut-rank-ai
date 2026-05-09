@@ -12,15 +12,21 @@ import {
   ActivatedRoute
 } from '@angular/router';
 
+import {
+  FormsModule
+} from '@angular/forms';
 
+import {
+  PlayerService
+} from '../../core/services/player.service';
 
-import { PlayerService }
-  from '../../core/services/player.service';
+import {
+  RatingService
+} from '../../core/services/rating.service';
 
-import { Player }
-  from '../../core/interfaces/player.interface';
-import { FormsModule } from '@angular/forms';
-
+import {
+  Player
+} from '../../core/interfaces/player.interface';
 
 @Component({
   selector: 'app-player-profile',
@@ -28,8 +34,11 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     FormsModule
   ],
-  templateUrl: './player-profile.component.html',
-  styleUrl: './player-profile.component.css'
+  templateUrl:
+    './player-profile.component.html',
+
+  styleUrl:
+    './player-profile.component.css'
 })
 export class PlayerProfileComponent
   implements OnInit {
@@ -42,134 +51,154 @@ export class PlayerProfileComponent
   private playerService =
     inject(PlayerService);
 
+  private ratingService =
+    inject(RatingService);
+
   /* DATA */
+
+  ratings: any[] = [];
 
   playerId: string | null =
     null;
 
   player!: Player;
 
-  doughnutChartData: any;
-
-  lineChartData: any;
-
-  /* CHART OPTIONS */
-
-  chartOptions = {
-
-    responsive: true,
-
-    plugins: {
-
-      legend: {
-
-        labels: {
-
-          color: 'white'
-
-        }
-
-      }
-
-    },
-
-    scales: {
-
-      x: {
-
-        ticks: {
-
-          color: 'white'
-
-        },
-
-        grid: {
-
-          color:
-            'rgba(255,255,255,.08)'
-
-        }
-
-      },
-
-      y: {
-
-        ticks: {
-
-          color: '#39ff14'
-
-        },
-
-        grid: {
-
-          color:
-            'rgba(255,255,255,.08)'
-
-        }
-
-      }
-
-    }
-
-  };
+  aiInsight = '';
 
   /* INIT */
 
   ngOnInit(): void {
 
     this.playerId =
-      this.route.snapshot
-        .paramMap.get('id');
+
+      this.route
+        .snapshot
+        .paramMap
+        .get('id');
 
     if (this.playerId) {
 
       this.getPlayer();
 
+      this.getPlayerComments();
+
     }
 
   }
 
-  async updateAttribute() {
-    if (!this.playerId)
-      return;
-    try {
-      await this.playerService
-        .updatePlayer(
-          this.playerId,
-          {
-            speed:
-              this.player.speed,
-            finishing:
-              this.player.finishing,
-            vision:
-              this.player.vision,
-            stamina:
-              this.player.stamina,
-            defense:
-              this.player.defense,
-            dribbling:
-              this.player.dribbling
-          }
-        );
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  /* GET PLAYER */
 
   getPlayer() {
+
     if (!this.playerId)
       return;
+
     this.playerService
-      .getPlayerById(this.playerId)
+
+      .getPlayerById(
+        this.playerId
+      )
+
       .subscribe({
+
         next: (player: any) => {
-          this.player = player;
+
+          this.player =
+            player;
+
+          this.aiInsight =
+
+            player.aiInsight || '';
+
         },
+
         error: (error: any) => {
+
           console.error(error);
+
         }
+
       });
+
   }
 
+  /* GET COMMENTS */
+
+  getPlayerComments() {
+
+    if (!this.playerId)
+      return;
+
+    this.ratingService
+
+      .getPlayerRatings(
+        this.playerId
+      )
+
+      .subscribe({
+
+        next: (ratings: any) => {
+
+          this.ratings =
+            ratings;
+
+        },
+
+        error: (error: any) => {
+
+          console.error(error);
+
+        }
+
+      });
+
+  }
+
+  /* UPDATE ATTRIBUTES */
+
+  async updateAttribute() {
+
+    if (!this.playerId)
+      return;
+
+    try {
+
+      await this.playerService
+
+        .updatePlayer(
+
+          this.playerId,
+
+          {
+
+            speed:
+              this.player.speed,
+
+            finishing:
+              this.player.finishing,
+
+            vision:
+              this.player.vision,
+
+            stamina:
+              this.player.stamina,
+
+            defense:
+              this.player.defense,
+
+            dribbling:
+              this.player.dribbling
+
+          }
+
+        );
+
+    } catch (error) {
+
+      console.error(error);
+
+    }
+
+  }
 
 }

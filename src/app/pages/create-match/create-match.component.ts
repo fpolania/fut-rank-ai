@@ -6,6 +6,8 @@ import { Player } from '../../core/interfaces/player.interface';
 import { MatchService } from '../../core/services/match.service';
 import { Timestamp } from '@angular/fire/firestore';
 import { MatchPlayer } from '../../core/interfaces/match.interface';
+import { LoadingService } from '../../core/services/loading.service';
+import { errorAlert, successAlert, warningAlert } from '../../core/utils/alert.util';
 
 @Component({
   selector: 'app-create-match',
@@ -18,6 +20,7 @@ export class CreateMatchComponent implements OnInit {
   private fb = inject(FormBuilder);
   private playerService = inject(PlayerService);
   private matchService = inject(MatchService);
+  private loadingService = inject(LoadingService);
   players: Player[] = [];
   selectedPlayers: Player[] = [];
   selectedMatchType = 'FUT 5';
@@ -36,6 +39,7 @@ export class CreateMatchComponent implements OnInit {
     this.getPlayers();
   }
   getPlayers() {
+    this.loadingService.show();
     this.playerService
       .getPlayers()
       .subscribe({
@@ -46,6 +50,7 @@ export class CreateMatchComponent implements OnInit {
           console.error(error);
         }
       });
+    this.loadingService.hide();
   }
   selectMatchType(type: string) {
     this.selectedMatchType = type;
@@ -67,8 +72,9 @@ export class CreateMatchComponent implements OnInit {
         : 16;
 
     if (this.selectedPlayers.length >= limit) {
-      alert(
-        `Solo puedes seleccionar ${limit} jugadores`
+      warningAlert(
+        'Plantilla completa ⚽🔥',
+        `Solo puedes convocar ${limit} jugadores para el cotejo.`
       );
       return;
     }
@@ -87,6 +93,7 @@ export class CreateMatchComponent implements OnInit {
       return;
     }
     try {
+      this.loadingService.show();
       const players:
         MatchPlayer[] =
         this.selectedPlayers.map(
@@ -131,16 +138,21 @@ export class CreateMatchComponent implements OnInit {
         finished: false,
         createdAt: Timestamp.now()
       };
-
-      await this.matchService
-        .addMatch(match as any);
-      alert(
-        'Partido creado 😮‍💨🔥'
+      await this.matchService.addMatch(match as any);
+      successAlert(
+        'Partido Creado ⚽🔥',
+        'El cotejo fue programado correctamente.'
       );
       this.matchForm.reset();
       this.selectedPlayers = [];
     } catch (error) {
+      errorAlert(
+        'No se pudo crear el partido 😮‍💨',
+        'Verifica la información e inténtalo nuevamente.'
+      );
       console.error(error);
+    } finally {
+      this.loadingService.hide();
     }
   }
 }

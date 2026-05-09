@@ -11,145 +11,121 @@ import {
 import {
   ActivatedRoute
 } from '@angular/router';
-import { MatchService } from '../../core/services/match.service';
-import { Match, MatchPlayer } from '../../core/interfaces/match.interface';
-import { PlayerService } from '../../core/services/player.service';
 
+import {
+  MatchService
+} from '../../core/services/match.service';
+
+import {
+  Match,
+  MatchPlayer
+} from '../../core/interfaces/match.interface';
+
+import {
+  PlayerService
+} from '../../core/services/player.service';
+
+import {
+  RatingService
+} from '../../core/services/rating.service';
+
+import {
+  AiService
+} from '../../core/services/ai.service';
+import {
+  LoadingService
+} from '../../core/services/loading.service';
+import {
+  successAlert,
+  errorAlert
+} from '../../core/utils/alert.util';
 
 @Component({
   selector: 'app-match-detail',
   imports: [
     CommonModule
   ],
-  templateUrl: './match-detail.component.html',
-  styleUrl: './match-detail.component.css'
+  templateUrl:
+    './match-detail.component.html',
+
+  styleUrl:
+    './match-detail.component.css'
 })
-export class MatchDetailComponent
-  implements OnInit {
+export class MatchDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private matchService = inject(MatchService);
   private playerService = inject(PlayerService);
+  private ratingService = inject(RatingService);
+  private aiService = inject(AiService);
+  private loadingService = inject(LoadingService);
+
   matchId: string | null = null;
   match!: Match;
 
   ngOnInit(): void {
-
     this.matchId =
       this.route.snapshot
         .paramMap.get('id');
-
     if (this.matchId) {
-
       this.getMatch();
-
     }
-
   }
 
-  /* GET MATCH */
 
   getMatch() {
-
     if (!this.matchId)
       return;
-
     this.matchService
       .getMatchById(this.matchId)
       .subscribe({
-
         next: (match: any) => {
-
           this.match = match;
-
         },
-
         error: (error) => {
-
           console.error(error);
-
         }
-
       });
-
   }
 
-  /* SET MVP */
 
   setMvp(player: MatchPlayer) {
-
     this.match.players.forEach(
       p => p.isMvp = false
     );
-
     player.isMvp = true;
-
     this.match.mvpPlayerId =
       player.playerId;
-
   }
 
-  /* GOALS */
 
-  increaseGoals(
-    player: MatchPlayer
-  ) {
-
+  increaseGoals(player: MatchPlayer) {
     player.goals++;
-
     this.calculateScore();
-
   }
 
-  decreaseGoals(
-    player: MatchPlayer
-  ) {
-
+  decreaseGoals(player: MatchPlayer) {
     if (player.goals <= 0)
       return;
-
     player.goals--;
-
     this.calculateScore();
-
   }
 
-  /* ASSISTS */
-
-  increaseAssists(
-    player: MatchPlayer
-  ) {
-
+  increaseAssists(player: MatchPlayer) {
     player.assists++;
-
   }
-
-  decreaseAssists(
-    player: MatchPlayer
-  ) {
-
+  decreaseAssists(player: MatchPlayer) {
     if (player.assists <= 0)
       return;
-
     player.assists--;
-
   }
 
-  /* RATING */
-
-  increaseRating(
-    player: MatchPlayer
-  ) {
-
+  increaseRating(player: MatchPlayer) {
     if (player.rating >= 10)
       return;
-
     player.rating += 0.1;
-
-    player.rating =
-      Number(
-        player.rating.toFixed(1)
-      );
-
+    player.rating = Number(
+      player.rating.toFixed(1)
+    );
   }
 
   decreaseRating(
@@ -161,14 +137,11 @@ export class MatchDetailComponent
 
     player.rating -= 0.1;
 
-    player.rating =
-      Number(
-        player.rating.toFixed(1)
-      );
+    player.rating = Number(
+      player.rating.toFixed(1)
+    );
 
   }
-
-  /* SCORE */
 
   /* SCORE */
 
@@ -179,38 +152,36 @@ export class MatchDetailComponent
       this.match.players
 
         .reduce(
+
           (
             acc,
             player
-          ) => acc + player.goals,
+          ) =>
+
+            acc + player.goals,
+
           0
+
         );
 
   }
 
-
   /* FINISH MATCH */
 
   async finishMatch() {
-
+    this.loadingService.show();
     if (
       !this.matchId ||
       this.match.finished
     ) return;
-
     try {
-
-      /* UPDATE PLAYERS */
-
       for (
         const player
         of this.match.players
       ) {
-
         const currentPlayer =
           await new Promise<any>(
             (resolve) => {
-
               this.playerService
                 .getPlayerById(
                   player.playerId
@@ -219,70 +190,101 @@ export class MatchDetailComponent
                   data =>
                     resolve(data)
                 );
-
             }
           );
-
-        const totalMatches =
-
-          currentPlayer.matchesPlayed + 1;
-
-        /* AVERAGE */
-
+        const totalMatches = currentPlayer.matchesPlayed + 1;
         const averageRating =
-
           (
             (
               currentPlayer.averageRating *
               currentPlayer.matchesPlayed
             )
-
             +
-
             player.rating
-
           ) / totalMatches;
 
-        /* UPDATE */
+        await this.playerService.updatePlayerStats(
+          player.playerId,
+          {
+            goals:
+              currentPlayer.goals +
+              player.goals,
+            assists:
+              currentPlayer.assists +
+              player.assists,
+            mvps:
+              player.isMvp
+                ? currentPlayer.mvps + 1
+                : currentPlayer.mvps,
+            matchesPlayed:
+              totalMatches,
+            averageRating:
+              Number(
+                averageRating.toFixed(1)
+              )
+          }
+        );
 
-        await this.playerService
-          .updatePlayerStats(
-
-            player.playerId,
-
-            {
-
-              goals:
-                currentPlayer.goals +
-                player.goals,
-
-              assists:
-                currentPlayer.assists +
-                player.assists,
-
-              mvps:
-                player.isMvp
-                  ? currentPlayer.mvps + 1
-                  : currentPlayer.mvps,
-
-              matchesPlayed:
-                totalMatches,
-
-              averageRating:
-                Number(
-                  averageRating.toFixed(1)
+        const ratings =
+          await new Promise<any[]>(
+            (resolve) => {
+              this.ratingService
+                .getPlayerRatings(
+                  player.playerId
                 )
-
+                .subscribe(
+                  data =>
+                    resolve(data)
+                );
             }
-
           );
 
+        const comments = ratings
+          .filter(
+            rating =>
+              rating.comment
+          )
+          .map(
+            rating =>
+              rating.comment
+          );
+
+        const response: any =
+          await this.aiService
+            .generatePlayerInsight(
+              {
+                ...currentPlayer,
+                goals:
+                  currentPlayer.goals +
+                  player.goals,
+                assists:
+                  currentPlayer.assists +
+                  player.assists,
+                averageRating:
+                  Number(
+                    averageRating.toFixed(1)
+                  ),
+                mvps:
+                  player.isMvp
+                    ? currentPlayer.mvps + 1
+                    : currentPlayer.mvps
+
+              },
+              comments
+            );
+
+        const aiInsight = response.data.insight;
+        await this.playerService
+          .updatePlayer(
+            player.playerId,
+            {
+              aiInsight,
+              aiUpdatedAt:
+                new Date()
+            }
+          );
       }
-
-      /* FINISH MATCH */
-
       this.match.finished = true;
-
       await this.matchService
         .updateMatch(
           this.matchId,
@@ -290,27 +292,28 @@ export class MatchDetailComponent
             finished: true
           }
         );
-
-      alert(
-        'Partido finalizado 😮‍💨🔥'
+      successAlert(
+        'Partido finalizado ⚽🔥',
+        'La IA generó los insights correctamente.'
       );
 
     } catch (error) {
 
-      console.error(error);
+      errorAlert(
+        'Ups 😮‍💨',
+        'Ocurrió un error finalizando el partido.'
+      );
 
+    } finally {
+      this.loadingService.hide();
     }
 
   }
 
   increaseEnemyScore() {
-
     this.match.scoreB++;
-
   }
-
   decreaseEnemyScore() {
-
     if (
       this.match.scoreB <= 0
     ) return;

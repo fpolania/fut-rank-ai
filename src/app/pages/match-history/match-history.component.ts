@@ -23,7 +23,6 @@ from '../../core/interfaces/match.interface';
   selector: 'app-match-history',
   imports: [
     CommonModule,
-    RouterLink
   ],
   templateUrl: './match-history.component.html',
   styleUrl: './match-history.component.css'

@@ -274,47 +274,35 @@
   </section>
 
 
-  <!-- AI -->
-
   <section class="ai-card">
 
     <div class="ai-title">
+
       🤖 AI Analysis
+
     </div>
 
     <div class="ai-content">
 
-      <p>
-
-        {{ player.name }}
-
-        ha mostrado gran rendimiento ofensivo.
-
-      </p>
+      @if(aiInsight){
 
       <p>
 
-        Actualmente tiene un promedio de
-
-        {{ player.averageRating }}
-
-        ⭐
+        {{ aiInsight }}
 
       </p>
+
+      }
+
+      @else {
 
       <p>
 
-        Registra
-
-        {{ player.goals }}
-
-        goles y
-
-        {{ player.assists }}
-
-        asistencias.
+        Analizando jugador con IA...
 
       </p>
+
+      }
 
     </div>
 
@@ -325,46 +313,42 @@
   <section class="comments-section">
 
     <div class="section-title">
+
       💬 Comentarios del Equipo
+
     </div>
 
     <div class="comments-grid">
 
-      <div class="comment-card">
+      @for(rating of ratings; track rating.id){
 
-        <span>
-          🔥
-        </span>
-
-        <p>
-          Gran rendimiento ofensivo.
-        </p>
-
-      </div>
+      @if(rating.comment){
 
       <div class="comment-card">
 
         <span>
-          ⚡
+
+          ⭐
+
         </span>
 
         <p>
-          Jugador clave para Pull Request.
+
+          "{{ rating.comment }}"
+
         </p>
+
+        <small>
+
+          — Pull Request Team
+
+        </small>
 
       </div>
 
-      <div class="comment-card">
+      }
 
-        <span>
-          🧠
-        </span>
-
-        <p>
-          Excelente lectura de juego.
-        </p>
-
-      </div>
+      }
 
     </div>
 

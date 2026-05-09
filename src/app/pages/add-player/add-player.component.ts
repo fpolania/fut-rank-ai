@@ -13,6 +13,8 @@ import {
 import { PlayerService } from '../../core/services/player.service';
 import { UploadFileService } from '../../core/services/upload-file.service';
 import { ActivatedRoute } from '@angular/router';
+import { LoadingService } from '../../core/services/loading.service';
+import { errorAlert, successAlert } from '../../core/utils/alert.util';
 
 @Component({
   selector: 'app-add-player',
@@ -23,10 +25,8 @@ import { ActivatedRoute } from '@angular/router';
 export class AddPlayerComponent implements OnInit {
   loading = false;
   playerId: string | null = null;
-
   editMode = false;
   selectedFile!: File;
-
   previewImage =
     'https://i.pravatar.cc/150';
   positions = [
@@ -39,6 +39,7 @@ export class AddPlayerComponent implements OnInit {
   private fileUpload = inject(UploadFileService)
   private playerService = inject(PlayerService);
   private route = inject(ActivatedRoute);
+  private loadingService = inject(LoadingService);
 
   ngOnInit() {
     this.route.params.subscribe((params) => {
@@ -85,8 +86,9 @@ export class AddPlayerComponent implements OnInit {
             this.playerId,
             player
           );
-        alert(
-          'Jugador actualizado 🔥'
+        successAlert(
+          'Jugador actualizado ✍️🔥',
+          'Los datos del jugador fueron actualizados correctamente.'
         );
       }
       else {
@@ -108,13 +110,18 @@ export class AddPlayerComponent implements OnInit {
             createdAt:
               Timestamp.now()
           });
-        alert(
-          'Jugador creado 🔥'
+        successAlert(
+          'Jugador registrado ⚽🔥',
+          'El jugador fue agregado correctamente al equipo.'
         );
       }
       this.playerForm.reset();
       this.previewImage = 'https://i.pravatar.cc/150';
     } catch (error) {
+      errorAlert(
+        'No se pudo registrar 😮‍💨',
+        'Ocurrió un error creando el jugador.'
+      );
       console.error(error);
     } finally {
       this.loading = false;

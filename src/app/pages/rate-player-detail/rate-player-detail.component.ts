@@ -25,6 +25,8 @@ import { MatchService }
 
 import { RatingService }
   from '../../core/services/rating.service';
+import { LoadingService } from '../../core/services/loading.service';
+import { errorAlert, successAlert } from '../../core/utils/alert.util';
 
 @Component({
   selector: 'app-rate-player-detail',
@@ -42,6 +44,8 @@ export class RatePlayerDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private matchService = inject(MatchService);
   private ratingService = inject(RatingService);
+  private loadingService = inject(LoadingService);
+
 
   matchId: string | null = null;
   match: any;
@@ -90,6 +94,7 @@ export class RatePlayerDetailComponent implements OnInit {
 
 
   async sendRatings() {
+    this.loadingService.show();
     if (!this.matchId)
       return;
     try {
@@ -118,11 +123,18 @@ export class RatePlayerDetailComponent implements OnInit {
               Timestamp.now()
           });
       }
-      alert(
-        'Calificaciones enviadas 🔥'
+      successAlert(
+        'Calificación registrada ⭐🔥',
+        'Tu análisis del jugador fue guardado correctamente.'
       );
     } catch (error) {
+      errorAlert(
+        'No se pudo registrar 😮‍💨',
+        'Ocurrió un error enviando la calificación.'
+      );
       console.error(error);
+    } finally {
+      this.loadingService.hide();
     }
   }
 

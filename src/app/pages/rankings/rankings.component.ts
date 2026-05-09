@@ -66,17 +66,12 @@ export class RankingsComponent implements OnInit {
   }
 
   getPlayers() {
-
     this.playerService
       .getPlayers()
       .subscribe({
-
         next: (players) => {
-
           this.players =
-
             [...players]
-
               .sort(
                 (
                   a,
@@ -86,21 +81,15 @@ export class RankingsComponent implements OnInit {
                   b.averageRating -
                   a.averageRating
               );
-
           this.topPlayers =
             this.players.slice(0, 3);
           this.filterRanking(
             this.selectedFilter
           );
-
         },
-
         error: (error: any) => {
-
           console.error(error);
-
         }
-
       });
 
   }

@@ -14,6 +14,8 @@ import {
 } from '@angular/router';
 import { Player } from '../../core/interfaces/player.interface';
 import { PlayerService } from '../../core/services/player.service';
+import { successAlert } from '../../core/utils/alert.util';
+import { LoadingService } from '../../core/services/loading.service';
 
 @Component({
   selector: 'app-players',
@@ -28,7 +30,7 @@ export class PlayersComponent implements OnInit {
   players: Player[] = [];
   private router = inject(Router);
   private playerService = inject(PlayerService);
-
+  private loadingService = inject(LoadingService);
   ngOnInit() {
     this.playerService
       .getPlayers()
@@ -54,13 +56,17 @@ export class PlayersComponent implements OnInit {
   }
   async deletePlayer(player: any) {
     try {
+      this.loadingService.show();
       await this.playerService
         .deletePlayer(player.id);
-      alert(
-        'Jugador eliminado 🔥'
+      successAlert(
+        'Jugador eliminado 🗑️🔥',
+        'El jugador fue eliminado correctamente.'
       );
     } catch (error) {
       console.error(error);
+    } finally{
+      this.loadingService.hide();
     }
   }
 
