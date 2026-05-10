@@ -29,6 +29,9 @@ import { LoadingService } from '../../core/services/loading.service';
 import { errorAlert, successAlert } from '../../core/utils/alert.util';
 import { PlayerService } from '../../core/services/player.service';
 import { AiService } from '../../core/services/ai.service';
+import {
+  BAD_WORDS
+} from '../../core/constants/bad-words.constant';
 
 @Component({
   selector: 'app-rate-player-detail',
@@ -50,7 +53,7 @@ export class RatePlayerDetailComponent implements OnInit {
   private playerService = inject(PlayerService);
   private aiService = inject(AiService);
 
-
+  badWords = BAD_WORDS;
   matchId: string | null = null;
   match: any;
   players: any[] = [];
@@ -507,5 +510,35 @@ export class RatePlayerDetailComponent implements OnInit {
     }
 
   }
+  sanitizeComment(
+    player: any
+  ): void {
 
+    let comment =
+      player.comment || '';
+
+    this.badWords.forEach(
+      word => {
+
+        const regex =
+          new RegExp(
+            word,
+            'gi'
+          );
+
+        comment =
+          comment.replace(
+            regex,
+            '*'.repeat(
+              word.length
+            )
+          );
+
+      }
+    );
+
+    player.comment =
+      comment;
+
+  }
 }

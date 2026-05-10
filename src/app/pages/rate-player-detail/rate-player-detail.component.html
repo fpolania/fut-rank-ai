@@ -125,12 +125,15 @@
             <!-- COMMENT -->
 
             <textarea rows="4" [(ngModel)]="
-                    player.comment
-                  " placeholder="
-                    Comentario anónimo...
-                  " (ngModelChange)="player.wasRated = true">
+      player.comment
+    " placeholder="
+      Comentario anónimo...
+    " (ngModelChange)="
+      player.wasRated = true;
+      sanitizeComment(player)
+    ">
 
-                </textarea>
+</textarea>
 
         </div>
 
