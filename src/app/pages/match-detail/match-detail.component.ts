@@ -26,15 +26,9 @@ import {
 } from '../../core/services/player.service';
 
 import {
-  RatingService
-} from '../../core/services/rating.service';
-
-import {
-  AiService
-} from '../../core/services/ai.service';
-import {
   LoadingService
 } from '../../core/services/loading.service';
+
 import {
   successAlert,
   errorAlert
@@ -52,268 +46,308 @@ import {
     './match-detail.component.css'
 })
 export class MatchDetailComponent implements OnInit {
-  private route = inject(ActivatedRoute);
-  private matchService = inject(MatchService);
-  private playerService = inject(PlayerService);
-  private ratingService = inject(RatingService);
-  private aiService = inject(AiService);
-  private loadingService = inject(LoadingService);
 
-  matchId: string | null = null;
+  private route =
+    inject(ActivatedRoute);
+
+  private matchService =
+    inject(MatchService);
+
+  private playerService =
+    inject(PlayerService);
+
+  private loadingService =
+    inject(LoadingService);
+
+  matchId:
+    string | null = null;
+
   match!: Match;
 
   ngOnInit(): void {
+
     this.matchId =
       this.route.snapshot
         .paramMap.get('id');
+
     if (this.matchId) {
+
       this.getMatch();
+
     }
+
   }
 
+  getMatch(): void {
 
-  getMatch() {
     if (!this.matchId)
       return;
+
     this.matchService
-      .getMatchById(this.matchId)
+      .getMatchById(
+        this.matchId
+      )
       .subscribe({
+
         next: (match: any) => {
+
           this.match = match;
+
         },
+
         error: (error) => {
+
           console.error(error);
+
         }
+
       });
+
   }
 
+  increaseGoals(
+    player: MatchPlayer
+  ): void {
 
-  setMvp(player: MatchPlayer) {
-    this.match.players.forEach(
-      p => p.isMvp = false
-    );
-    player.isMvp = true;
-    this.match.mvpPlayerId =
-      player.playerId;
-  }
-
-
-  increaseGoals(player: MatchPlayer) {
     player.goals++;
+
     this.calculateScore();
+
   }
 
-  decreaseGoals(player: MatchPlayer) {
+  decreaseGoals(
+    player: MatchPlayer
+  ): void {
+
     if (player.goals <= 0)
       return;
+
     player.goals--;
+
     this.calculateScore();
+
   }
 
-  increaseAssists(player: MatchPlayer) {
+  increaseAssists(
+    player: MatchPlayer
+  ): void {
+
     player.assists++;
+
   }
-  decreaseAssists(player: MatchPlayer) {
+
+  decreaseAssists(
+    player: MatchPlayer
+  ): void {
+
     if (player.assists <= 0)
       return;
+
     player.assists--;
-  }
-
-  increaseRating(player: MatchPlayer) {
-    if (player.rating >= 10)
-      return;
-    player.rating += 0.1;
-    player.rating = Number(
-      player.rating.toFixed(1)
-    );
-  }
-
-  decreaseRating(
-    player: MatchPlayer
-  ) {
-
-    if (player.rating <= 0)
-      return;
-
-    player.rating -= 0.1;
-
-    player.rating = Number(
-      player.rating.toFixed(1)
-    );
 
   }
 
-  /* SCORE */
-
-  calculateScore() {
+  calculateScore(): void {
 
     this.match.scoreA =
+      this.match.players.reduce(
 
-      this.match.players
+        (
+          acc,
+          player
+        ) =>
 
-        .reduce(
+          acc + player.goals,
 
-          (
-            acc,
-            player
-          ) =>
+        0
 
-            acc + player.goals,
-
-          0
-
-        );
+      );
 
   }
 
-  /* FINISH MATCH */
+  getMatchResult(): string {
 
-  async finishMatch() {
+    if (
+      this.match.scoreA >
+      this.match.scoreB
+    ) {
+
+      return '🏆 Ganado';
+
+    }
+
+    if (
+      this.match.scoreA <
+      this.match.scoreB
+    ) {
+
+      return '💀 Perdido';
+
+    }
+
+    return '🤝 Empatado';
+
+  }
+
+  async updatePlayerStats(
+    player: MatchPlayer
+  ): Promise<void> {
+
+    const currentPlayer =
+      await new Promise<any>(
+        (resolve) => {
+
+          this.playerService
+            .getPlayerById(
+              player.playerId
+            )
+            .subscribe(
+              data =>
+                resolve(data)
+            );
+
+        }
+      );
+
+    const totalMatches =
+      currentPlayer.matchesPlayed + 1;
+
+    await this.playerService
+      .updatePlayerStats(
+        player.playerId,
+        {
+
+          goals:
+            currentPlayer.goals +
+            player.goals,
+
+          assists:
+            currentPlayer.assists +
+            player.assists,
+
+          matchesPlayed:
+            totalMatches
+
+        }
+      );
+
+  }
+
+  async finishMatch(): Promise<void> {
+
     this.loadingService.show();
+
     if (
       !this.matchId ||
       this.match.finished
     ) return;
+
     try {
+
       for (
         const player
         of this.match.players
       ) {
-        const currentPlayer =
-          await new Promise<any>(
-            (resolve) => {
-              this.playerService
-                .getPlayerById(
-                  player.playerId
-                )
-                .subscribe(
-                  data =>
-                    resolve(data)
-                );
-            }
-          );
-        const totalMatches = currentPlayer.matchesPlayed + 1;
-        const averageRating =
-          (
-            (
-              currentPlayer.averageRating *
-              currentPlayer.matchesPlayed
-            )
-            +
-            player.rating
-          ) / totalMatches;
 
-        await this.playerService.updatePlayerStats(
-          player.playerId,
-          {
+        await this
+          .updatePlayerStats(
+            player
+          );
+
+      }
+
+      const result =
+        this.getMatchResult();
+
+      /* CLEAN PLAYERS */
+
+      const cleanPlayers =
+
+        this.match.players.map(
+          player => ({
+
+            playerId:
+              player.playerId,
+
+            name:
+              player.name,
+
+            photo:
+              player.photo,
+
+            position:
+              player.position,
+
+            team:
+              player.team,
+
             goals:
-              currentPlayer.goals +
               player.goals,
+
             assists:
-              currentPlayer.assists +
-              player.assists,
-            mvps:
-              player.isMvp
-                ? currentPlayer.mvps + 1
-                : currentPlayer.mvps,
-            matchesPlayed:
-              totalMatches,
-            averageRating:
-              Number(
-                averageRating.toFixed(1)
-              )
-          }
+              player.assists
+
+          })
         );
 
-        const ratings =
-          await new Promise<any[]>(
-            (resolve) => {
-              this.ratingService
-                .getPlayerRatings(
-                  player.playerId
-                )
-                .subscribe(
-                  data =>
-                    resolve(data)
-                );
-            }
-          );
+      this.match.finished =
+        true;
 
-        const comments = ratings
-          .filter(
-            rating =>
-              rating.comment
-          )
-          .map(
-            rating =>
-              rating.comment
-          );
-
-        const response: any =
-          await this.aiService
-            .generatePlayerInsight(
-              {
-                ...currentPlayer,
-                goals:
-                  currentPlayer.goals +
-                  player.goals,
-                assists:
-                  currentPlayer.assists +
-                  player.assists,
-                averageRating:
-                  Number(
-                    averageRating.toFixed(1)
-                  ),
-                mvps:
-                  player.isMvp
-                    ? currentPlayer.mvps + 1
-                    : currentPlayer.mvps
-
-              },
-              comments
-            );
-
-        const aiInsight = response.data.insight;
-        await this.playerService
-          .updatePlayer(
-            player.playerId,
-            {
-              aiInsight,
-              aiUpdatedAt:
-                new Date()
-            }
-          );
-      }
-      this.match.finished = true;
       await this.matchService
         .updateMatch(
           this.matchId,
           {
-            finished: true
+
+            finished: true,
+
+            result,
+
+            scoreA:
+              this.match.scoreA,
+
+            scoreB:
+              this.match.scoreB,
+
+            players:
+              cleanPlayers
+
           }
         );
+
       successAlert(
         'Partido finalizado ⚽🔥',
-        'La IA generó los insights correctamente.'
+        'Las estadísticas fueron actualizadas correctamente.'
       );
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
       errorAlert(
         'Ups 😮‍💨',
         'Ocurrió un error finalizando el partido.'
       );
 
-    } finally {
+      console.error(error);
+
+    }
+
+    finally {
+
       this.loadingService.hide();
+
     }
 
   }
 
-  increaseEnemyScore() {
+  increaseEnemyScore(): void {
+
     this.match.scoreB++;
+
   }
-  decreaseEnemyScore() {
+
+  decreaseEnemyScore(): void {
+
     if (
       this.match.scoreB <= 0
     ) return;

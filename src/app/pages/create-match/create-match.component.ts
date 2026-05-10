@@ -57,20 +57,12 @@ export class CreateMatchComponent implements OnInit {
     this.selectedPlayers = [];
   }
   togglePlayer(player: Player) {
-    const exists =
-      this.selectedPlayers
-        .some(p => p.id === player.id);
+    const exists =this.selectedPlayers.some(p => p.id === player.id);
     if (exists) {
-      this.selectedPlayers = this.selectedPlayers.filter(
-        p => p.id !== player.id);
+      this.selectedPlayers = this.selectedPlayers.filter(p => p.id !== player.id);
       return;
     }
-    const limit =
-      this.selectedMatchType ===
-        'FUT 5'
-        ? 10
-        : 16;
-
+    const limit =this.selectedMatchType ==='FUT 5' ? 10: 16;
     if (this.selectedPlayers.length >= limit) {
       warningAlert(
         'Plantilla completa ⚽🔥',
@@ -81,46 +73,29 @@ export class CreateMatchComponent implements OnInit {
     this.selectedPlayers.push(player);
   }
   isSelected(player: Player) {
-    return this.selectedPlayers.some(
-      p => p.id === player.id
-    );
+    return this.selectedPlayers.some(p => p.id === player.id);
   }
   async createMatch() {
-    if (
-      this.matchForm.invalid
-    ) {
-      this.matchForm.markAllAsTouched();
-      return;
-    }
+    if (this.matchForm.invalid) { this.matchForm.markAllAsTouched(); return; }
     try {
       this.loadingService.show();
-      const players:
-        MatchPlayer[] =
-        this.selectedPlayers.map(
-          (
-            player,
-            index
-          ) => ({
-            playerId: player.id || '',
-            name: player.name,
-            photo: player.photo,
-            position: player.position,
-            team:
-              index < (
-                this.selectedPlayers.length / 2
-              )
-                ? 'A'
-                : 'B',
-            rating: player.averageRating,
-            goals: 0,
-            assists: 0,
-            isMvp: false
-          })
-        );
+      const players: MatchPlayer[] = this.selectedPlayers.map(
+        player => ({
+          playerId: player.id || '',
+          name: player.name,
+          photo: player.photo,
+          position: player.position,
+          team: 'PULL_REQUEST',
+          rating: player.averageRating,
+          goals: 0,
+          assists: 0,
+          isMvp: false
+        })
+      );
       const title = this.matchForm.value.name || '';
       const splitTitle = title.split(/vs/i);
-      const teamA = splitTitle[0]?.trim() || 'Equipo A';
-      const teamB = splitTitle[1]?.trim() || 'Equipo B';
+      const teamA = splitTitle[0]?.trim() || 'Pull Request';
+      const teamB = splitTitle[1]?.trim() || 'Rival';
       const match = {
         title,
         type: this.selectedMatchType,
@@ -128,8 +103,7 @@ export class CreateMatchComponent implements OnInit {
         field: this.matchForm.value.field || '',
         date: this.matchForm.value.date || '',
         time: this.matchForm.value.time || '',
-        teamA: teamA,
-        teamB: teamB,
+        teamA, teamB,
         scoreA: 0,
         scoreB: 0,
         mvpPlayerId: '',
@@ -138,16 +112,18 @@ export class CreateMatchComponent implements OnInit {
         finished: false,
         createdAt: Timestamp.now()
       };
+
       await this.matchService.addMatch(match as any);
       successAlert(
         'Partido Creado ⚽🔥',
-        'El cotejo fue programado correctamente.'
+        'El squad Pull Request fue creado correctamente.'
       );
+
       this.matchForm.reset();
       this.selectedPlayers = [];
     } catch (error) {
       errorAlert(
-        'No se pudo crear el partido 😮‍💨',
+        'No se pudo crear el squad 😮‍💨',
         'Verifica la información e inténtalo nuevamente.'
       );
       console.error(error);

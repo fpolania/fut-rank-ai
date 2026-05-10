@@ -19,13 +19,22 @@
 
 
     <div class="search-box">
+
         <i class="bi bi-search"></i>
-        <input type="text" placeholder="Buscar jugador...">
+
+        <input type="text" placeholder="Buscar jugador..." [(ngModel)]="searchTerm">
+
     </div>
 
 
     <div class="players-grid">
-        @for(player of players; track player){
+        @for(
+        player of (
+        players
+        | playerFilter:searchTerm
+        );
+        track player
+        ){
         <div class="player-card">
             <div class="card-actions">
                 <button (click)="editPlayer(player)">

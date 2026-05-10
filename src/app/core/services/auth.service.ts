@@ -60,9 +60,6 @@ export class AuthService {
 
       const firebaseUser =
         result.user;
-
-      /* SAVE USER IN FIRESTORE */
-debugger
       await this.userService
         .createUser({
 

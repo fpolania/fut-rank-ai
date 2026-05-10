@@ -102,22 +102,17 @@ export class TeamBuilderComponent implements OnInit {
 
   /* AI SCORE */
 
-  calculateAIScore(player: any): number {
+  calculateAIScore(
+  player: any
+): number {
 
-    const offensiveImpact =
-      (player.goals || 0) +
-      (player.assists || 0);
+  return Number(
+    (
+      player.averageRating || 0
+    ).toFixed(2)
+  );
 
-    const score =
-
-      (
-        player.averageRating * 0.7 +
-        offensiveImpact * 0.3
-      );
-
-    return Number(score.toFixed(2));
-
-  }
+}
 
   /* AI BADGE */
 

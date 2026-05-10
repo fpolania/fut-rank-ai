@@ -16,18 +16,23 @@ import { Player } from '../../core/interfaces/player.interface';
 import { PlayerService } from '../../core/services/player.service';
 import { successAlert } from '../../core/utils/alert.util';
 import { LoadingService } from '../../core/services/loading.service';
+import { PlayerFilterPipe } from '../../core/pipes/player-filter.pipe';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-players',
   imports: [
     CommonModule,
-    RouterLink
+    RouterLink,
+    PlayerFilterPipe,
+    FormsModule
   ],
   templateUrl: './players.component.html',
   styleUrl: './players.component.css'
 })
 export class PlayersComponent implements OnInit {
   players: Player[] = [];
+  searchTerm = '';
   private router = inject(Router);
   private playerService = inject(PlayerService);
   private loadingService = inject(LoadingService);
@@ -65,7 +70,7 @@ export class PlayersComponent implements OnInit {
       );
     } catch (error) {
       console.error(error);
-    } finally{
+    } finally {
       this.loadingService.hide();
     }
   }

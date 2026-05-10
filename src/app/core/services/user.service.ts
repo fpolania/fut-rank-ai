@@ -24,7 +24,6 @@ export class UserService {
   /* CREATE USER */
 
   async createUser(user: User) {
-    debugger
     const userRef = doc(
       this.firestore,
       `users/${user.uid}`

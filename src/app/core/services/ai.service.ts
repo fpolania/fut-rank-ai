@@ -22,7 +22,6 @@ export class AiService {
     player: any,
     comments: string[]
   ) {
-
     const callable =
 
       httpsCallable(

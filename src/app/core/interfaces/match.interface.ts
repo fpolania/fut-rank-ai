@@ -19,16 +19,16 @@ export interface Match {
   createdBy: string;
   finished: boolean;
   createdAt: Timestamp;
-
+  didWin: boolean;
 }
 export interface MatchPlayer {
   playerId: string;
   name: string;
   photo: string;
   position: string;
-  team: 'A' | 'B';
+  team: 'A' | 'B' | 'PULL_REQUEST';
   rating: number;
   goals: number;
   assists: number;
-  isMvp: boolean;
+  // isMvp: boolean;
 }

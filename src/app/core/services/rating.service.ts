@@ -1,5 +1,5 @@
 import { Injectable, inject }
-from '@angular/core';
+  from '@angular/core';
 
 import {
   Firestore,
@@ -7,14 +7,16 @@ import {
   addDoc,
   collectionData,
   query,
-  where
+  where,
+  updateDoc,
+  doc
 } from '@angular/fire/firestore';
 
-import { Observable }
-from 'rxjs';
+import { map, Observable }
+  from 'rxjs';
 
 import { Rating }
-from '../interfaces/rating.interface';
+  from '../interfaces/rating.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -90,5 +92,70 @@ export class RatingService {
     ) as Observable<Rating[]>;
 
   }
+  getRatingByPlayerAndMatch(
+    playerId: string,
+    matchId: string
+  ) {
+
+    const ratingsRef =
+
+      collection(
+        this.firestore,
+        'ratings'
+      );
+
+    const q = query(
+
+      ratingsRef,
+
+      where(
+        'playerId',
+        '==',
+        playerId
+      ),
+
+      where(
+        'matchId',
+        '==',
+        matchId
+      )
+
+    );
+
+    return collectionData(
+      q,
+      {
+        idField: 'id'
+      }
+    ).pipe(
+      map(
+        (ratings: any[]) =>
+
+          ratings.length
+            ? ratings[0]
+            : null
+      )
+
+    );
+
+  }
+  updateRating(
+    ratingId: string,
+    data: any
+  ) {
+
+    const ratingDoc =
+      doc(
+        this.firestore,
+        `ratings/${ratingId}`
+      );
+
+    return updateDoc(
+      ratingDoc,
+      data
+    );
+
+  }
+  
 
 }

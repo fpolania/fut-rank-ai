@@ -25,25 +25,41 @@
     </div>
 
     <div class="score-board">
-        <div>
+
+        <!-- TEAM A -->
+
+        <div class="team-side">
+
             <h2>
+
                 {{ match?.teamA }}
+
             </h2>
 
             <strong>
+
                 {{ match?.scoreA }}
+
             </strong>
 
         </div>
 
-        <span>
+        <!-- VS -->
+
+        <span class="vs-text">
+
             VS
+
         </span>
 
-        <div>
+        <!-- TEAM B -->
+
+        <div class="team-side">
 
             <h2>
+
                 {{ match?.teamB }}
+
             </h2>
 
             <div class="enemy-score-wrapper">
@@ -72,112 +88,58 @@
 
     </div>
 
-    <!-- PLAYERS -->
-
     <div class="players-grid">
-
         @for(player of match?.players; track player.playerId){
-
         <div class="player-card">
-
-            <!-- MVP -->
-
-            <div class="mvp-badge" [class.active]="player.isMvp" (click)="setMvp(player)">
-
+            <!-- <div class="mvp-badge" [class.active]="player.isMvp" (click)="setMvp(player)">
                 🏆 MVP
-
-            </div>
-
-            <!-- IMAGE -->
-
+            </div> -->
             <img [src]="player.photo">
-
-            <!-- INFO -->
-
             <h3>
                 {{ player.name }}
             </h3>
-
             <span>
                 {{ player.position }}
             </span>
-
-            <!-- TEAM -->
-
             <div class="team-badge">
-
                 Equipo
                 {{ player.team }}
-
             </div>
-
-            <!-- STATS -->
-
             <div class="stats-section">
-
-                <!-- GOALS -->
-
                 <div class="stat-card">
-
                     <label>
                         ⚽ Goles
                     </label>
-
                     <div class="controls">
-
                         <button (click)="decreaseGoals(player)">
-
                             -
-
                         </button>
-
                         <strong>
                             {{ player.goals }}
                         </strong>
-
                         <button (click)="increaseGoals(player)">
-
                             +
-
                         </button>
-
                     </div>
-
                 </div>
-
-                <!-- ASSISTS -->
-
                 <div class="stat-card">
-
                     <label>
                         🎯 Assists
                     </label>
-
                     <div class="controls">
-
                         <button (click)="decreaseAssists(player)">
-
                             -
-
                         </button>
-
                         <strong>
                             {{ player.assists }}
                         </strong>
-
                         <button (click)="increaseAssists(player)">
-
                             +
-
                         </button>
-
                     </div>
-
                 </div>
 
-                <!-- RATING -->
-
-                <div class="stat-card">
+                <!-- <div class="stat-card">
 
                     <label>
                         ⭐ Rating
@@ -203,7 +165,7 @@
 
                     </div>
 
-                </div>
+                </div> -->
 
             </div>
 
