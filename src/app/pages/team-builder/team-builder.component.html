@@ -1,6 +1,6 @@
 <div class="team-builder-page">
 
-    <!-- HEADER -->
+    <!-- TOP -->
 
     <div class="top-section">
 
@@ -23,7 +23,15 @@
 
         <button class="generate-btn" (click)="generateTeams()">
 
-            Generar Titulares
+            @if(isGenerating){
+
+            🧠 Analizando...
+
+            } @else {
+
+            ⚡ Generar Team Ideal
+
+            }
 
         </button>
 
@@ -33,23 +41,13 @@
 
     <div class="format-selector">
 
-        <button class="format-btn" [class.active]="
-            selectedFormat === 'FUT 5'
-          " (click)="
-            selectedFormat = 'FUT 5';
-            generateTeams();
-          ">
+        <button class="format-btn" [class.active]="selectedFormat === 'FUT 5'" (click)="selectedFormat = 'FUT 5'">
 
             FUT 5
 
         </button>
 
-        <button class="format-btn" [class.active]="
-            selectedFormat === 'FUT 8'
-          " (click)="
-            selectedFormat = 'FUT 8';
-            generateTeams();
-          ">
+        <button class="format-btn" [class.active]="selectedFormat === 'FUT 8'" (click)="selectedFormat = 'FUT 8'">
 
             FUT 8
 
@@ -61,12 +59,193 @@
 
     <div class="builder-layout">
 
+        <!-- FIELD -->
+
+        <section class="field-section">
+
+            <!-- HEADER -->
+
+            <div class="field-header">
+
+                <div>
+
+                    <h2>
+                        🔥 Pull Request Titulares
+                    </h2>
+
+                    <span>
+                        IA automática
+                    </span>
+
+                </div>
+
+                <div class="team-rating">
+
+                    {{ teamRating }}
+
+                </div>
+
+            </div>
+
+            <!-- FOOTBALL FIELD -->
+
+            <div class="football-field" [class.fut5]="selectedFormat === 'FUT 5'"
+                [class.fut8]="selectedFormat === 'FUT 8'">
+
+                <!-- AI LOADING -->
+
+                @if(isGenerating){
+
+                <div class="ai-loading">
+
+                    <h2>
+                        🧠 Analizando rendimiento...
+                    </h2>
+
+                    <p>
+                        Generando alineación táctica
+                    </p>
+
+                </div>
+
+                }
+
+                <!-- FIELD STRUCTURE -->
+
+                <div class="field-middle-line"></div>
+
+                <div class="field-center-circle"></div>
+
+                <div class="field-center-point"></div>
+
+                <div class="field-top-area"></div>
+
+                <div class="field-bottom-area"></div>
+
+                <!-- FORWARDS -->
+
+                <div class="field-row forwards">
+
+                    @for(player of forwards; track player.id){
+
+                    <div class="field-player">
+
+                        <img [src]="player.photo">
+
+                        <span>
+
+                            {{ player.name.split(' ')[0] }}
+
+                        </span>
+
+                        <small>
+
+                            {{ player.aiScore }}
+
+                        </small>
+
+                    </div>
+
+                    }
+
+                </div>
+
+                <!-- MIDFIELD -->
+
+                <div class="field-row midfield">
+
+                    @for(player of midfielders; track player.id){
+
+                    <div class="field-player">
+
+                        <img [src]="player.photo">
+
+                        <span>
+
+                            {{ player.name.split(' ')[0] }}
+
+                        </span>
+
+                        <small>
+
+                            {{ player.aiScore }}
+
+                        </small>
+
+                    </div>
+
+                    }
+
+                </div>
+
+                <!-- DEFENSE -->
+
+                <div class="field-row defense">
+
+                    @for(player of defenders; track player.id){
+
+                    <div class="field-player">
+
+                        <img [src]="player.photo">
+
+                        <span>
+
+                            {{ player.name.split(' ')[0] }}
+
+                        </span>
+
+                        <small>
+
+                            {{ player.aiScore }}
+
+                        </small>
+
+                    </div>
+
+                    }
+
+                </div>
+
+                <!-- GOALKEEPER -->
+
+                <div class="field-row goalkeeper">
+
+                    @for(player of goalkeeper; track player.id){
+
+                    <div class="field-player">
+
+                        <img [src]="player.photo">
+
+                        <span>
+
+                            {{ player.name.split(' ')[0] }}
+
+                        </span>
+
+                        <small>
+
+                            {{ player.aiScore }}
+
+                        </small>
+
+                    </div>
+
+                    }
+
+                </div>
+
+            </div>
+
+        </section>
+
         <!-- SIDEBAR -->
 
         <aside class="players-sidebar">
 
             <div class="sidebar-title">
+
                 🔥 Suplentes
+
             </div>
 
             @for(player of substitutes; track player.id){
@@ -87,9 +266,15 @@
 
                         <span>
 
-                            {{ player.position }}
+                            {{ player.aiBadge }}
 
                         </span>
+
+                        <small class="player-insight">
+
+                            {{ player.aiInsight }}
+
+                        </small>
 
                     </div>
 
@@ -97,7 +282,7 @@
 
                 <div class="player-score">
 
-                    {{ player.averageRating }}
+                    {{ player.aiScore }}
 
                 </div>
 
@@ -106,128 +291,6 @@
             }
 
         </aside>
-
-        <!-- FIELD -->
-
-        <section class="field-section">
-
-            <div class="field-header">
-
-                <div>
-
-                    <h2>
-                        🔥 Pull Request Titulares
-                    </h2>
-
-                    <span>
-                        IA automática
-                    </span>
-
-                </div>
-
-                <div class="team-rating">
-
-                    ⭐ {{ teamRating }}
-
-                </div>
-
-            </div>
-
-            <!-- FIELD -->
-
-            <div class="football-field">
-
-                <!-- FORWARDS -->
-
-                <div class="field-row forwards">
-
-                    @for(player of forwards; track player.id){
-
-                    <div class="field-player">
-
-                        <img [src]="player.photo">
-
-                        <span>
-
-                            {{ player.name }}
-
-                        </span>
-
-                    </div>
-
-                    }
-
-                </div>
-
-                <!-- MIDFIELD -->
-
-                <div class="field-row midfield">
-
-                    @for(player of midfielders; track player.id){
-
-                    <div class="field-player">
-
-                        <img [src]="player.photo">
-
-                        <span>
-
-                            {{ player.name }}
-
-                        </span>
-
-                    </div>
-
-                    }
-
-                </div>
-
-                <!-- DEFENSE -->
-
-                <div class="field-row defense">
-
-                    @for(player of defenders; track player.id){
-
-                    <div class="field-player">
-
-                        <img [src]="player.photo">
-
-                        <span>
-
-                            {{ player.name }}
-
-                        </span>
-
-                    </div>
-
-                    }
-
-                </div>
-
-                <!-- GOALKEEPER -->
-
-                <div class="field-row goalkeeper">
-
-                    @for(player of goalkeeper; track player.id){
-
-                    <div class="field-player">
-
-                        <img [src]="player.photo">
-
-                        <span>
-
-                            {{ player.name }}
-
-                        </span>
-
-                    </div>
-
-                    }
-
-                </div>
-
-            </div>
-
-        </section>
 
     </div>
 

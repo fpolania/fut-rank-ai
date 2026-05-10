@@ -4,51 +4,64 @@ import {
   inject
 } from '@angular/core';
 
-import {
-  CommonModule
-} from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 import { PlayerService }
   from '../../core/services/player.service';
 
-import { Player }
-  from '../../core/interfaces/player.interface';
-
 @Component({
   selector: 'app-team-builder',
-  imports: [
-    CommonModule
-  ],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './team-builder.component.html',
   styleUrl: './team-builder.component.css'
 })
-export class TeamBuilderComponent
-  implements OnInit {
+
+export class TeamBuilderComponent implements OnInit {
 
   /* INJECTS */
-
+  selectedFormat: 'FUT 5' | 'FUT 8' = 'FUT 5';
   private playerService =
     inject(PlayerService);
 
-  /* DATA */
+  /* STATE */
 
-  players: Player[] = [];
+  players: any[] = [];
 
-  starters: Player[] = [];
+  starters: any[] = [];
 
-  substitutes: Player[] = [];
+  substitutes: any[] = [];
 
-  goalkeeper: Player[] = [];
+  goalkeeper: any[] = [];
 
-  defenders: Player[] = [];
+  defenders: any[] = [];
 
-  midfielders: Player[] = [];
+  midfielders: any[] = [];
 
-  forwards: Player[] = [];
-
+  forwards: any[] = [];
   teamRating = 0;
 
-  selectedFormat = 'FUT 5';
+  isGenerating = false;
+
+  /* FORMATIONS */
+
+  formations = {
+
+    'FUT 5': {
+      Arquero: 1,
+      Defensa: 1,
+      Mediocampo: 2,
+      Delantero: 1
+    },
+
+    'FUT 8': {
+      Arquero: 1,
+      Defensa: 3,
+      Mediocampo: 3,
+      Delantero: 1
+    }
+
+  };
 
   /* INIT */
 
@@ -60,7 +73,7 @@ export class TeamBuilderComponent
 
   /* GET PLAYERS */
 
-  getPlayers() {
+  getPlayers(): void {
 
     this.playerService
       .getPlayers()
@@ -68,138 +81,256 @@ export class TeamBuilderComponent
 
         next: (players) => {
 
-          this.players =
-
-            [...players]
-
-              .sort(
-                (a, b) =>
-
-                  b.averageRating -
-                  a.averageRating
-              );
-
-          /* AUTO GENERATE */
+          this.players = players
+            .map(player => ({
+              ...player,
+              aiScore: this.calculateAIScore(player),
+              aiBadge: this.getAIBadge(player),
+              aiInsight: this.getAIInsight(player)
+            }))
+            .sort((a, b) => b.aiScore - a.aiScore);
 
           this.generateTeams();
 
         },
 
-        error: (error) => {
-
-          console.error(error);
-
-        }
+        error: console.error
 
       });
 
   }
 
-  /* GENERATE TEAM */
+  /* AI SCORE */
 
-  generateTeams() {
+  calculateAIScore(player: any): number {
 
-    /* RESET */
+    const offensiveImpact =
+      (player.goals || 0) +
+      (player.assists || 0);
 
-    this.goalkeeper = [];
+    const score =
 
-    this.defenders = [];
+      (
+        player.averageRating * 0.7 +
+        offensiveImpact * 0.3
+      );
 
-    this.midfielders = [];
+    return Number(score.toFixed(2));
 
-    this.forwards = [];
+  }
 
-    this.starters = [];
+  /* AI BADGE */
 
-    this.substitutes = [];
+  getAIBadge(player: any): string {
 
-    /* SORT */
+    if (player.averageRating >= 9)
+      return '🔥 Imparable';
 
-    const sortedPlayers =
+    if (player.averageRating >= 8)
+      return '🚀 En forma';
 
-      [...this.players]
+    switch (player.position) {
 
+      case 'Defensa':
+        return '🛡️ Muro';
+
+      case 'Mediocampo':
+        return '🧠 Cerebro';
+
+      default:
+        return '⚽ Determinante';
+
+    }
+
+  }
+
+  /* AI INSIGHT */
+
+  getAIInsight(player: any): string {
+
+    if (player.averageRating >= 9)
+      return 'Dominó los últimos partidos';
+
+    switch (player.position) {
+
+      case 'Delantero':
+        return 'Gran impacto ofensivo';
+
+      case 'Defensa':
+        return 'Solidez defensiva destacada';
+
+      default:
+        return 'Buen momento competitivo';
+
+    }
+
+  }
+
+  /* POSITION PLAYERS */
+
+  getPlayersByPosition(position: string, limit: number, selectedPlayers: any[]): any[] {
+    const positionPlayers =
+      this.players
+        .filter(player =>
+          player.position === position &&
+          !selectedPlayers.some(
+            selected =>
+              selected.id === player.id
+          )
+        )
         .sort(
           (a, b) =>
+            b.aiScore - a.aiScore
+        );
+    let finalPlayers =
+      positionPlayers.slice(0, limit);
+    if (finalPlayers.length < limit) {
+      const missing =
+        limit - finalPlayers.length;
+      const fallbackPlayers =
+        this.players
+          .filter(player =>
+            !selectedPlayers.some(
+              selected =>
+                selected.id === player.id
+            ) &&
+            !finalPlayers.some(
+              selected =>
+                selected.id === player.id
+            )
+          )
+          .sort(
+            (a, b) =>
+              b.aiScore - a.aiScore
+          )
+          .slice(0, missing);
+      finalPlayers = [
+        ...finalPlayers,
+        ...fallbackPlayers
+      ];
+    }
+    return finalPlayers;
 
-            b.averageRating -
-            a.averageRating
+  }
+
+  /* GENERATE TEAMS */
+
+  generateTeams(): void {
+
+    this.isGenerating = true;
+
+    setTimeout(() => {
+
+      const formation =
+        this.formations[this.selectedFormat];
+
+      /* SELECTED PLAYERS */
+
+      const selectedPlayers: any[] = [];
+
+      /* GOALKEEPER */
+
+      this.goalkeeper =
+        this.getPlayersByPosition(
+          'Arquero',
+          formation.Arquero,
+          selectedPlayers
         );
 
-
-    const goalkeepers =
-
-      sortedPlayers.filter(
-        player =>
-
-          player.position ===
-          'Arquero'
+      selectedPlayers.push(
+        ...this.goalkeeper
       );
 
-    const defenders =
+      /* DEFENDERS */
 
-      sortedPlayers.filter(
-        player =>
-
-          player.position ===
-          'Defensa'
-      );
-
-    const midfielders = sortedPlayers.filter(player => player.position === 'Mediocampo');
-    const forwards = sortedPlayers.filter(
-      player => player.position === 'Delantero');
-
-    if (this.selectedFormat === 'FUT 5') {
-      this.goalkeeper = goalkeepers.slice(0, 1);
-      this.defenders = defenders.slice(0, 1);
-      this.midfielders = midfielders.slice(0, 2);
-      this.forwards = forwards.slice(0, 1);
-
-    }
-
-    if (this.selectedFormat === 'FUT 8') {
-      this.goalkeeper =
-        goalkeepers.slice(0, 1);
       this.defenders =
-        defenders.slice(0, 3);
+        this.getPlayersByPosition(
+          'Defensa',
+          formation.Defensa,
+          selectedPlayers
+        );
+
+      selectedPlayers.push(
+        ...this.defenders
+      );
+
+      /* MIDFIELDERS */
+
       this.midfielders =
-        midfielders.slice(0, 3);
+        this.getPlayersByPosition(
+          'Mediocampo',
+          formation.Mediocampo,
+          selectedPlayers
+        );
+
+      selectedPlayers.push(
+        ...this.midfielders
+      );
+
+      /* FORWARDS */
+
       this.forwards =
-        forwards.slice(0, 1);
+        this.getPlayersByPosition(
+          'Delantero',
+          formation.Delantero,
+          selectedPlayers
+        );
 
-    }
+      selectedPlayers.push(
+        ...this.forwards
+      );
 
-    this.starters = [
-      ...this.goalkeeper,
-      ...this.defenders,
-      ...this.midfielders,
-      ...this.forwards
-    ];
+      /* STARTERS */
 
-    this.substitutes = sortedPlayers.filter(
-      player =>
-        !this.starters.some(
-          starter =>
-            starter.id ===
-            player.id
-        )
-    );
+      this.starters = [
 
-    const total = this.starters.reduce(
-      (acc, player) =>
+        ...this.goalkeeper,
+        ...this.defenders,
+        ...this.midfielders,
+        ...this.forwards
 
-        acc +
-        player.averageRating,
-      0
-    );
-    this.teamRating = this.starters.length
-      ? Number(
-        (
-          total /
-          this.starters.length
-        ).toFixed(1)
-      )
-      : 0;
+      ];
+
+      /* SUBSTITUTES */
+
+      this.substitutes =
+
+        this.players.filter(
+          player =>
+
+            !this.starters.some(
+              starter =>
+                starter.id === player.id
+            )
+        );
+
+      /* TEAM RATING */
+
+      const total =
+
+        this.starters.reduce(
+          (acc, player) =>
+            acc + player.aiScore,
+          0
+        );
+
+      this.teamRating =
+
+        this.starters.length
+
+          ? Number(
+            (
+              total /
+              this.starters.length
+            ).toFixed(1)
+          )
+
+          : 0;
+
+      this.isGenerating = false;
+
+    }, 1200);
+
   }
 
 }
