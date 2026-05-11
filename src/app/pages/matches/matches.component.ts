@@ -1,30 +1,22 @@
-import {
-  Component,
-  OnInit,
-  inject
-} from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
-import {
-  CommonModule
-} from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 import { Router, RouterLink } from '@angular/router';
 import { MatchService } from '../../core/services/match.service';
 import { Match } from '../../core/interfaces/match.interface';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-matches',
-  imports: [
-    CommonModule,
-    RouterLink
-  ],
+  imports: [CommonModule, RouterLink],
   templateUrl: './matches.component.html',
-  styleUrl: './matches.component.css'
+  styleUrl: './matches.component.css',
 })
-export class MatchesComponent
-  implements OnInit {
+export class MatchesComponent implements OnInit {
   private matchService = inject(MatchService);
   private router = inject(Router);
+  authService = inject(AuthService);
   matches: Match[] = [];
 
   ngOnInit(): void {
@@ -32,24 +24,17 @@ export class MatchesComponent
   }
 
   getMatches() {
-    this.matchService
-      .getMatches()
-      .subscribe({
-        next: (matches) => {
-          this.matches =
-            matches;
-        },
-        error: (error) => {
-          console.error(error);
-        }
-      });
+    this.matchService.getMatches().subscribe({
+      next: (matches) => {
+        this.matches = matches;
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
   }
 
   openMatch(match: Match) {
-    this.router.navigate([
-      '/match-detail',
-      match.id
-    ]);
+    this.router.navigate(['/match-detail', match.id]);
   }
-
 }

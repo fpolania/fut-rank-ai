@@ -1,359 +1,186 @@
-import {
-  Component,
-  OnInit,
-  inject
-} from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
-import {
-  CommonModule
-} from '@angular/common';
+import { CommonModule } from '@angular/common';
 
-import {
-  ActivatedRoute
-} from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
-import {
-  MatchService
-} from '../../core/services/match.service';
+import { MatchService } from '../../core/services/match.service';
 
-import {
-  Match,
-  MatchPlayer
-} from '../../core/interfaces/match.interface';
+import { Match, MatchPlayer } from '../../core/interfaces/match.interface';
 
-import {
-  PlayerService
-} from '../../core/services/player.service';
+import { PlayerService } from '../../core/services/player.service';
 
-import {
-  LoadingService
-} from '../../core/services/loading.service';
+import { LoadingService } from '../../core/services/loading.service';
 
-import {
-  successAlert,
-  errorAlert
-} from '../../core/utils/alert.util';
+import { successAlert, errorAlert } from '../../core/utils/alert.util';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-match-detail',
-  imports: [
-    CommonModule
-  ],
-  templateUrl:
-    './match-detail.component.html',
+  imports: [CommonModule],
+  templateUrl: './match-detail.component.html',
 
-  styleUrl:
-    './match-detail.component.css'
+  styleUrl: './match-detail.component.css',
 })
 export class MatchDetailComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private matchService = inject(MatchService);
+  private playerService = inject(PlayerService);
+  private loadingService = inject(LoadingService);
+  authService = inject(AuthService);
 
-  private route =
-    inject(ActivatedRoute);
-
-  private matchService =
-    inject(MatchService);
-
-  private playerService =
-    inject(PlayerService);
-
-  private loadingService =
-    inject(LoadingService);
-
-  matchId:
-    string | null = null;
+  matchId: string | null = null;
 
   match!: Match;
 
   ngOnInit(): void {
-
-    this.matchId =
-      this.route.snapshot
-        .paramMap.get('id');
+    this.matchId = this.route.snapshot.paramMap.get('id');
 
     if (this.matchId) {
-
       this.getMatch();
-
     }
-
   }
 
   getMatch(): void {
+    if (!this.matchId) return;
 
-    if (!this.matchId)
-      return;
+    this.matchService.getMatchById(this.matchId).subscribe({
+      next: (match: any) => {
+        this.match = match;
+      },
 
-    this.matchService
-      .getMatchById(
-        this.matchId
-      )
-      .subscribe({
-
-        next: (match: any) => {
-
-          this.match = match;
-
-        },
-
-        error: (error) => {
-
-          console.error(error);
-
-        }
-
-      });
-
+      error: (error) => {
+        console.error(error);
+      },
+    });
   }
 
-  increaseGoals(
-    player: MatchPlayer
-  ): void {
-
+  increaseGoals(player: MatchPlayer): void {
     player.goals++;
 
     this.calculateScore();
-
   }
 
-  decreaseGoals(
-    player: MatchPlayer
-  ): void {
-
-    if (player.goals <= 0)
-      return;
+  decreaseGoals(player: MatchPlayer): void {
+    if (player.goals <= 0) return;
 
     player.goals--;
 
     this.calculateScore();
-
   }
 
-  increaseAssists(
-    player: MatchPlayer
-  ): void {
-
+  increaseAssists(player: MatchPlayer): void {
     player.assists++;
-
   }
 
-  decreaseAssists(
-    player: MatchPlayer
-  ): void {
-
-    if (player.assists <= 0)
-      return;
+  decreaseAssists(player: MatchPlayer): void {
+    if (player.assists <= 0) return;
 
     player.assists--;
-
   }
 
   calculateScore(): void {
+    this.match.scoreA = this.match.players.reduce(
+      (acc, player) => acc + player.goals,
 
-    this.match.scoreA =
-      this.match.players.reduce(
-
-        (
-          acc,
-          player
-        ) =>
-
-          acc + player.goals,
-
-        0
-
-      );
-
+      0,
+    );
   }
 
   getMatchResult(): string {
-
-    if (
-      this.match.scoreA >
-      this.match.scoreB
-    ) {
-
+    if (this.match.scoreA > this.match.scoreB) {
       return '🏆 Ganado';
-
     }
 
-    if (
-      this.match.scoreA <
-      this.match.scoreB
-    ) {
-
+    if (this.match.scoreA < this.match.scoreB) {
       return '💀 Perdido';
-
     }
 
     return '🤝 Empatado';
-
   }
 
-  async updatePlayerStats(
-    player: MatchPlayer
-  ): Promise<void> {
+  async updatePlayerStats(player: MatchPlayer): Promise<void> {
+    const currentPlayer = await new Promise<any>((resolve) => {
+      this.playerService
+        .getPlayerById(player.playerId)
+        .subscribe((data) => resolve(data));
+    });
 
-    const currentPlayer =
-      await new Promise<any>(
-        (resolve) => {
+    const totalMatches = currentPlayer.matchesPlayed + 1;
 
-          this.playerService
-            .getPlayerById(
-              player.playerId
-            )
-            .subscribe(
-              data =>
-                resolve(data)
-            );
+    await this.playerService.updatePlayerStats(player.playerId, {
+      goals: currentPlayer.goals + player.goals,
 
-        }
-      );
+      assists: currentPlayer.assists + player.assists,
 
-    const totalMatches =
-      currentPlayer.matchesPlayed + 1;
-
-    await this.playerService
-      .updatePlayerStats(
-        player.playerId,
-        {
-
-          goals:
-            currentPlayer.goals +
-            player.goals,
-
-          assists:
-            currentPlayer.assists +
-            player.assists,
-
-          matchesPlayed:
-            totalMatches
-
-        }
-      );
-
+      matchesPlayed: totalMatches,
+    });
   }
 
   async finishMatch(): Promise<void> {
-
     this.loadingService.show();
 
-    if (
-      !this.matchId ||
-      this.match.finished
-    ) return;
+    if (!this.matchId || this.match.finished) return;
 
     try {
-
-      for (
-        const player
-        of this.match.players
-      ) {
-
-        await this
-          .updatePlayerStats(
-            player
-          );
-
+      for (const player of this.match.players) {
+        await this.updatePlayerStats(player);
       }
 
-      const result =
-        this.getMatchResult();
+      const result = this.getMatchResult();
 
       /* CLEAN PLAYERS */
 
-      const cleanPlayers =
+      const cleanPlayers = this.match.players.map((player) => ({
+        playerId: player.playerId,
 
-        this.match.players.map(
-          player => ({
+        name: player.name,
 
-            playerId:
-              player.playerId,
+        photo: player.photo,
 
-            name:
-              player.name,
+        position: player.position,
 
-            photo:
-              player.photo,
+        team: player.team,
 
-            position:
-              player.position,
+        goals: player.goals,
 
-            team:
-              player.team,
+        assists: player.assists,
+      }));
 
-            goals:
-              player.goals,
+      this.match.finished = true;
 
-            assists:
-              player.assists
+      await this.matchService.updateMatch(this.matchId, {
+        finished: true,
 
-          })
-        );
+        result,
 
-      this.match.finished =
-        true;
+        scoreA: this.match.scoreA,
 
-      await this.matchService
-        .updateMatch(
-          this.matchId,
-          {
+        scoreB: this.match.scoreB,
 
-            finished: true,
-
-            result,
-
-            scoreA:
-              this.match.scoreA,
-
-            scoreB:
-              this.match.scoreB,
-
-            players:
-              cleanPlayers
-
-          }
-        );
+        players: cleanPlayers,
+      });
 
       successAlert(
         'Partido finalizado ⚽🔥',
-        'Las estadísticas fueron actualizadas correctamente.'
+        'Las estadísticas fueron actualizadas correctamente.',
       );
-
-    }
-
-    catch (error) {
-
-      errorAlert(
-        'Ups 😮‍💨',
-        'Ocurrió un error finalizando el partido.'
-      );
+    } catch (error) {
+      errorAlert('Ups 😮‍💨', 'Ocurrió un error finalizando el partido.');
 
       console.error(error);
-
-    }
-
-    finally {
-
+    } finally {
       this.loadingService.hide();
-
     }
-
   }
 
   increaseEnemyScore(): void {
-
     this.match.scoreB++;
-
   }
 
   decreaseEnemyScore(): void {
-
-    if (
-      this.match.scoreB <= 0
-    ) return;
+    if (this.match.scoreB <= 0) return;
 
     this.match.scoreB--;
-
   }
-
 }

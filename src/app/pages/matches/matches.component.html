@@ -1,89 +1,75 @@
 <div class="matches-page">
-    <div class="top-section">
-        <div>
-            <span class="badge-title">
-                FUT RANK AI
-            </span>
-            <h1>
-                Partidos ⚽
-            </h1>
-            <p>
-                Historial y administración de partidos.
-            </p>
-        </div>
-        <button type="button" class="create-btn" routerLink="/create-match">
-            + Crear Partido
-        </button>
+  <div class="top-section">
+    <div>
+      <span class="badge-title"> FUT RANK AI </span>
+      <h1>Partidos ⚽</h1>
+      <p>Historial y administración de partidos.</p>
     </div>
+    <button
+      *ngIf="(authService.currentUser | async)?.role === 'captain'"
+      type="button"
+      class="create-btn"
+      routerLink="/create-match"
+    >
+      + Crear Partido
+    </button>
+  </div>
 
-    @if(matches.length === 0){
+  @if (matches.length === 0) {
     <div class="empty-state">
-        <h2>
-            No hay partidos 😮‍💨
-        </h2>
-        <p>
-            Crea el primero para empezar.
-        </p>
+      <h2>No hay partidos 😮‍💨</h2>
+      <p>Crea el primero para empezar.</p>
     </div>
-    }
+  }
 
-    @if(matches.length > 0){
+  @if (matches.length > 0) {
     <div class="matches-grid">
-        @for(match of matches; track match.id){
+      @for (match of matches; track match.id) {
         <div class="match-card" (click)="openMatch(match)">
-            <div class="match-status">
-                @if(match.finished){
-                <span class="finished">
-                    FINALIZADO
-                </span>
-                }
-                @if(!match.finished){
-                <span class="live">
-                    EN CURSO
-                </span>
-                }
-            </div>
-            <h2>
-                {{ match.teamA }}
-                <span>
-                    vs
-                </span>
+          <div class="match-status">
+            @if (match.finished) {
+              <span class="finished"> FINALIZADO </span>
+            }
+            @if (!match.finished) {
+              <span class="live"> EN CURSO </span>
+            }
+          </div>
+          <h2>
+            {{ match.teamA }}
+            <span> vs </span>
 
-                {{ match.teamB }}
+            {{ match.teamB }}
+          </h2>
+          <div class="score">
+            <strong>
+              {{ match.scoreA }}
+            </strong>
+            <span> - </span>
+            <strong>
+              {{ match.scoreB }}
+            </strong>
+          </div>
 
-            </h2>
-            <div class="score">
-                <strong>
-                    {{ match.scoreA }}
-                </strong>
-                <span>
-                    -
-                </span>
-                <strong>
-                    {{ match.scoreB }}
-                </strong>
+          <div class="match-info">
+            <div>
+              <i class="bi bi-calendar"></i>
+              {{ match.date }}
             </div>
+            <div>
+              <i class="bi bi-clock"></i>
+              {{ match.time }}
+            </div>
+            <div>
+              <i class="bi bi-geo-alt"></i>
+              {{ match.field }}
+            </div>
+          </div>
 
-            <div class="match-info">
-                <div>
-                    <i class="bi bi-calendar"></i>
-                    {{ match.date }}
-                </div>
-                <div>
-                    <i class="bi bi-clock"></i>
-                    {{ match.time }}
-                </div>
-                <div>
-                    <i class="bi bi-geo-alt"></i>
-                    {{ match.field }}
-                </div>
-            </div>
-
-            <div class="match-type">
-                {{ match.type }}
-            </div>
+          <div class="match-type">
+            {{ match.type }}
+          </div>
         </div>
-        }
+      }
     </div>
-    }
+  }
 </div>

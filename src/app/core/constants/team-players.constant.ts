@@ -19,4 +19,29 @@ export const TEAM_PLAYERS = [
     role: 'player',
     name: 'Miguel Lasso',
   },
+  {
+    document: '',
+    role: 'player',
+    name: 'Gohan Rodriguez',
+  },
+  {
+    document: '',
+    role: 'player',
+    name: 'Jhon Jimenez',
+  },
+  {
+    document: '',
+    role: 'player',
+    name: 'Andres Herrera',
+  },
+  {
+    document: '',
+    role: 'player',
+    name: 'Andres Ricardo',
+  },
+  {
+    document: '',
+    role: 'player',
+    name: 'Andres Ricardo',
+  },
 ];

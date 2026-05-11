@@ -1,34 +1,21 @@
-import {
-  Component,
-  inject,
-  OnInit
-} from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 
-import {
-  CommonModule
-} from '@angular/common';
+import { CommonModule } from '@angular/common';
 
-import {
-  Router,
-  RouterLink
-} from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Player } from '../../core/interfaces/player.interface';
 import { PlayerService } from '../../core/services/player.service';
 import { successAlert } from '../../core/utils/alert.util';
 import { LoadingService } from '../../core/services/loading.service';
 import { PlayerFilterPipe } from '../../core/pipes/player-filter.pipe';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-players',
-  imports: [
-    CommonModule,
-    RouterLink,
-    PlayerFilterPipe,
-    FormsModule
-  ],
+  imports: [CommonModule, RouterLink, PlayerFilterPipe, FormsModule],
   templateUrl: './players.component.html',
-  styleUrl: './players.component.css'
+  styleUrl: './players.component.css',
 })
 export class PlayersComponent implements OnInit {
   players: Player[] = [];
@@ -36,37 +23,28 @@ export class PlayersComponent implements OnInit {
   private router = inject(Router);
   private playerService = inject(PlayerService);
   private loadingService = inject(LoadingService);
+  authService = inject(AuthService);
   ngOnInit() {
-    this.playerService
-      .getPlayers()
-      .subscribe({
-        next: (players) => {
-          this.players = players;
-        }
-      });
+    this.playerService.getPlayers().subscribe({
+      next: (players) => {
+        this.players = players;
+      },
+    });
   }
 
   openProfile(player: Player) {
-    this.router.navigate([
-      '/player-profile',
-      player.id
-    ]);
-
+    this.router.navigate(['/player-profile', player.id]);
   }
   editPlayer(player: any) {
-    this.router.navigate([
-      '/add-player',
-      player.id
-    ])
+    this.router.navigate(['/add-player', player.id]);
   }
   async deletePlayer(player: any) {
     try {
       this.loadingService.show();
-      await this.playerService
-        .deletePlayer(player.id);
+      await this.playerService.deletePlayer(player.id);
       successAlert(
         'Jugador eliminado 🗑️🔥',
-        'El jugador fue eliminado correctamente.'
+        'El jugador fue eliminado correctamente.',
       );
     } catch (error) {
       console.error(error);
@@ -74,5 +52,4 @@ export class PlayersComponent implements OnInit {
       this.loadingService.hide();
     }
   }
-
 }

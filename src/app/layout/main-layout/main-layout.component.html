@@ -29,7 +29,11 @@
 
       <a routerLink="/players" routerLinkActive="active"> 👤 Jugadores </a>
       <a routerLink="/matches" routerLinkActive="active"> ⚽ Partidos </a>
-      <a routerLink="/team-builder" routerLinkActive="active">
+      <a
+        *ngIf="(authService.currentUser | async)?.role === 'captain'"
+        routerLink="/team-builder"
+        routerLinkActive="active"
+      >
         🧠 Team Builder
       </a>
       <a routerLink="/match-history" routerLinkActive="active">
@@ -43,9 +47,7 @@
       <button class="menu-btn" (click)="toggleSidebar()">☰</button>
       <div>
         <h3>
-          {{
-            ((authService.currentUser | async)?.displayName || "").toUpperCase()
-          }}
+          {{ ((authService.currentUser | async)?.name || "").toUpperCase() }}
           👋
         </h3>
 
@@ -64,13 +66,15 @@
           <div class="user-text">
             <h4>
               {{
-                (
-                  (authService.currentUser | async)?.displayName || ""
-                ).toUpperCase()
+                ((authService.currentUser | async)?.name || "").toUpperCase()
               }}
             </h4>
 
-            <span> Player </span>
+            <span>
+              {{
+                ((authService.currentUser | async)?.role || "").toUpperCase()
+              }}
+            </span>
           </div>
         </div>
 

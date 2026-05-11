@@ -12,6 +12,7 @@ import { Timestamp } from '@angular/fire/firestore';
 
 import { Router } from '@angular/router';
 import { UserService } from './user.service';
+import { of, switchMap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +21,12 @@ export class AuthService {
   private auth = inject(Auth);
   private router = inject(Router);
   private userService = inject(UserService);
-  currentUser = user(this.auth);
+  currentUser = user(this.auth).pipe(
+    switchMap((firebaseUser) => {
+      if (!firebaseUser) return of(null);
+      return this.userService.getUserById(firebaseUser.uid);
+    }),
+  );
 
   async loginWithGoogle() {
     try {
