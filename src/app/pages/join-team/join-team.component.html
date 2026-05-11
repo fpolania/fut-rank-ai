@@ -1,0 +1,221 @@
+<div class="join-wrapper">
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-xl-8">
+        <div class="join-card">
+          <div class="text-center mb-5">
+            <div class="ball-icon">⚽</div>
+            <span class="join-badge"> PULL REQUEST TEAM </span>
+            <h1 class="join-title">Únete al equipo</h1>
+
+            <p class="join-subtitle">
+              Demuestra tu talento y postúlate para futuras convocatorias.
+            </p>
+          </div>
+          <form [formGroup]="joinForm" (ngSubmit)="submitApplication()">
+            <div class="row g-4">
+              <div class="col-md-6">
+                <label class="form-label"> Nombre Completo </label>
+
+                <input
+                  type="text"
+                  class="form-control custom-input"
+                  formControlName="name"
+                  placeholder="Nombre Completo"
+                  [class.is-invalid]="
+                    joinForm.get('name')?.invalid &&
+                    joinForm.get('name')?.touched
+                  "
+                />
+
+                @if (joinForm.get("name")?.touched) {
+                  @if (joinForm.get("name")?.hasError("required")) {
+                    <small class="text-danger">
+                      El nombre es obligatorio.
+                    </small>
+                  } @else if (joinForm.get("name")?.hasError("minlength")) {
+                    <small class="text-danger">
+                      El nombre debe tener mínimo 3 caracteres.
+                    </small>
+                  } @else if (joinForm.get("name")?.hasError("pattern")) {
+                    <small class="text-danger">
+                      Solo se permiten letras y espacios.
+                    </small>
+                  }
+                }
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label"> Edad </label>
+
+                <input
+                  class="form-control custom-input"
+                  formControlName="age"
+                  placeholder="18"
+                  [class.is-invalid]="
+                    joinForm.get('age')?.invalid && joinForm.get('age')?.touched
+                  "
+                />
+
+                @if (joinForm.get("age")?.touched) {
+                  @if (joinForm.get("age")?.hasError("required")) {
+                    <small class="text-danger"> La edad es obligatoria. </small>
+                  } @else if (joinForm.get("age")?.hasError("pattern")) {
+                    <small class="text-danger">
+                      Solo números entre 1 y 99.
+                    </small>
+                  }
+                }
+              </div>
+              <div class="col-md-6">
+                <label class="form-label"> Posición </label>
+                <select
+                  class="form-select custom-input"
+                  formControlName="position"
+                  [class.is-invalid]="
+                    joinForm.get('position')?.invalid &&
+                    joinForm.get('position')?.touched
+                  "
+                >
+                  <option value="">Selecciona una posición</option>
+                  @for (position of positions; track position) {
+                    <option [value]="position">
+                      {{ position }}
+                    </option>
+                  }
+                </select>
+                @if (joinForm.get("position")?.touched) {
+                  @if (joinForm.get("position")?.hasError("required")) {
+                    <small class="text-danger">
+                      La posición es obligatoria.
+                    </small>
+                  }
+                }
+              </div>
+              <div class="col-md-6">
+                <label class="form-label"> Pierna hábil </label>
+
+                <select
+                  class="form-select custom-input"
+                  formControlName="foot"
+                  [class.is-invalid]="
+                    joinForm.get('foot')?.invalid &&
+                    joinForm.get('foot')?.touched
+                  "
+                >
+                  <option value="">Selecciona una opción</option>
+
+                  <option value="Derecha">Derecha</option>
+
+                  <option value="Izquierda">Izquierda</option>
+
+                  <option value="Ambas">Ambas</option>
+                </select>
+
+                @if (joinForm.get("foot")?.touched) {
+                  @if (joinForm.get("foot")?.hasError("required")) {
+                    <small class="text-danger">
+                      La pierna hábil es obligatoria.
+                    </small>
+                  }
+                }
+              </div>
+              <div class="col-md-6">
+                <label class="form-label"> Ciudad </label>
+
+                <input
+                  type="text"
+                  class="form-control custom-input"
+                  formControlName="city"
+                  placeholder="Bogotá"
+                  [disabled]="true"
+                />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label"> WhatsApp </label>
+
+                <input
+                  type="text"
+                  maxlength="10"
+                  class="form-control custom-input"
+                  formControlName="number"
+                  placeholder="3001234567"
+                  [class.is-invalid]="
+                    joinForm.get('number')?.invalid &&
+                    joinForm.get('number')?.touched
+                  "
+                />
+
+                @if (joinForm.get("number")?.touched) {
+                  @if (joinForm.get("number")?.hasError("required")) {
+                    <small class="text-danger">
+                      El WhatsApp es obligatorio.
+                    </small>
+                  } @else if (joinForm.get("number")?.hasError("pattern")) {
+                    <small class="text-danger">
+                      Debe iniciar en 3 y tener 10 dígitos.
+                    </small>
+                  } @else if (joinForm.get("number")?.hasError("minlength")) {
+                    <small class="text-danger">
+                      El número debe tener exactamente 10 dígitos.
+                    </small>
+                  } @else if (joinForm.get("number")?.hasError("maxlength")) {
+                    <small class="text-danger">
+                      El número no puede superar los 10 dígitos.
+                    </small>
+                  }
+                }
+              </div>
+              <div class="col-12">
+                <label class="form-label"> Fortalezas </label>
+
+                <textarea
+                  rows="5"
+                  class="form-control custom-input"
+                  formControlName="strengths"
+                  placeholder="
+            Cuéntanos cómo juegas,
+            tus habilidades,
+            experiencia y fortalezas...
+        "
+                  [class.is-invalid]="
+                    joinForm.get('strengths')?.invalid &&
+                    joinForm.get('strengths')?.touched
+                  "
+                >
+                </textarea>
+
+                @if (joinForm.get("strengths")?.touched) {
+                  @if (joinForm.get("strengths")?.hasError("required")) {
+                    <small class="text-danger">
+                      Las fortalezas son obligatorias.
+                    </small>
+
+                  } @else if (
+                    joinForm.get("strengths")?.hasError("minlength")
+                  ) {
+                    <small class="text-danger">
+                      Debes escribir al menos 10 caracteres.
+                    </small>
+
+                  } @else if (joinForm.get("strengths")?.hasError("pattern")) {
+                    <small class="text-danger">
+                      No se permiten caracteres especiales inválidos.
+                    </small>
+                  }
+                }
+              </div>
+            </div>
+            <button
+              type="submit"
+              class="btn submit-btn"
+              [disabled]="joinForm.invalid"
+            >
+              ⚽ Enviar Postulación
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

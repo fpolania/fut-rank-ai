@@ -198,8 +198,32 @@
 
   font-size: 0.9rem;
 }
-.offcanvas-custom {
-  width: 290px;
+.join-team-btn {
+  width: 100%;
+
+  margin-top: 1rem;
+
+  padding: 14px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.04);
+
+  color: #fff;
+
+  font-weight: 600;
+
+  transition: 0.3s ease;
+}
+
+.join-team-btn:hover {
+  background: #39ff14;
+
+  color: #000;
+
+  transform: translateY(-2px);
 }
 
 @media (max-width: 768px) {

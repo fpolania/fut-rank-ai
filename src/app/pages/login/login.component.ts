@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import Swal from 'sweetalert2';
 import { TEAM_PLAYERS } from '../../core/constants/team-players.constant';
+import { RouterLink } from '@angular/router';
 declare const bootstrap: any;
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })

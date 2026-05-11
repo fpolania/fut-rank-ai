@@ -11,7 +11,7 @@ import { AsyncPipe } from '@angular/common';
 export class MainLayoutComponent {
   sidebarOpen = false;
   authService = inject(AuthService);
-
+  user = this.authService.currentUser;
   toggleSidebar() {
     this.sidebarOpen = !this.sidebarOpen;
   }

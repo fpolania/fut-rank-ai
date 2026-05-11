@@ -1,0 +1,232 @@
+.join-wrapper {
+  min-height: 100vh;
+
+  background:
+    linear-gradient(rgba(1, 6, 23, 0.92), rgba(1, 6, 23, 0.96)),
+    url("/assets/images/bg-login.jpg");
+
+  background-size: cover;
+
+  background-position: center;
+
+  padding: 2rem 0;
+
+  display: flex;
+
+  align-items: center;
+}
+
+.join-card {
+  background: linear-gradient(
+    145deg,
+    rgba(10, 15, 35, 0.95),
+    rgba(4, 10, 28, 0.92)
+  );
+
+  border: 1px solid rgba(57, 255, 20, 0.08);
+
+  border-radius: 32px;
+
+  padding: 3rem;
+
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+
+  backdrop-filter: blur(24px);
+
+  overflow: hidden;
+
+  position: relative;
+}
+
+.join-card::before {
+  content: "";
+
+  position: absolute;
+
+  top: -120px;
+
+  right: -120px;
+
+  width: 240px;
+
+  height: 240px;
+
+  background: radial-gradient(rgba(57, 255, 20, 0.18), transparent 70%);
+
+  pointer-events: none;
+}
+
+.ball-icon {
+  width: 85px;
+
+  height: 85px;
+
+  margin: 0 auto 1.2rem;
+
+  border-radius: 50%;
+
+  background: linear-gradient(135deg, #39ff14, #16c47f);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 2.2rem;
+
+  box-shadow: 0 0 30px rgba(57, 255, 20, 0.35);
+}
+
+.join-badge {
+  display: inline-block;
+
+  background: rgba(57, 255, 20, 0.12);
+
+  color: #39ff14;
+
+  padding: 7px 16px;
+
+  border-radius: 50px;
+
+  font-size: 0.75rem;
+
+  font-weight: 700;
+
+  letter-spacing: 2px;
+
+  margin-bottom: 1rem;
+}
+
+.join-title {
+  color: #fff;
+
+  font-size: 3rem;
+
+  font-weight: 800;
+
+  margin-bottom: 0.8rem;
+}
+
+.join-subtitle {
+  color: rgba(255, 255, 255, 0.6);
+
+  font-size: 1rem;
+
+  max-width: 500px;
+
+  margin: auto;
+}
+
+.form-label {
+  color: rgba(255, 255, 255, 0.82);
+
+  font-size: 0.9rem;
+
+  font-weight: 500;
+
+  margin-bottom: 0.7rem;
+}
+
+.custom-input {
+  background: rgba(255, 255, 255, 0.04);
+
+  border: 1px solid rgba(255, 255, 255, 0.06);
+
+  border-radius: 18px;
+
+  padding: 16px;
+
+  color: #fff;
+
+  transition: 0.3s ease;
+
+  font-size: 0.95rem;
+}
+
+.custom-input:focus {
+  background: rgba(255, 255, 255, 0.06);
+
+  border-color: #39ff14;
+
+  box-shadow: 0 0 0 0.2rem rgba(57, 255, 20, 0.15);
+
+  color: #fff;
+}
+
+.custom-input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+textarea {
+  resize: none;
+}
+
+.submit-btn {
+  width: 100%;
+
+  margin-top: 2rem;
+
+  background: linear-gradient(135deg, #39ff14, #19c37d);
+
+  border: none;
+
+  color: #000;
+
+  font-weight: 800;
+
+  padding: 16px;
+
+  border-radius: 18px;
+
+  transition: 0.3s ease;
+
+  font-size: 1rem;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 10px 25px rgba(57, 255, 20, 0.22);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+select.custom-input {
+  background: rgba(255, 255, 255, 0.04);
+
+  color: #fff;
+}
+
+select.custom-input option {
+  background: #0f172a;
+
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .join-wrapper {
+    padding: 1rem;
+  }
+
+  .join-card {
+    padding: 2rem;
+
+    border-radius: 24px;
+  }
+
+  .join-title {
+    font-size: 2.2rem;
+  }
+
+  .ball-icon {
+    width: 70px;
+
+    height: 70px;
+
+    font-size: 1.8rem;
+  }
+}

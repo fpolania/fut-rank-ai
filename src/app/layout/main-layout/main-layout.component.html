@@ -29,13 +29,14 @@
 
       <a routerLink="/players" routerLinkActive="active"> 👤 Jugadores </a>
       <a routerLink="/matches" routerLinkActive="active"> ⚽ Partidos </a>
-      <a
-        *ngIf="(authService.currentUser | async)?.role === 'captain'"
-        routerLink="/team-builder"
-        routerLinkActive="active"
-      >
-        🧠 Team Builder
+      <a routerLink="/team-applications" routerLinkActive="active">
+        📥 Postulaciones
       </a>
+      @if ((authService.currentUser | async)?.role === "captain") {
+        <a routerLink="/team-builder" routerLinkActive="active">
+          🧠 Team Builder
+        </a>
+      }
       <a routerLink="/match-history" routerLinkActive="active">
         📜 Historial
       </a>

@@ -22,7 +22,7 @@ export const TEAM_PLAYERS = [
   {
     document: '',
     role: 'player',
-    name: 'Gohan Rodriguez',
+    name: 'Gohan Neira',
   },
   {
     document: '',
