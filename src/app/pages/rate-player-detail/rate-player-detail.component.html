@@ -1,144 +1,116 @@
 <div class="rate-page">
+  <div class="top-section">
+    <div>
+      <span class="match-badge">
+        {{ match?.type }}
+      </span>
 
-    <!-- HEADER -->
+      <h1>
+        {{ match?.teamA }}
 
-    <div class="top-section">
+        VS
 
-        <div>
+        {{ match?.teamB }}
+      </h1>
 
-            <span class="match-badge">
-
-                {{ match?.type }}
-
-            </span>
-
-            <h1>
-
-                {{ match?.teamA }}
-
-                VS
-
-                {{ match?.teamB }}
-
-            </h1>
-
-            <p>
-                Califica el rendimiento
-                de los jugadores ⚽
-            </p>
-
-        </div>
-
-        <button class="send-btn" (click)="sendRatings()">
-
-            Enviar Calificaciones
-
-        </button>
-
+      <p>Califica el rendimiento de los jugadores ⚽</p>
     </div>
 
-    <!-- PLAYERS -->
+    <button
+      class="send-btn"
+      (click)="sendRatings()"
+      [disabled]="!canSendRatings()"
+    >
+      Enviar Calificaciones
+    </button>
+  </div>
 
-    <div class="players-grid">
+  <!-- PLAYERS -->
 
-        @for(player of players; track player.playerId){
+  <div class="players-grid">
+    @for (player of players; track player.playerId) {
+      <div class="player-card">
+        <!-- HEADER -->
 
-        <div class="player-card">
+        <div class="player-header">
+          <div class="player-info">
+            <img [src]="player.photo" />
 
-            <!-- HEADER -->
+            <div>
+              <h3>
+                {{ player.name }}
+              </h3>
 
-            <div class="player-header">
-
-                <div class="player-info">
-
-                    <img [src]="player.photo">
-
-                    <div>
-
-                        <h3>
-
-                            {{ player.name }}
-
-                        </h3>
-
-                        <span>
-
-                            {{ player.position }}
-
-                        </span>
-
-                    </div>
-
-                </div>
-
-                <div class="rating-badge" [ngClass]="{
-
-                        elite:
-                        player.newRating >= 8,
-
-                        good:
-                        player.newRating >= 6
-                        &&
-                        player.newRating < 8,
-
-                        average:
-                        player.newRating < 6
-
-                      }">
-
-                    {{ player.newRating }}
-
-                </div>
-
+              <span>
+                {{ player.position }}
+              </span>
             </div>
-            <div class="slider-section">
-                <input type="range" min="1" max="10" step="0.1" [(ngModel)]="
-                        player.newRating
-                      " class="custom-slider" (change)="player.wasRated = true">
+          </div>
 
-                <div class="slider-labels">
+          <div
+            class="rating-badge"
+            [ngClass]="{
+              elite: player.newRating >= 8,
 
-                    <span>1</span>
-                    <span>10</span>
+              good: player.newRating >= 6 && player.newRating < 8,
 
-                </div>
-
-            </div>
-
-            <!-- TAGS -->
-
-            <div class="tags-section">
-
-                <span class="tag" [class.active]="
-                        player.isMvp
-                      " (click)="
-                        player.isMvp =
-                        !player.isMvp
-                      " player.wasRated=true>
-
-                    🔥 MVP
-
-                </span>
-
-            </div>
-
-            <!-- COMMENT -->
-
-            <textarea rows="4" [(ngModel)]="
-      player.comment
-    " placeholder="
-      Comentario anónimo...
-    " (ngModelChange)="
-      player.wasRated = true;
-      sanitizeComment(player)
-    ">
-
-</textarea>
-
+              average: player.newRating < 6,
+            }"
+          >
+            {{ player.newRating || "-" }}
+          </div>
         </div>
 
+        <!-- SLIDER -->
+
+        <div class="slider-section">
+          <input
+            type="range"
+            min="1"
+            max="10"
+            step="0.1"
+            [(ngModel)]="player.newRating"
+            class="custom-slider"
+            (change)="player.wasRated = true"
+          />
+
+          <div class="slider-labels">
+            <span>1</span>
+
+            <span>10</span>
+          </div>
+        </div>
+
+        <!-- TAGS -->
+
+        <div class="tags-section">
+          <span
+            class="tag"
+            [class.active]="player.isMvp"
+            (click)="player.isMvp = !player.isMvp; player.wasRated = true"
+          >
+            🔥 MVP
+          </span>
+        </div>
+
+        <!-- COMMENT -->
+
+        <textarea
+          rows="4"
+          [(ngModel)]="player.comment"
+          #commentRef="ngModel"
+          placeholder="
+                    Comentario anónimo...
+                "
+          minlength="5"
+          (ngModelChange)="validateComment(player)"
+        >
+        </textarea>
+
+        @if (player.invalidComment) {
+          <small class="comment-error"> Escribe un comentario válido ⚠️ </small>
         }
-
-    </div>
-
+      </div>
+    }
+  </div>
 </div>

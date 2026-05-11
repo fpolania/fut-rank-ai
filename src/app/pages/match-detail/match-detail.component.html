@@ -1,145 +1,98 @@
 <div class="match-detail-page">
-    <div class="top-section">
-        <div>
-            <span class="badge-title">
-                FUT RANK AI
-            </span>
-            <h1>
-                {{ match?.teamA }}
-                <span>
-                    vs
-                </span>
-                {{ match?.teamB }}
-            </h1>
-        </div>
-        <button class="finish-btn" (click)="finishMatch()" [disabled]="match?.finished">
-            @if(match?.finished){
+  <div class="top-section">
+    <div>
+      <span class="badge-title"> FUT RANK AI </span>
+      <h1>
+        {{ match?.teamA }}
+        <span> vs </span>
+        {{ match?.teamB }}
+      </h1>
+    </div>
+    <button
+      class="finish-btn"
+      (click)="finishMatch()"
+      [disabled]="match?.finished"
+    >
+      @if (match?.finished) {
+        🔒 Partido Finalizado
+      } @else {
+        ✅ Finalizar Partido
+      }
+    </button>
+  </div>
 
-            🔒 Partido Finalizado
+  <div class="score-board">
+    <div class="team-side">
+      <h2>
+        {{ match?.teamA }}
+      </h2>
 
-            } @else {
-            ✅ Finalizar Partido
+      <strong>
+        {{ match?.scoreA }}
+      </strong>
+    </div>
+    <span class="vs-text"> VS </span>
+    <div class="team-side">
+      <h2>
+        {{ match?.teamB }}
+      </h2>
 
-            }
+      <div class="enemy-score-wrapper">
+        <button class="enemy-btn" (click)="decreaseEnemyScore()">
+          <i class="bi bi-dash-lg"></i>
         </button>
-    </div>
 
-    <div class="score-board">
-
-        <!-- TEAM A -->
-
-        <div class="team-side">
-
-            <h2>
-
-                {{ match?.teamA }}
-
-            </h2>
-
-            <strong>
-
-                {{ match?.scoreA }}
-
-            </strong>
-
+        <div class="enemy-score">
+          {{ match?.scoreB }}
         </div>
 
-        <!-- VS -->
-
-        <span class="vs-text">
-
-            VS
-
-        </span>
-
-        <!-- TEAM B -->
-
-        <div class="team-side">
-
-            <h2>
-
-                {{ match?.teamB }}
-
-            </h2>
-
-            <div class="enemy-score-wrapper">
-
-                <button class="enemy-btn" (click)="decreaseEnemyScore()">
-
-                    <i class="bi bi-dash-lg"></i>
-
-                </button>
-
-                <div class="enemy-score">
-
-                    {{ match?.scoreB }}
-
-                </div>
-
-                <button class="enemy-btn" (click)="increaseEnemyScore()">
-
-                    <i class="bi bi-plus-lg"></i>
-
-                </button>
-
-            </div>
-
-        </div>
-
+        <button class="enemy-btn" (click)="increaseEnemyScore()">
+          <i class="bi bi-plus-lg"></i>
+        </button>
+      </div>
     </div>
+  </div>
 
-    <div class="players-grid">
-        @for(player of match?.players; track player.playerId){
-        <div class="player-card">
-            <!-- <div class="mvp-badge" [class.active]="player.isMvp" (click)="setMvp(player)">
+  <div class="players-grid">
+    @for (player of match?.players; track player.playerId) {
+      <div class="player-card">
+        <!-- <div class="mvp-badge" [class.active]="player.isMvp" (click)="setMvp(player)">
                 🏆 MVP
             </div> -->
-            <img [src]="player.photo">
-            <h3>
-                {{ player.name }}
-            </h3>
-            <span>
-                {{ player.position }}
-            </span>
-            <div class="team-badge">
-                Equipo
-                {{ player.team }}
+        <img [src]="player.photo" />
+        <h3>
+          {{ player.name }}
+        </h3>
+        <span>
+          {{ player.position }}
+        </span>
+        <div class="team-badge">
+          Equipo
+          {{ player.team }}
+        </div>
+        <div class="stats-section">
+          <div class="stat-card">
+            <label> ⚽ Goles </label>
+            <div class="controls">
+              <button (click)="decreaseGoals(player)">-</button>
+              <strong>
+                {{ player.goals }}
+              </strong>
+              <button (click)="increaseGoals(player)">+</button>
             </div>
-            <div class="stats-section">
-                <div class="stat-card">
-                    <label>
-                        ⚽ Goles
-                    </label>
-                    <div class="controls">
-                        <button (click)="decreaseGoals(player)">
-                            -
-                        </button>
-                        <strong>
-                            {{ player.goals }}
-                        </strong>
-                        <button (click)="increaseGoals(player)">
-                            +
-                        </button>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <label>
-                        🎯 Assists
-                    </label>
-                    <div class="controls">
-                        <button (click)="decreaseAssists(player)">
-                            -
-                        </button>
-                        <strong>
-                            {{ player.assists }}
-                        </strong>
-                        <button (click)="increaseAssists(player)">
-                            +
-                        </button>
-                    </div>
-                </div>
+          </div>
+          <div class="stat-card">
+            <label> 🎯 Assists </label>
+            <div class="controls">
+              <button (click)="decreaseAssists(player)">-</button>
+              <strong>
+                {{ player.assists }}
+              </strong>
+              <button (click)="increaseAssists(player)">+</button>
+            </div>
+          </div>
 
-                <!-- <div class="stat-card">
+          <!-- <div class="stat-card">
 
                     <label>
                         ⭐ Rating
@@ -166,13 +119,8 @@
                     </div>
 
                 </div> -->
-
-            </div>
-
         </div>
-
-        }
-
-    </div>
-
+      </div>
+    }
+  </div>
 </div>

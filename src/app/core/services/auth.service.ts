@@ -1,131 +1,61 @@
-import {
-  Injectable,
-  inject
-} from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import {
   Auth,
   GoogleAuthProvider,
   signInWithPopup,
   signOut,
-  user
+  user,
 } from '@angular/fire/auth';
 
-import {
-  Timestamp
-} from '@angular/fire/firestore';
+import { Timestamp } from '@angular/fire/firestore';
 
-import {
-  Router
-} from '@angular/router';
+import { Router } from '@angular/router';
 import { UserService } from './user.service';
 
-
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
-  /* INJECTS */
-
-  private auth =
-    inject(Auth);
-
-  private router =
-    inject(Router);
-
-  private userService =
-    inject(UserService);
-
-  /* CURRENT USER */
-
-  currentUser =
-    user(this.auth);
-
-  /* LOGIN GOOGLE */
+  private auth = inject(Auth);
+  private router = inject(Router);
+  private userService = inject(UserService);
+  currentUser = user(this.auth);
 
   async loginWithGoogle() {
-
     try {
+      const provider = new GoogleAuthProvider();
+      const playerRole =
+        JSON.parse(sessionStorage.getItem('teamPlayer') || 'null')?.role ||
+        'player';
+      const result = await signInWithPopup(this.auth, provider);
 
-      const provider =
-        new GoogleAuthProvider();
+      const firebaseUser = result.user;
+      await this.userService.createUser({
+        uid: firebaseUser.uid,
+        name: firebaseUser.displayName || '',
+        email: firebaseUser.email || '',
+        photoURL: firebaseUser.photoURL || '',
+        role: playerRole,
+        active: true,
+        createdAt: Timestamp.now(),
+      });
 
-      const result =
-        await signInWithPopup(
-          this.auth,
-          provider
-        );
-
-      const firebaseUser =
-        result.user;
-      await this.userService
-        .createUser({
-
-          uid:
-            firebaseUser.uid,
-
-          name:
-            firebaseUser.displayName || '',
-
-          email:
-            firebaseUser.email || '',
-
-          photoURL:
-            firebaseUser.photoURL || '',
-
-          role:
-            'player',
-
-          active:
-            true,
-
-          createdAt:
-            Timestamp.now()
-
-        });
-
-      /* REDIRECT */
-
-      this.router.navigate([
-        '/dashboard'
-      ]);
-
+      this.router.navigate(['/dashboard']);
     } catch (error) {
-
-      console.error(
-        'Login Error',
-        error
-      );
-
+      console.error('Login Error', error);
     }
-
   }
 
   /* LOGOUT */
 
   async logout() {
-
     try {
+      await signOut(this.auth);
 
-      await signOut(
-        this.auth
-      );
-
-      this.router.navigate([
-        '/login'
-      ]);
-
+      this.router.navigate(['/login']);
     } catch (error) {
-
-      console.error(
-        'Logout Error',
-        error
-      );
-
+      console.error('Logout Error', error);
     }
-
   }
-
 }

@@ -1,101 +1,55 @@
 <div class="rate-page">
+  <div class="top-section">
+    <div>
+      <span class="match-badge"> FUT RANK AI </span>
+      <h1>Calificar Jugadores ⚽</h1>
+      <p>Selecciona un partido finalizado.</p>
+    </div>
+  </div>
 
-    <!-- HEADER -->
-
-    <div class="top-section">
-
-        <div>
-
-            <span class="match-badge">
-                FUT RANK AI
+  <div class="players-grid">
+    @for (match of matches; track match.id) {
+      <div class="player-card">
+        <div class="player-header">
+          <div>
+            <h3>
+              {{ match.teamA }}
+              VS
+              {{ match.teamB }}
+            </h3>
+            <span>
+              {{ match.date }}
             </span>
-
-            <h1>
-                Calificar Jugadores ⚽
-            </h1>
-
-            <p>
-                Selecciona un partido finalizado.
-            </p>
-
+          </div>
+          <div
+            class="rating-badge"
+            [ngClass]="{
+              elite: match?.result === '🏆 Ganado',
+              eliteLost: match?.result === '💀 Perdido',
+              eliteDraw: match?.result === '🤝 Empatado',
+            }"
+          >
+            {{ match.scoreA }}
+            -
+            {{ match.scoreB }}
+          </div>
         </div>
 
-    </div>
-
-    <!-- MATCHES -->
-
-    <div class="players-grid">
-
-        @for(match of matches; track match.id){
-
-        <div class="player-card">
-
-            <!-- HEADER -->
-
-            <div class="player-header">
-
-                <div>
-
-                    <h3>
-
-                        {{ match.teamA }}
-
-                        VS
-
-                        {{ match.teamB }}
-
-                    </h3>
-
-                    <span>
-
-                        {{ match.date }}
-
-                    </span>
-
-                </div>
-
-                <div class="rating-badge elite">
-
-                    {{ match.scoreA }}
-
-                    -
-
-                    {{ match.scoreB }}
-
-                </div>
-
-            </div>
-
-            <!-- INFO -->
-
-            <div class="tags-section">
-
-                <span class="tag active">
-
-                    {{ match.type }}
-
-                </span>
-
-                <span class="tag">
-
-                    📍 {{ match.field }}
-
-                </span>
-
-            </div>
-
-            <!-- BTN -->
-
-            <button class="send-btn" (click)="openRate(match)">
-
-                Calificar
-
-            </button>
-
+        <div class="tags-section">
+          <span class="tag active">
+            {{ match.type }}
+          </span>
+          <span class="tag"> 📍 {{ match.field }} </span>
         </div>
 
-        }
-
-    </div>
-
+        <button
+          class="send-btn"
+          (click)="openRate(match)"
+          [disabled]="!match?.finished"
+        >
+          Calificar
+        </button>
+      </div>
+    }
+  </div>
 </div>

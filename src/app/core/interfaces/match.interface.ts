@@ -20,6 +20,7 @@ export interface Match {
   finished: boolean;
   createdAt: Timestamp;
   didWin: boolean;
+  result: string;
 }
 export interface MatchPlayer {
   playerId: string;

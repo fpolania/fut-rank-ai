@@ -1,153 +1,86 @@
 <div class="layout-container">
+  <!-- SIDEBAR -->
 
-    <!-- SIDEBAR -->
+  <aside class="sidebar" [class.open]="sidebarOpen">
+    <!-- LOGO -->
 
-    <aside class="sidebar" [class.open]="sidebarOpen">
+    <div class="logo-section">
+      <div class="logo-circle">⚽</div>
 
-        <!-- LOGO -->
+      <div>
+        <h2>FUT RANK</h2>
 
-        <div class="logo-section">
+        <span> AI Platform </span>
+      </div>
+    </div>
 
-            <div class="logo-circle">
-                ⚽
-            </div>
+    <!-- MENU -->
 
-            <div>
-                <h2>
-                    FUT RANK
-                </h2>
+    <nav class="menu">
+      <a
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        🏠 Dashboard
+      </a>
 
-                <span>
-                    AI Platform
-                </span>
-            </div>
+      <a routerLink="/rate-players" routerLinkActive="active"> ⭐ Calificar </a>
 
+      <a routerLink="/players" routerLinkActive="active"> 👤 Jugadores </a>
+      <a routerLink="/matches" routerLinkActive="active"> ⚽ Partidos </a>
+      <a routerLink="/team-builder" routerLinkActive="active">
+        🧠 Team Builder
+      </a>
+      <a routerLink="/match-history" routerLinkActive="active">
+        📜 Historial
+      </a>
+    </nav>
+  </aside>
+
+  <main class="content-area">
+    <header class="topbar">
+      <button class="menu-btn" (click)="toggleSidebar()">☰</button>
+      <div>
+        <h3>
+          {{
+            ((authService.currentUser | async)?.displayName || "").toUpperCase()
+          }}
+          👋
+        </h3>
+
+        <span> Temporada 2026 </span>
+      </div>
+
+      <div class="profile-section">
+        <div class="user-info">
+          <img
+            [src]="
+              (authService.currentUser | async)?.photoURL ||
+              'https://i.pravatar.cc/100'
+            "
+          />
+
+          <div class="user-text">
+            <h4>
+              {{
+                (
+                  (authService.currentUser | async)?.displayName || ""
+                ).toUpperCase()
+              }}
+            </h4>
+
+            <span> Player </span>
+          </div>
         </div>
 
-        <!-- MENU -->
-
-        <nav class="menu">
-
-            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
-
-                🏠 Dashboard
-
-            </a>
-
-            <a routerLink="/rate-players" routerLinkActive="active">
-
-                ⭐ Calificar
-
-            </a>
-
-            <a routerLink="/players" routerLinkActive="active">
-
-                👤 Jugadores
-
-            </a>
-
-            <!-- <a routerLink="/create-match" routerLinkActive="active">
-
-                ⚽ Crear Partidos
-
-            </a> -->
-            <a routerLink="/matches" routerLinkActive="active">
-
-                ⚽ Partidos
-
-            </a>
-
-            <!-- <a routerLink="/rankings" routerLinkActive="active">
-
-                🏆 Rankings
-
-            </a> -->
-
-            <a routerLink="/team-builder" routerLinkActive="active">
-
-                🧠 Team Builder
-
-            </a>
-
-            <a routerLink="/match-history" routerLinkActive="active">
-
-                📜 Historial
-
-            </a>
-
-        </nav>
-
-    </aside>
-
-    <!-- CONTENT -->
-
-    <main class="content-area">
-
-        <!-- TOPBAR -->
-
-        <header class="topbar">
-
-            <button class="menu-btn" (click)="toggleSidebar()">
-
-                ☰
-            </button>
-
-            <div>
-
-                <h3>
-                    {{ ((authService.currentUser | async)?.displayName || '').toUpperCase() }} 👋
-                </h3>
-
-                <span>
-                    Temporada 2026
-                </span>
-
-            </div>
-
-            <div class="profile-section">
-
-                <div class="user-info">
-
-                    <img [src]="
-            (authService.currentUser | async)?.photoURL
-            || 'https://i.pravatar.cc/100'
-          ">
-
-                    <div class="user-text">
-
-                        <h4>
-                            {{
-                            ((authService.currentUser | async)?.displayName || '')
-                            .toUpperCase()
-                            }}
-                        </h4>
-
-                        <span>
-                            Player
-                        </span>
-
-                    </div>
-
-                </div>
-
-                <button class="logout-btn" (click)="logout()">
-
-                    <i class="bi bi-box-arrow-right"></i>
-
-                </button>
-
-            </div>
-
-        </header>
-
-        <!-- ROUTER -->
-
-        <div class="router-container">
-
-            <router-outlet></router-outlet>
-
-        </div>
-
-    </main>
-
+        <button class="logout-btn" (click)="logout()">
+          <i class="bi bi-box-arrow-right"></i>
+        </button>
+      </div>
+    </header>
+    <div class="router-container">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
 </div>

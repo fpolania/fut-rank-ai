@@ -57,12 +57,12 @@ export class CreateMatchComponent implements OnInit {
     this.selectedPlayers = [];
   }
   togglePlayer(player: Player) {
-    const exists =this.selectedPlayers.some(p => p.id === player.id);
+    const exists = this.selectedPlayers.some(p => p.id === player.id);
     if (exists) {
       this.selectedPlayers = this.selectedPlayers.filter(p => p.id !== player.id);
       return;
     }
-    const limit =this.selectedMatchType ==='FUT 5' ? 10: 16;
+    const limit = this.selectedMatchType === 'FUT 5' ? 10 : 16;
     if (this.selectedPlayers.length >= limit) {
       warningAlert(
         'Plantilla completa ⚽🔥',
@@ -92,25 +92,35 @@ export class CreateMatchComponent implements OnInit {
           isMvp: false
         })
       );
-      const title = this.matchForm.value.name || '';
-      const splitTitle = title.split(/vs/i);
-      const teamA = splitTitle[0]?.trim() || 'Pull Request';
-      const teamB = splitTitle[1]?.trim() || 'Rival';
+      const title =this.matchForm.value.name || '';
+      const splitTitle =title.split(/vs/i);
+      let teamA =splitTitle[0]?.trim() ||'Pull Request';
+      let teamB = splitTitle[1]?.trim() ||'Rival';
+
+      const isPullRequestOnRight = teamB.toLowerCase().includes('pull request');
+      if (isPullRequestOnRight) {
+        const temp = teamA;
+        teamA = teamB;
+        teamB = temp;
+      }
+
       const match = {
         title,
-        type: this.selectedMatchType,
-        formation: this.selectedMatchType,
-        field: this.matchForm.value.field || '',
-        date: this.matchForm.value.date || '',
-        time: this.matchForm.value.time || '',
-        teamA, teamB,
+        type:this.selectedMatchType,
+        formation:this.selectedMatchType,
+        field:this.matchForm.value.field || '',
+        date:this.matchForm.value.date || '',
+        time:this.matchForm.value.time || '',
+        teamA,
+        teamB,
         scoreA: 0,
         scoreB: 0,
         mvpPlayerId: '',
         players,
-        createdBy: this.matchForm.value.name,
+        createdBy:this.matchForm.value.name,
         finished: false,
-        createdAt: Timestamp.now()
+        createdAt:Timestamp.now()
+
       };
 
       await this.matchService.addMatch(match as any);
