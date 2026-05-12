@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://fut-rank-ai.web.app/sitemap.xml

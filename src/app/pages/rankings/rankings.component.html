@@ -1,6 +1,4 @@
 <div class="rankings-page">
-  <!-- HEADER -->
-
   <div class="top-section">
     <div>
       <span class="badge-title"> FUT RANK AI </span>
@@ -55,8 +53,6 @@
       </div>
     }
 
-    <!-- THIRD -->
-
     @if (topPlayers[2]) {
       <div class="podium-card third">
         <div class="position">🥉</div>
@@ -94,9 +90,6 @@
       MVPs
     </button>
   </section>
-
-  <!-- TABLE -->
-
   <section class="table-section">
     <div class="table-header">
       <span>#</span>
@@ -106,13 +99,8 @@
       <span>MVPs</span>
       <span>Tendencia</span>
     </div>
-
-    <!-- ROW -->
-
     @for (player of players; track player.id; let i = $index) {
       <div class="table-row">
-        <!-- POSITION -->
-
         <span>
           {{ i + 1 }}
         </span>
@@ -132,22 +120,16 @@
           {{ player.averageRating }}
         </span>
 
-        <!-- MVPS -->
-
         <span>
           {{ player.mvps }}
         </span>
-
-        <!-- TREND -->
 
         <span class="trend-up"> 🔥 Top Player </span>
       </div>
     }
   </section>
 
-  <!-- AI INSIGHTS -->
-
-  <section class="ai-section">
+  <!-- <section class="ai-section">
     <div class="section-title">🤖 AI Insights</div>
 
     <div class="ai-grid">
@@ -169,5 +151,5 @@
         <p>Juan lidera estadísticas defensivas.</p>
       </div>
     </div>
-  </section>
+  </section> -->
 </div>

@@ -1,43 +1,42 @@
-import {
-    Timestamp
-} from '@angular/fire/firestore';
+import { Timestamp } from '@angular/fire/firestore';
 
 /* RATING ITEM */
 
 export interface RatingItem {
+  ratedBy: string;
 
-    ratedBy: string;
+  rating: number;
 
-    rating: number;
+  comment: string;
 
-    comment: string;
+  anonymous: boolean;
 
-    anonymous: boolean;
+  isMvp: boolean;
 
-    isMvp: boolean;
-
-    createdAt: Timestamp;
-
+  createdAt: Timestamp;
 }
 
 /* RATING DOCUMENT */
 
 export interface Rating {
+  id?: string;
 
-    id?: string;
+  playerId: string;
 
-    playerId: string;
+  matchId: string;
 
-    matchId: string;
+  playerName: string;
 
-    playerName: string;
+  averageRating: number;
 
-    averageRating: number;
+  totalRatings: number;
 
-    totalRatings: number;
+  createdAt: Timestamp;
 
-    createdAt: Timestamp;
-
-    data: RatingItem[];
-
+  data: RatingItem[];
+}
+export interface AiInsight {
+  strengths: string[];
+  weaknesses: string[];
+  tips: string[];
 }

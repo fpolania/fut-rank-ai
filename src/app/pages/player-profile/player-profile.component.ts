@@ -11,6 +11,7 @@ import { PlayerService } from '../../core/services/player.service';
 import { RatingService } from '../../core/services/rating.service';
 
 import { Player } from '../../core/interfaces/player.interface';
+import { AiInsight } from '../../core/interfaces/rating.interface';
 
 @Component({
   selector: 'app-player-profile',
@@ -32,7 +33,11 @@ export class PlayerProfileComponent implements OnInit {
   playerId: string | null = null;
   player!: Player;
 
-  aiInsight = '';
+  aiInsight: AiInsight = {
+    strengths: [],
+    weaknesses: [],
+    tips: [],
+  };
 
   ngOnInit(): void {
     this.playerId = this.route.snapshot.paramMap.get('id');
@@ -46,7 +51,11 @@ export class PlayerProfileComponent implements OnInit {
     this.playerService.getPlayerById(this.playerId).subscribe({
       next: (player: any) => {
         this.player = player;
-        this.aiInsight = player.aiInsight || '';
+        this.aiInsight = player.aiInsight || {
+          strengths: [],
+          weaknesses: [],
+          tips: [],
+        };
       },
 
       error: (error: any) => {

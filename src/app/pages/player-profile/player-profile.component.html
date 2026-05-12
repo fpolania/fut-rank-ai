@@ -1,359 +1,263 @@
 <div class="profile-page">
+  @if (player) {
+    <!-- HERO -->
 
-  @if(player){
+    <section class="hero-section">
+      <div class="hero-left">
+        <img [src]="player.photo" />
 
-  <!-- HERO -->
-
-  <section class="hero-section">
-
-    <div class="hero-left">
-
-      <img [src]="player.photo">
-
-      <div>
-
-        <span class="position-badge">
-
-          {{ player.position }}
-
-        </span>
-
-        <h1>
-
-          {{ player.name }}
-
-        </h1>
-
-        <p>
-          “El rendimiento habla por ti.”
-        </p>
-
-        <!-- BADGES -->
-
-        <div class="badges">
-
-          @if(player.mvps >= 1){
-
-          <span>
-            🏆 MVP
+        <div>
+          <span class="position-badge">
+            {{ player.position }}
           </span>
 
-          }
+          <h1>
+            {{ player.name }}
+          </h1>
 
-          @if(player.goals >= 5){
+          <p>“El rendimiento habla por ti.”</p>
 
-          <span>
-            🔥 Killer
-          </span>
+          <!-- BADGES -->
 
-          }
+          <div class="badges">
+            @if (player.mvps >= 1) {
+              <span> 🏆 MVP </span>
+            }
 
-          @if(player.assists >= 3){
+            @if (player.goals >= 5) {
+              <span> 🔥 Killer </span>
+            }
 
-          <span>
-            🧠 Playmaker
-          </span>
+            @if (player.assists >= 3) {
+              <span> 🧠 Playmaker </span>
+            }
+          </div>
+        </div>
+      </div>
 
-          }
+      <!-- OVERALL -->
 
+      <div class="hero-rating">
+        <span> Overall </span>
+
+        <h2>
+          {{ player.averageRating }}
+        </h2>
+      </div>
+    </section>
+
+    <!-- STATS -->
+
+    <section class="stats-grid">
+      <div class="stat-card">
+        <span> Partidos </span>
+
+        <h3>
+          {{ player.matchesPlayed }}
+        </h3>
+      </div>
+
+      <div class="stat-card">
+        <span> Goles </span>
+
+        <h3>
+          {{ player.goals }}
+        </h3>
+      </div>
+
+      <div class="stat-card">
+        <span> Asistencias </span>
+
+        <h3>
+          {{ player.assists }}
+        </h3>
+      </div>
+
+      <div class="stat-card">
+        <span> MVPs </span>
+
+        <h3>
+          {{ player.mvps }}
+        </h3>
+      </div>
+    </section>
+
+    <!-- ATTRIBUTES -->
+    <!-- ATTRIBUTES -->
+
+    <section class="attributes-section">
+      <div class="section-title">🎮 Player Attributes</div>
+
+      <!-- SPEED -->
+
+      <div class="attribute-item">
+        <div class="attribute-header">
+          <span> ⚡ Velocidad </span>
+
+          <strong>
+            {{ player.speed }}
+          </strong>
         </div>
 
+        <input
+          type="range"
+          min="0"
+          max="100"
+          [(ngModel)]="player.speed"
+          (change)="updateAttribute()"
+        />
       </div>
 
-    </div>
+      <!-- FINISHING -->
 
-    <!-- OVERALL -->
+      <div class="attribute-item">
+        <div class="attribute-header">
+          <span> 🎯 Definición </span>
 
-    <div class="hero-rating">
+          <strong>
+            {{ player.finishing }}
+          </strong>
+        </div>
 
-      <span>
-        Overall
-      </span>
-
-      <h2>
-
-        {{ player.averageRating }}
-
-      </h2>
-
-    </div>
-
-  </section>
-
-  <!-- STATS -->
-
-  <section class="stats-grid">
-
-    <div class="stat-card">
-
-      <span>
-        Partidos
-      </span>
-
-      <h3>
-
-        {{ player.matchesPlayed }}
-
-      </h3>
-
-    </div>
-
-    <div class="stat-card">
-
-      <span>
-        Goles
-      </span>
-
-      <h3>
-
-        {{ player.goals }}
-
-      </h3>
-
-    </div>
-
-    <div class="stat-card">
-
-      <span>
-        Asistencias
-      </span>
-
-      <h3>
-
-        {{ player.assists }}
-
-      </h3>
-
-    </div>
-
-    <div class="stat-card">
-
-      <span>
-        MVPs
-      </span>
-
-      <h3>
-
-        {{ player.mvps }}
-
-      </h3>
-
-    </div>
-
-  </section>
-
-  <!-- ATTRIBUTES -->
-  <!-- ATTRIBUTES -->
-
-  <section class="attributes-section">
-
-    <div class="section-title">
-      🎮 Player Attributes
-    </div>
-
-    <!-- SPEED -->
-
-    <div class="attribute-item">
-
-      <div class="attribute-header">
-
-        <span>
-          ⚡ Velocidad
-        </span>
-
-        <strong>
-          {{ player.speed }}
-        </strong>
-
+        <input
+          type="range"
+          min="0"
+          max="100"
+          [(ngModel)]="player.finishing"
+          (change)="updateAttribute()"
+        />
       </div>
 
-      <input type="range" min="0" max="100" [(ngModel)]="player.speed" (change)="updateAttribute()">
+      <!-- VISION -->
 
-    </div>
+      <div class="attribute-item">
+        <div class="attribute-header">
+          <span> 🧠 Visión </span>
 
-    <!-- FINISHING -->
+          <strong>
+            {{ player.vision }}
+          </strong>
+        </div>
 
-    <div class="attribute-item">
-
-      <div class="attribute-header">
-
-        <span>
-          🎯 Definición
-        </span>
-
-        <strong>
-          {{ player.finishing }}
-        </strong>
-
+        <input
+          type="range"
+          min="0"
+          max="100"
+          [(ngModel)]="player.vision"
+          (change)="updateAttribute()"
+        />
       </div>
 
-      <input type="range" min="0" max="100" [(ngModel)]="player.finishing" (change)="updateAttribute()">
+      <!-- STAMINA -->
 
-    </div>
+      <div class="attribute-item">
+        <div class="attribute-header">
+          <span> 💪 Resistencia </span>
 
-    <!-- VISION -->
+          <strong>
+            {{ player.stamina }}
+          </strong>
+        </div>
 
-    <div class="attribute-item">
-
-      <div class="attribute-header">
-
-        <span>
-          🧠 Visión
-        </span>
-
-        <strong>
-          {{ player.vision }}
-        </strong>
-
+        <input
+          type="range"
+          min="0"
+          max="100"
+          [(ngModel)]="player.stamina"
+          (change)="updateAttribute()"
+        />
       </div>
 
-      <input type="range" min="0" max="100" [(ngModel)]="player.vision" (change)="updateAttribute()">
+      <!-- DEFENSE -->
 
-    </div>
+      <div class="attribute-item">
+        <div class="attribute-header">
+          <span> 🛡️ Defensa </span>
 
-    <!-- STAMINA -->
+          <strong>
+            {{ player.defense }}
+          </strong>
+        </div>
 
-    <div class="attribute-item">
-
-      <div class="attribute-header">
-
-        <span>
-          💪 Resistencia
-        </span>
-
-        <strong>
-          {{ player.stamina }}
-        </strong>
-
+        <input
+          type="range"
+          min="0"
+          max="100"
+          [(ngModel)]="player.defense"
+          (change)="updateAttribute()"
+        />
       </div>
 
-      <input type="range" min="0" max="100" [(ngModel)]="player.stamina" (change)="updateAttribute()">
-
-    </div>
-
-    <!-- DEFENSE -->
-
-    <div class="attribute-item">
-
-      <div class="attribute-header">
-
-        <span>
-          🛡️ Defensa
-        </span>
-
-        <strong>
-          {{ player.defense }}
-        </strong>
-
+      <div class="attribute-item">
+        <div class="attribute-header">
+          <span> 🎮 Regate </span>
+          <strong>
+            {{ player.dribbling }}
+          </strong>
+        </div>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          [(ngModel)]="player.dribbling"
+          (change)="updateAttribute()"
+        />
       </div>
+    </section>
 
-      <input type="range" min="0" max="100" [(ngModel)]="player.defense" (change)="updateAttribute()">
+    <section class="ai-card">
+      <div class="ai-title">🤖 AI Analysis</div>
 
-    </div>
+      @if (
+        aiInsight.strengths?.length ||
+        aiInsight.weaknesses?.length ||
+        aiInsight.tips?.length
+      ) {
+        <div class="ai-grid">
+          <div class="ai-box strengths">
+            <h3>🔥 Fortalezas</h3>
 
-    <!-- DRIBBLING -->
+            @for (item of aiInsight.strengths; track $index) {
+              <p>⚽ {{ item }}</p>
+            }
+          </div>
 
-    <div class="attribute-item">
+          <div class="ai-box weaknesses">
+            <h3>😮‍💨 Debilidades</h3>
 
-      <div class="attribute-header">
+            @for (item of aiInsight.weaknesses; track $index) {
+              <p>📉 {{ item }}</p>
+            }
+          </div>
+          <div class="ai-box tips">
+            <h3>🧠 Consejos</h3>
 
-        <span>
-          🎮 Regate
-        </span>
-
-        <strong>
-          {{ player.dribbling }}
-        </strong>
-
-      </div>
-
-      <input type="range" min="0" max="100" [(ngModel)]="player.dribbling" (change)="updateAttribute()">
-
-    </div>
-
-  </section>
-
-
-  <section class="ai-card">
-
-    <div class="ai-title">
-
-      🤖 AI Analysis
-
-    </div>
-
-    <div class="ai-content">
-
-      @if(aiInsight){
-
-      <p>
-
-        {{ aiInsight }}
-
-      </p>
-
+            @for (item of aiInsight.tips; track $index) {
+              <p>🚀 {{ item }}</p>
+            }
+          </div>
+        </div>
+      } @else {
+        <div class="ai-empty">🤖 Analizando jugador con Fut Rank AI...</div>
       }
+    </section>
 
-      @else {
+    <section class="comments-section">
+      <div class="section-title">💬 Comentarios del Equipo</div>
 
-      <p>
+      <div class="comments-grid">
+        @for (rating of ratings; track rating.id) {
+          @if (rating.comment) {
+            <div class="comment-card">
+              <span> ⭐ </span>
 
-        Analizando jugador con IA...
+              <p>"{{ rating.comment }}"</p>
 
-      </p>
-
-      }
-
-    </div>
-
-  </section>
-
-  <!-- COMMENTS -->
-
-  <section class="comments-section">
-
-    <div class="section-title">
-
-      💬 Comentarios del Equipo
-
-    </div>
-
-    <div class="comments-grid">
-
-      @for(rating of ratings; track rating.id){
-
-      @if(rating.comment){
-
-      <div class="comment-card">
-
-        <span>
-
-          ⭐
-
-        </span>
-
-        <p>
-
-          "{{ rating.comment }}"
-
-        </p>
-
-        <small>
-
-          — Pull Request Team
-
-        </small>
-
+              <small> — Pull Request Team </small>
+            </div>
+          }
+        }
       </div>
-
-      }
-
-      }
-
-    </div>
-
-  </section>
-
+    </section>
   }
-
 </div>
