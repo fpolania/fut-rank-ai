@@ -7,12 +7,12 @@
   },
   "hosting": {
     "public": "dist/fut-rank-ai/browser",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
+      {
+        "source": "/google9e45f81ce8b379cb.html",
+        "destination": "/google9e45f81ce8b379cb.html"
+      },
       {
         "source": "**",
         "destination": "/index.html"

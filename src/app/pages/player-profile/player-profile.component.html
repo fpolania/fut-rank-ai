@@ -87,9 +87,6 @@
 
     <section class="attributes-section">
       <div class="section-title">🎮 Player Attributes</div>
-
-      <!-- SPEED -->
-
       <div class="attribute-item">
         <div class="attribute-header">
           <span> ⚡ Velocidad </span>
@@ -100,6 +97,7 @@
         </div>
 
         <input
+          [disabled]="(authService.currentUser | async)?.role === 'player'"
           type="range"
           min="0"
           max="100"
@@ -107,8 +105,6 @@
           (change)="updateAttribute()"
         />
       </div>
-
-      <!-- FINISHING -->
 
       <div class="attribute-item">
         <div class="attribute-header">
@@ -120,6 +116,7 @@
         </div>
 
         <input
+          [disabled]="(authService.currentUser | async)?.role === 'player'"
           type="range"
           min="0"
           max="100"
@@ -140,6 +137,7 @@
         </div>
 
         <input
+          [disabled]="(authService.currentUser | async)?.role === 'player'"
           type="range"
           min="0"
           max="100"
@@ -160,6 +158,7 @@
         </div>
 
         <input
+          [disabled]="(authService.currentUser | async)?.role === 'player'"
           type="range"
           min="0"
           max="100"
@@ -180,6 +179,7 @@
         </div>
 
         <input
+          [disabled]="(authService.currentUser | async)?.role === 'player'"
           type="range"
           min="0"
           max="100"
@@ -196,6 +196,7 @@
           </strong>
         </div>
         <input
+          [disabled]="(authService.currentUser | async)?.role === 'player'"
           type="range"
           min="0"
           max="100"

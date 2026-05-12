@@ -12,6 +12,7 @@ import { RatingService } from '../../core/services/rating.service';
 
 import { Player } from '../../core/interfaces/player.interface';
 import { AiInsight } from '../../core/interfaces/rating.interface';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-player-profile',
@@ -21,18 +22,15 @@ import { AiInsight } from '../../core/interfaces/rating.interface';
   styleUrl: './player-profile.component.css',
 })
 export class PlayerProfileComponent implements OnInit {
-  /* INJECTS */
-
   private route = inject(ActivatedRoute);
-
   private playerService = inject(PlayerService);
-
   private ratingService = inject(RatingService);
 
   ratings: any[] = [];
   playerId: string | null = null;
   player!: Player;
-
+  authService = inject(AuthService);
+  user = this.authService.currentUser;
   aiInsight: AiInsight = {
     strengths: [],
     weaknesses: [],

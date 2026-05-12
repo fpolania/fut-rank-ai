@@ -40,8 +40,8 @@ export const TEAM_PLAYERS = [
     name: 'Andres Ricardo',
   },
   {
-    document: '',
+    document: '1012380194',
     role: 'player',
-    name: 'Andres Ricardo',
+    name: 'Erwin Pardo',
   },
 ];
