@@ -1,15 +1,8 @@
-import { Component, inject, OnInit }
-  from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 
-import {
-  FormBuilder,
-  ReactiveFormsModule,
-  Validators
-} from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import {
-  Timestamp
-} from '@angular/fire/firestore';
+import { Timestamp } from '@angular/fire/firestore';
 import { PlayerService } from '../../core/services/player.service';
 import { UploadFileService } from '../../core/services/upload-file.service';
 import { ActivatedRoute } from '@angular/router';
@@ -20,23 +13,17 @@ import { errorAlert, successAlert } from '../../core/utils/alert.util';
   selector: 'app-add-player',
   imports: [ReactiveFormsModule],
   templateUrl: './add-player.component.html',
-  styleUrl: './add-player.component.css'
+  styleUrl: './add-player.component.css',
 })
 export class AddPlayerComponent implements OnInit {
   loading = false;
   playerId: string | null = null;
   editMode = false;
   selectedFile!: File;
-  previewImage =
-    'https://i.pravatar.cc/150';
-  positions = [
-    'Arquero',
-    'Defensa',
-    'Mediocampo',
-    'Delantero'
-  ];
+  previewImage = 'https://i.pravatar.cc/150';
+  positions = ['Arquero', 'Defensa', 'Mediocampo', 'Delantero'];
   private fb = inject(FormBuilder);
-  private fileUpload = inject(UploadFileService)
+  private fileUpload = inject(UploadFileService);
   private playerService = inject(PlayerService);
   private route = inject(ActivatedRoute);
   private loadingService = inject(LoadingService);
@@ -51,68 +38,56 @@ export class AddPlayerComponent implements OnInit {
     });
   }
 
-  playerForm =
-    this.fb.group({
-      name: ['', Validators.required],
-      photo: ['', Validators.required],
-      position: ['', Validators.required],
-      preferredFoot: ['', Validators.required]
-    });
+  playerForm = this.fb.group({
+    name: ['', Validators.required],
+    photo: ['', Validators.required],
+    position: ['', Validators.required],
+    preferredFoot: ['', Validators.required],
+  });
 
   async savePlayer() {
-    if (
-      this.playerForm.invalid
-    ) return;
+    if (this.playerForm.invalid) return;
     try {
       this.loading = true;
       let photoURL = this.previewImage;
       if (this.selectedFile) {
-        photoURL =
-          await this.fileUpload
-            .uploadFile(
-              this.selectedFile,
-              'players'
-            );
+        photoURL = await this.fileUpload.uploadFile(
+          this.selectedFile,
+          'players',
+        );
       }
       const player = {
         name: this.playerForm.value.name,
         photo: photoURL,
         position: this.playerForm.value.position,
-        preferredFoot: this.playerForm.value.preferredFoot
+        preferredFoot: this.playerForm.value.preferredFoot,
       };
       if (this.editMode && this.playerId) {
-        await this.playerService
-          .updatePlayer(
-            this.playerId,
-            player
-          );
+        await this.playerService.updatePlayer(this.playerId, player);
         successAlert(
           'Jugador actualizado ✍️🔥',
-          'Los datos del jugador fueron actualizados correctamente.'
+          'Los datos del jugador fueron actualizados correctamente.',
         );
-      }
-      else {
-        await this.playerService
-          .addPlayer({
-            ...player as any,
-            averageRating: 0,
-            goals: 0,
-            assists: 0,
-            mvps: 0,
-            matchesPlayed: 0,
-            active: true,
-            speed: 80,
-            finishing: 80,
-            vision: 80,
-            stamina: 80,
-            defense: 80,
-            dribbling: 80,
-            createdAt:
-              Timestamp.now()
-          });
+      } else {
+        await this.playerService.addPlayer({
+          ...(player as any),
+          averageRating: 0,
+          goals: 0,
+          assists: 0,
+          mvps: 0,
+          matchesPlayed: 0,
+          active: true,
+          speed: 60,
+          finishing: 60,
+          vision: 60,
+          stamina: 60,
+          defense: 60,
+          dribbling: 60,
+          createdAt: Timestamp.now(),
+        });
         successAlert(
           'Jugador registrado ⚽🔥',
-          'El jugador fue agregado correctamente al equipo.'
+          'El jugador fue agregado correctamente al equipo.',
         );
       }
       this.playerForm.reset();
@@ -120,13 +95,12 @@ export class AddPlayerComponent implements OnInit {
     } catch (error) {
       errorAlert(
         'No se pudo registrar 😮‍💨',
-        'Ocurrió un error creando el jugador.'
+        'Ocurrió un error creando el jugador.',
       );
       console.error(error);
     } finally {
       this.loading = false;
     }
-
   }
   onFileSelected(event: any) {
     const file = event.target.files[0];
@@ -135,31 +109,25 @@ export class AddPlayerComponent implements OnInit {
     this.playerForm.patchValue({ photo: file });
     const reader = new FileReader();
     reader.onload = () => {
-      this.previewImage =
-        reader.result as string;
+      this.previewImage = reader.result as string;
     };
     reader.readAsDataURL(file);
   }
   loadPlayer() {
     if (!this.playerId) return;
-    this.playerService.getPlayerById(this.playerId)
-      .subscribe({
-        next: (player: any) => {
-          this.playerForm.patchValue({
-            name: player.name,
-            position: player.position,
-            preferredFoot: player.preferredFoot,
-            photo: player.photo
-
-          });
-          this.previewImage =
-            player.photo;
-        },
-        error: (error: any) => {
-          console.error(error);
-        }
-      });
-
+    this.playerService.getPlayerById(this.playerId).subscribe({
+      next: (player: any) => {
+        this.playerForm.patchValue({
+          name: player.name,
+          position: player.position,
+          preferredFoot: player.preferredFoot,
+          photo: player.photo,
+        });
+        this.previewImage = player.photo;
+      },
+      error: (error: any) => {
+        console.error(error);
+      },
+    });
   }
-
 }

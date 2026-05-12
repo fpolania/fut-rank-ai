@@ -51,7 +51,7 @@ export class TeamApplicationService {
       goals: 0,
       assists: 0,
       matchesPlayed: 0,
-      averageRating: 2,
+      averageRating: 0,
       mvps: 0,
       speed: 50,
       stamina: 50,

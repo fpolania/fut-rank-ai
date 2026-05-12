@@ -1,111 +1,44 @@
-import { onCall }
-    from "firebase-functions/v2/https";
+import { onCall } from 'firebase-functions/v2/https';
+import { defineSecret } from 'firebase-functions/params';
+import OpenAI from 'openai';
+const openAiKey = defineSecret('OPENAI_API_KEY');
+export const generatePlayerInsight = onCall(
+  {
+    secrets: [openAiKey],
+    invoker: 'public',
+  },
+  async (request) => {
+    try {
+      const openai = new OpenAI({
+        apiKey: openAiKey.value(),
+      });
+      const player = request.data.player;
+      const comments = request.data.comments || [];
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-4.1-mini',
+        messages: [
+          {
+            role: 'system',
 
-import {
-    defineSecret
-} from "firebase-functions/params";
-
-import OpenAI
-    from "openai";
-
-/* SECRET */
-
-const openAiKey =
-
-    defineSecret(
-        "OPENAI_API_KEY"
-    );
-
-/* FUNCTION */
-
-export const generatePlayerInsight =
-
-    onCall(
-
-        {
-
-            secrets: [openAiKey],
-
-            invoker: "public"
-
-        },
-
-        async (request) => {
-
-            try {
-
-                /* OPENAI */
-
-                const openai =
-
-                    new OpenAI({
-
-                        apiKey:
-                            openAiKey.value()
-
-                    });
-
-                /* DATA */
-
-                const player =
-                    request.data.player;
-
-                const comments =
-                    request.data.comments || [];
-
-                /* LOGS */
-
-                console.log(
-                    "PLAYER:",
-                    player
-                );
-
-                console.log(
-                    "COMMENTS:",
-                    comments
-                );
-
-                /* GPT */
-
-                const completion =
-
-                    await openai
-                        .chat
-                        .completions
-                        .create({
-
-                            model:
-                                "gpt-4.1-mini",
-
-                            messages: [
-
-                                {
-
-                                    role: "system",
-
-                                    content:
-                                        `
+            content: `
                     Eres un entrenador
                     profesional de fútbol.
 
                     Analiza fortalezas,
                     debilidades y consejos
                     para mejorar.
-                    `
+                    `,
+          },
 
-                                },
+          {
+            role: 'user',
 
-                                {
-
-                                    role: "user",
-
-                                    content:
-                                        `
+            content: `
 Jugador:
-${player?.name || "Sin nombre"}
+${player?.name || 'Sin nombre'}
 
 Posición:
-${player?.position || "Sin posición"}
+${player?.position || 'Sin posición'}
 
 Rating:
 ${player?.averageRating || 0}
@@ -120,44 +53,21 @@ MVPs:
 ${player?.mvps || 0}
 
 Comentarios:
-${comments?.join(", ") || "Sin comentarios"}
-`
+${comments?.join(', ') || 'Sin comentarios'}
+`,
+          },
+        ],
+      });
 
-                                }
+      return {
+        insight: completion.choices[0].message.content,
+      };
+    } catch (error) {
+      console.error('ERROR IA:', error);
 
-                            ]
-
-                        });
-
-                /* RESPONSE */
-
-                return {
-
-                    insight:
-
-                        completion
-                            .choices[0]
-                            .message
-                            .content
-
-                };
-
-            } catch (error) {
-
-                console.error(
-                    "ERROR IA:",
-                    error
-                );
-
-                return {
-
-                    insight:
-                        "Error generando insight IA"
-
-                };
-
-            }
-
-        }
-
-    );
+      return {
+        insight: 'Error generando insight IA',
+      };
+    }
+  },
+);

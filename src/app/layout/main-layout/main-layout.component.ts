@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { AsyncPipe } from '@angular/common';
+declare const bootstrap: any;
 @Component({
   selector: 'app-main-layout',
   imports: [RouterOutlet, RouterLink, RouterLinkActive, AsyncPipe],
@@ -18,5 +19,8 @@ export class MainLayoutComponent {
   logout() {
     this.authService.logout();
     sessionStorage.clear();
+  }
+  closeSidebar() {
+    this.sidebarOpen = false;
   }
 }

@@ -1,258 +1,173 @@
 <div class="rankings-page">
+  <!-- HEADER -->
 
-    <!-- HEADER -->
+  <div class="top-section">
+    <div>
+      <span class="badge-title"> FUT RANK AI </span>
 
-    <div class="top-section">
+      <h1>Rankings Globales 🏆</h1>
 
-        <div>
-
-            <span class="badge-title">
-                FUT RANK AI
-            </span>
-
-            <h1>
-                Rankings Globales 🏆
-            </h1>
-
-            <p>
-                Los mejores jugadores de la temporada.
-            </p>
-
-        </div>
-
-        <button class="season-btn">
-            Temporada 2026
-        </button>
-
+      <p>Los mejores jugadores de la temporada.</p>
     </div>
 
-    <!-- PODIUM -->
+    <button class="season-btn">Temporada 2026</button>
+  </div>
+  <section class="podium-section">
+    @if (topPlayers[1]) {
+      <div class="podium-card second">
+        <div class="position">🥈</div>
 
-    <section class="podium-section">
+        <img [src]="topPlayers[1].photo" />
 
-        <!-- SECOND -->
+        <h3>
+          {{ topPlayers[1].name }}
+        </h3>
 
-        @if(topPlayers[1]){
+        <span>
+          {{ topPlayers[1].position }}
+        </span>
 
-        <div class="podium-card second">
-
-            <div class="position">
-                🥈
-            </div>
-
-            <img [src]="topPlayers[1].photo">
-
-            <h3>
-                {{ topPlayers[1].name }}
-            </h3>
-
-            <span>
-                {{ topPlayers[1].position }}
-            </span>
-
-            <div class="score">
-                {{ topPlayers[1].averageRating }}
-            </div>
-
+        <div class="score">
+          {{ topPlayers[1].averageRating }}
         </div>
+      </div>
+    }
 
-        }
+    @if (topPlayers[0]) {
+      <div class="podium-card first">
+        <div class="crown">👑</div>
 
-        <!-- FIRST -->
+        <div class="position">🥇</div>
 
-        @if(topPlayers[0]){
+        <img [src]="topPlayers[0].photo" />
 
-        <div class="podium-card first">
+        <h3>
+          {{ topPlayers[0].name }}
+        </h3>
 
-            <div class="crown">
-                👑
-            </div>
+        <span>
+          {{ topPlayers[0].position }}
+        </span>
 
-            <div class="position">
-                🥇
-            </div>
-
-            <img [src]="topPlayers[0].photo">
-
-            <h3>
-                {{ topPlayers[0].name }}
-            </h3>
-
-            <span>
-                {{ topPlayers[0].position }}
-            </span>
-
-            <div class="score">
-                {{ topPlayers[0].averageRating }}
-            </div>
-
+        <div class="score">
+          {{ topPlayers[0].averageRating }}
         </div>
+      </div>
+    }
 
-        }
+    <!-- THIRD -->
 
-        <!-- THIRD -->
+    @if (topPlayers[2]) {
+      <div class="podium-card third">
+        <div class="position">🥉</div>
 
-        @if(topPlayers[2]){
+        <img [src]="topPlayers[2].photo" />
 
-        <div class="podium-card third">
+        <h3>
+          {{ topPlayers[2].name }}
+        </h3>
 
-            <div class="position">
-                🥉
-            </div>
+        <span>
+          {{ topPlayers[2].position }}
+        </span>
 
-            <img [src]="topPlayers[2].photo">
-
-            <h3>
-                {{ topPlayers[2].name }}
-            </h3>
-
-            <span>
-                {{ topPlayers[2].position }}
-            </span>
-
-            <div class="score">
-                {{ topPlayers[2].averageRating }}
-            </div>
-
+        <div class="score">
+          {{ topPlayers[2].averageRating }}
         </div>
+      </div>
+    }
+  </section>
 
-        }
+  <section class="filters-section">
+    <button
+      class="filter"
+      [class.active]="selectedFilter === 'Todos'"
+      (click)="filterRanking('Todos')"
+    >
+      Todos
+    </button>
+    <button
+      class="filter"
+      [class.active]="selectedFilter === 'MVPs'"
+      (click)="filterRanking('MVPs')"
+    >
+      MVPs
+    </button>
+  </section>
 
-    </section>
+  <!-- TABLE -->
 
-    <section class="filters-section">
-        <button class="filter" [class.active]="
-        selectedFilter === 'Todos'
-      " (click)="filterRanking('Todos')">
-            Todos
-        </button>
-        <button class="filter" [class.active]="
-        selectedFilter === 'MVPs'
-      " (click)="filterRanking('MVPs')">
+  <section class="table-section">
+    <div class="table-header">
+      <span>#</span>
+      <span>Jugador</span>
+      <span>Posición</span>
+      <span>Promedio</span>
+      <span>MVPs</span>
+      <span>Tendencia</span>
+    </div>
 
-            MVPs
+    <!-- ROW -->
 
-        </button>
+    @for (player of players; track player.id; let i = $index) {
+      <div class="table-row">
+        <!-- POSITION -->
 
-    </section>
-
-    <!-- TABLE -->
-
-    <section class="table-section">
-
-        <div class="table-header">
-
-            <span>#</span>
-            <span>Jugador</span>
-            <span>Posición</span>
-            <span>Promedio</span>
-            <span>MVPs</span>
-            <span>Tendencia</span>
-
+        <span>
+          {{ i + 1 }}
+        </span>
+        <div class="player-cell">
+          <img [src]="player.photo" />
+          <strong>
+            {{ player.name }}
+          </strong>
         </div>
+        <span>
+          {{ player.position }}
+        </span>
 
-        <!-- ROW -->
+        <!-- RATING -->
 
-        @for(player of players; track player.id; let i = $index){
+        <span class="green">
+          {{ player.averageRating }}
+        </span>
 
-        <div class="table-row">
+        <!-- MVPS -->
 
-            <!-- POSITION -->
+        <span>
+          {{ player.mvps }}
+        </span>
 
-            <span>
+        <!-- TREND -->
 
-                {{ i + 1 }}
+        <span class="trend-up"> 🔥 Top Player </span>
+      </div>
+    }
+  </section>
 
-            </span>
-            <div class="player-cell">
-                <img [src]="player.photo">
-                <strong>
-                    {{ player.name }}
-                </strong>
-            </div>
-            <span>
+  <!-- AI INSIGHTS -->
 
-                {{ player.position }}
+  <section class="ai-section">
+    <div class="section-title">🤖 AI Insights</div>
 
-            </span>
+    <div class="ai-grid">
+      <div class="ai-card">
+        <span> 🔥 </span>
 
-            <!-- RATING -->
+        <p>Fabian es el jugador más consistente del torneo.</p>
+      </div>
 
-            <span class="green">
+      <div class="ai-card">
+        <span> 📈 </span>
 
-                {{ player.averageRating }}
+        <p>Kevin es el jugador con mayor crecimiento.</p>
+      </div>
 
-            </span>
+      <div class="ai-card">
+        <span> 🛡️ </span>
 
-            <!-- MVPS -->
-
-            <span>
-
-                {{ player.mvps }}
-
-            </span>
-
-            <!-- TREND -->
-
-            <span class="trend-up">
-
-                🔥 Top Player
-
-            </span>
-
-        </div>
-
-        }
-    </section>
-
-    <!-- AI INSIGHTS -->
-
-    <section class="ai-section">
-
-        <div class="section-title">
-            🤖 AI Insights
-        </div>
-
-        <div class="ai-grid">
-
-            <div class="ai-card">
-
-                <span>
-                    🔥
-                </span>
-
-                <p>
-                    Fabian es el jugador más consistente del torneo.
-                </p>
-
-            </div>
-
-            <div class="ai-card">
-
-                <span>
-                    📈
-                </span>
-
-                <p>
-                    Kevin es el jugador con mayor crecimiento.
-                </p>
-
-            </div>
-
-            <div class="ai-card">
-
-                <span>
-                    🛡️
-                </span>
-
-                <p>
-                    Juan lidera estadísticas defensivas.
-                </p>
-
-            </div>
-
-        </div>
-
-    </section>
-
+        <p>Juan lidera estadísticas defensivas.</p>
+      </div>
+    </div>
+  </section>
 </div>

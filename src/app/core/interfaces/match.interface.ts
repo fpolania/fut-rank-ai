@@ -1,6 +1,4 @@
-import {
-  Timestamp
-} from '@angular/fire/firestore';
+import { Timestamp } from '@angular/fire/firestore';
 
 export interface Match {
   id?: string;
@@ -21,6 +19,7 @@ export interface Match {
   createdAt: Timestamp;
   didWin: boolean;
   result: string;
+  finishedAt: Timestamp;
 }
 export interface MatchPlayer {
   playerId: string;

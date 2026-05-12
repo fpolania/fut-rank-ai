@@ -3,19 +3,19 @@
     <div>
       <span class="badge-title"> FUT RANK AI </span>
       <h1>
-        {{ match?.teamA }}
+        {{ match.teamA }}
         <span> vs </span>
-        {{ match?.teamB }}
+        {{ match.teamB }}
       </h1>
     </div>
     <button
       class="finish-btn"
       (click)="finishMatch()"
       [disabled]="
-        match?.finished || (authService.currentUser | async)?.role !== 'captain'
+        match.finished || (authService.currentUser | async)?.role !== 'captain'
       "
     >
-      @if (match?.finished) {
+      @if (match.finished) {
         🔒 Partido Finalizado
       } @else {
         ✅ Finalizar Partido
@@ -26,17 +26,17 @@
   <div class="score-board">
     <div class="team-side">
       <h2>
-        {{ match?.teamA }}
+        {{ match.teamA }}
       </h2>
 
       <strong>
-        {{ match?.scoreA }}
+        {{ match.scoreA }}
       </strong>
     </div>
     <span class="vs-text"> VS </span>
     <div class="team-side">
       <h2>
-        {{ match?.teamB }}
+        {{ match.teamB }}
       </h2>
 
       <div class="enemy-score-wrapper">
@@ -49,7 +49,7 @@
         </button>
 
         <div class="enemy-score">
-          {{ match?.scoreB }}
+          {{ match.scoreB }}
         </div>
 
         <button
@@ -64,7 +64,7 @@
   </div>
 
   <div class="players-grid">
-    @for (player of match?.players; track player.playerId) {
+    @for (player of match.players; track player.playerId) {
       <div class="player-card">
         <img [src]="player.photo" />
         <h3>

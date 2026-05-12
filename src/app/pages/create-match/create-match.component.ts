@@ -7,14 +7,17 @@ import { MatchService } from '../../core/services/match.service';
 import { Timestamp } from '@angular/fire/firestore';
 import { MatchPlayer } from '../../core/interfaces/match.interface';
 import { LoadingService } from '../../core/services/loading.service';
-import { errorAlert, successAlert, warningAlert } from '../../core/utils/alert.util';
+import {
+  errorAlert,
+  successAlert,
+  warningAlert,
+} from '../../core/utils/alert.util';
 
 @Component({
   selector: 'app-create-match',
-  imports: [CommonModule,
-    ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './create-match.component.html',
-  styleUrl: './create-match.component.css'
+  styleUrl: './create-match.component.css',
 })
 export class CreateMatchComponent implements OnInit {
   private fb = inject(FormBuilder);
@@ -24,32 +27,26 @@ export class CreateMatchComponent implements OnInit {
   players: Player[] = [];
   selectedPlayers: Player[] = [];
   selectedMatchType = 'FUT 5';
-  matchTypes = [
-    'FUT 5',
-    'FUT 8'
-  ];
-  matchForm =
-    this.fb.group({
-      name: ['', Validators.required],
-      date: ['', Validators.required],
-      time: ['', Validators.required],
-      field: ['', Validators.required]
-    });
+  matchTypes = ['FUT 5', 'FUT 8'];
+  matchForm = this.fb.group({
+    name: ['', Validators.required],
+    date: ['', Validators.required],
+    time: ['', Validators.required],
+    field: ['', Validators.required],
+  });
   ngOnInit(): void {
     this.getPlayers();
   }
   getPlayers() {
     this.loadingService.show();
-    this.playerService
-      .getPlayers()
-      .subscribe({
-        next: (players) => {
-          this.players = players;
-        },
-        error: (error) => {
-          console.error(error);
-        }
-      });
+    this.playerService.getPlayers().subscribe({
+      next: (players) => {
+        this.players = players;
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
     this.loadingService.hide();
   }
   selectMatchType(type: string) {
@@ -57,45 +54,48 @@ export class CreateMatchComponent implements OnInit {
     this.selectedPlayers = [];
   }
   togglePlayer(player: Player) {
-    const exists = this.selectedPlayers.some(p => p.id === player.id);
+    const exists = this.selectedPlayers.some((p) => p.id === player.id);
     if (exists) {
-      this.selectedPlayers = this.selectedPlayers.filter(p => p.id !== player.id);
+      this.selectedPlayers = this.selectedPlayers.filter(
+        (p) => p.id !== player.id,
+      );
       return;
     }
     const limit = this.selectedMatchType === 'FUT 5' ? 10 : 16;
     if (this.selectedPlayers.length >= limit) {
       warningAlert(
         'Plantilla completa ⚽🔥',
-        `Solo puedes convocar ${limit} jugadores para el cotejo.`
+        `Solo puedes convocar ${limit} jugadores para el cotejo.`,
       );
       return;
     }
     this.selectedPlayers.push(player);
   }
   isSelected(player: Player) {
-    return this.selectedPlayers.some(p => p.id === player.id);
+    return this.selectedPlayers.some((p) => p.id === player.id);
   }
   async createMatch() {
-    if (this.matchForm.invalid) { this.matchForm.markAllAsTouched(); return; }
+    if (this.matchForm.invalid) {
+      this.matchForm.markAllAsTouched();
+      return;
+    }
     try {
       this.loadingService.show();
-      const players: MatchPlayer[] = this.selectedPlayers.map(
-        player => ({
-          playerId: player.id || '',
-          name: player.name,
-          photo: player.photo,
-          position: player.position,
-          team: 'PULL_REQUEST',
-          rating: player.averageRating,
-          goals: 0,
-          assists: 0,
-          isMvp: false
-        })
-      );
-      const title =this.matchForm.value.name || '';
-      const splitTitle =title.split(/vs/i);
-      let teamA =splitTitle[0]?.trim() ||'Pull Request';
-      let teamB = splitTitle[1]?.trim() ||'Rival';
+      const players: MatchPlayer[] = this.selectedPlayers.map((player) => ({
+        playerId: player.id || '',
+        name: player.name,
+        photo: player.photo,
+        position: player.position,
+        team: 'PULL_REQUEST',
+        rating: player.averageRating,
+        goals: 0,
+        assists: 0,
+        isMvp: false,
+      }));
+      const title = this.matchForm.value.name || '';
+      const splitTitle = title.split(/vs/i);
+      let teamA = splitTitle[0]?.trim() || 'Pull Request';
+      let teamB = splitTitle[1]?.trim() || 'Rival';
 
       const isPullRequestOnRight = teamB.toLowerCase().includes('pull request');
       if (isPullRequestOnRight) {
@@ -106,27 +106,27 @@ export class CreateMatchComponent implements OnInit {
 
       const match = {
         title,
-        type:this.selectedMatchType,
-        formation:this.selectedMatchType,
-        field:this.matchForm.value.field || '',
-        date:this.matchForm.value.date || '',
-        time:this.matchForm.value.time || '',
+        type: this.selectedMatchType,
+        formation: this.selectedMatchType,
+        field: this.matchForm.value.field || '',
+        date: this.matchForm.value.date || '',
+        time: this.matchForm.value.time || '',
         teamA,
         teamB,
         scoreA: 0,
         scoreB: 0,
         mvpPlayerId: '',
         players,
-        createdBy:this.matchForm.value.name,
+        createdBy: this.matchForm.value.name,
         finished: false,
-        createdAt:Timestamp.now()
-
+        createdAt: Timestamp.now(),
+        finishedAt: null,
       };
 
       await this.matchService.addMatch(match as any);
       successAlert(
         'Partido Creado ⚽🔥',
-        'El squad Pull Request fue creado correctamente.'
+        'El squad Pull Request fue creado correctamente.',
       );
 
       this.matchForm.reset();
@@ -134,7 +134,7 @@ export class CreateMatchComponent implements OnInit {
     } catch (error) {
       errorAlert(
         'No se pudo crear el squad 😮‍💨',
-        'Verifica la información e inténtalo nuevamente.'
+        'Verifica la información e inténtalo nuevamente.',
       );
       console.error(error);
     } finally {

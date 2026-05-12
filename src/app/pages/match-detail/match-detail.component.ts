@@ -14,6 +14,7 @@ import { LoadingService } from '../../core/services/loading.service';
 
 import { successAlert, errorAlert } from '../../core/utils/alert.util';
 import { AuthService } from '../../core/services/auth.service';
+import { Timestamp } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-match-detail',
@@ -119,46 +120,30 @@ export class MatchDetailComponent implements OnInit {
 
   async finishMatch(): Promise<void> {
     this.loadingService.show();
-
     if (!this.matchId || this.match.finished) return;
-
     try {
       for (const player of this.match.players) {
         await this.updatePlayerStats(player);
       }
-
       const result = this.getMatchResult();
-
-      /* CLEAN PLAYERS */
-
       const cleanPlayers = this.match.players.map((player) => ({
         playerId: player.playerId,
-
         name: player.name,
-
         photo: player.photo,
-
         position: player.position,
-
         team: player.team,
-
         goals: player.goals,
-
         assists: player.assists,
       }));
 
       this.match.finished = true;
-
       await this.matchService.updateMatch(this.matchId, {
         finished: true,
-
         result,
-
         scoreA: this.match.scoreA,
-
         scoreB: this.match.scoreB,
-
         players: cleanPlayers,
+        finishedAt: Timestamp.now(),
       });
 
       successAlert(

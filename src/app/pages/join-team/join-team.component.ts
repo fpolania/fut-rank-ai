@@ -59,18 +59,14 @@ export class JoinTeamComponent {
 
   async submitApplication() {
     if (this.joinForm.invalid) return;
-
     this.loadingService.show();
-
     try {
       const applicationsRef = collection(this.firestore, 'team-applications');
-
       await addDoc(applicationsRef, {
         ...this.joinForm.value,
         status: 'pending',
         createdAt: Timestamp.now(),
       });
-
       this.loadingService.hide();
       successAlert(
         'Postulación enviada ⚽',

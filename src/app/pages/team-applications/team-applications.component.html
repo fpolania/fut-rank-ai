@@ -1,87 +1,74 @@
-<div class="container py-4">
-  <div class="d-flex align-items-center justify-content-between mb-4">
+<div class="applications-page">
+  <div class="top-section">
     <div>
-      <h1 class="text-white fw-bold mb-1">⚽ Postulaciones</h1>
+      <div class="page-badge">⚽ FUT RANK AI</div>
 
-      <p class="text-secondary mb-0">
-        Gestiona las solicitudes de nuevos jugadores.
-      </p>
+      <h1>Postulaciones</h1>
+
+      <p>Gestiona las solicitudes de nuevos jugadores.</p>
     </div>
   </div>
 
-  <div class="row g-4">
+  <div class="applications-grid">
     @for (application of applications$ | async; track application.id) {
-      <div class="col-12 col-lg-6">
-        <div class="card border-0 shadow-lg h-100 bg-dark text-white rounded-4">
-          <div class="card-body p-4">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-              <div>
-                <h4 class="fw-bold mb-1">
-                  {{ application.name }}
-                </h4>
+      <div class="application-card">
+        <!-- TOP -->
 
-                <span
-                  class="badge"
-                  [ngClass]="{
-                    'bg-danger': application.status === 'rejected',
-                    'bg-primary': application.status === 'pending',
-                  }"
-                >
-                  {{ application.status }}
-                </span>
-              </div>
+        <div class="card-top">
+          <div>
+            <h3>
+              {{ application.name }}
+            </h3>
 
-              <div class="text-end text-secondary small">
-                {{ application.age }} años
-              </div>
-            </div>
+            <span
+              class="status-badge"
+              [ngClass]="{
+                pending: application.status === 'pending',
 
-            <div class="mb-3">
-              <p class="mb-2">
-                ⚽
-                {{ application.position }}
-              </p>
-
-              <p class="mb-2">
-                🦶
-                {{ application.foot }}
-              </p>
-
-              <p class="mb-2">
-                📍
-                {{ application.city }}
-              </p>
-
-              <p class="mb-0">
-                📱
-                {{ application.number }}
-              </p>
-            </div>
-            <div class="p-3 rounded-4 bg-secondary bg-opacity-10 mb-4">
-              <small class="text-success fw-bold"> FORTALEZAS </small>
-
-              <p class="mb-0 mt-2 text-light">
-                {{ application.strengths }}
-              </p>
-            </div>
-
-            <div class="d-flex gap-2 flex-wrap">
-              <button
-                class="btn btn-success flex-fill"
-                (click)="approvePlayer(application)"
-              >
-                ✅ Aprobar
-              </button>
-
-              <button
-                [disabled]="application.status === 'rejected'"
-                class="btn btn-danger flex-fill"
-                (click)="changeStatus(application.id!, 'rejected')"
-              >
-                ❌ Rechazar
-              </button>
-            </div>
+                rejected: application.status === 'rejected',
+              }"
+            >
+              {{ application.status }}
+            </span>
           </div>
+
+          <div class="player-age">{{ application.age }} años</div>
+        </div>
+
+        ⚽ {{ application.position }}
+
+        <span class="dot"></span>
+
+        🦶 {{ application.foot }}
+
+        <span class="dot"></span>
+
+        📍 {{ application.city }}
+
+        <span class="dot"></span>
+
+        📱 {{ application.number }}
+
+        <div class="strengths-card">
+          <span> FORTALEZAS </span>
+
+          <p>
+            {{ application.strengths }}
+          </p>
+        </div>
+
+        <div class="actions">
+          <button class="approve-btn" (click)="approvePlayer(application)">
+            ⚽ Aprobar
+          </button>
+
+          <button
+            [disabled]="application.status === 'rejected'"
+            class="reject-btn"
+            (click)="changeStatus(application.id!, 'rejected')"
+          >
+            ✖ Rechazar
+          </button>
         </div>
       </div>
     }
