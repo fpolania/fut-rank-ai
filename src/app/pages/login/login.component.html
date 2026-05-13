@@ -33,15 +33,22 @@
               <span>IA</span>
             </div>
           </div>
+          @if (!validatedPlayer) {
+            <button class="google-btn mt-5" (click)="showDocumentPrompt()">
+              <i class="bi bi-shield-lock-fill"></i>
 
-          <button class="google-btn mt-5" (click)="showDocumentPrompt()">
-            <img
-              src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
-              width="22"
-            />
+              <span> Acceso al Equipo </span>
+            </button>
+          } @else {
+            <button class="google-btn mt-5" (click)="login()">
+              <img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
+                width="22"
+              />
 
-            <span> Continuar con Google </span>
-          </button>
+              <span> Continuar con Google </span>
+            </button>
+          }
           <button class="join-team-btn" routerLink="/join-team">
             ⚽ Postularme al equipo
           </button>
