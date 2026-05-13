@@ -1,0 +1,413 @@
+.team-access-page {
+  min-height: 100vh;
+
+  padding: 2rem;
+
+  color: white;
+
+  background: linear-gradient(180deg, #020617, #071226);
+}
+
+/* TOP */
+
+.top-section {
+  margin-bottom: 2rem;
+}
+
+.badge-title {
+  color: #39ff14;
+
+  letter-spacing: 3px;
+
+  font-size: 0.8rem;
+
+  font-weight: 800;
+}
+
+.top-section h1 {
+  margin-top: 0.5rem;
+
+  font-size: clamp(2rem, 4vw, 4rem);
+
+  font-weight: 900;
+}
+
+.top-section p {
+  max-width: 700px;
+
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* LAYOUT */
+
+.access-layout {
+  display: grid;
+
+  grid-template-columns: 360px 1fr;
+
+  gap: 2rem;
+
+  align-items: start;
+}
+
+/* CARDS */
+
+.form-card,
+.players-section {
+  padding: 1.5rem;
+
+  border-radius: 30px;
+
+  background: rgba(255, 255, 255, 0.03);
+
+  border: 1px solid rgba(255, 255, 255, 0.05);
+
+  backdrop-filter: blur(10px);
+}
+
+/* HEADER */
+
+.card-header,
+.players-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 1rem;
+
+  margin-bottom: 2rem;
+}
+
+.card-header h2,
+.players-header h2 {
+  margin: 0;
+
+  font-size: 1.2rem;
+
+  font-weight: 800;
+}
+
+.card-header span {
+  color: #39ff14;
+
+  font-size: 0.75rem;
+
+  font-weight: 800;
+}
+
+/* FORM */
+
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+.form-group label {
+  display: block;
+
+  margin-bottom: 0.5rem;
+
+  font-weight: 700;
+}
+
+.custom-input {
+  height: 56px;
+
+  border: none !important;
+
+  border-radius: 18px !important;
+
+  color: white !important;
+
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.custom-input:focus {
+  box-shadow: 0 0 0 4px rgba(57, 255, 20, 0.15) !important;
+
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.custom-input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* BUTTON */
+
+.save-btn {
+  width: 100%;
+
+  height: 56px;
+
+  border: none;
+
+  border-radius: 18px;
+
+  font-weight: 800;
+
+  transition: 0.25s ease;
+
+  background: linear-gradient(135deg, #39ff14, #16c60c);
+}
+
+.save-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* COUNT */
+
+.players-count {
+  width: 56px;
+
+  height: 56px;
+
+  border-radius: 18px;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  font-weight: 900;
+
+  font-size: 1rem;
+
+  color: #39ff14;
+
+  background: rgba(57, 255, 20, 0.12);
+}
+
+/* GRID */
+
+.players-grid {
+  display: grid;
+
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+
+  gap: 1rem;
+}
+
+/* PLAYER CARD */
+
+.player-card {
+  padding: 1.2rem;
+
+  border-radius: 24px;
+
+  transition: 0.25s ease;
+
+  background: rgba(255, 255, 255, 0.04);
+
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.player-card:hover {
+  transform: translateY(-4px);
+
+  border-color: rgba(57, 255, 20, 0.2);
+}
+
+/* PLAYER TOP */
+
+.player-top {
+  display: flex;
+
+  align-items: center;
+
+  gap: 1rem;
+}
+
+.player-avatar {
+  width: 62px;
+
+  height: 62px;
+
+  border-radius: 18px;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  font-size: 1.5rem;
+
+  background: linear-gradient(135deg, #39ff14, #16c60c);
+
+  box-shadow: 0 10px 25px rgba(57, 255, 20, 0.2);
+}
+
+.player-top h3 {
+  margin: 0;
+
+  font-size: 1rem;
+
+  font-weight: 800;
+}
+
+.player-top span {
+  color: rgba(255, 255, 255, 0.45);
+
+  font-size: 0.8rem;
+}
+
+/* ROLE */
+
+.player-role {
+  width: fit-content;
+
+  margin-top: 1rem;
+
+  padding: 0.6rem 1rem;
+
+  border-radius: 14px;
+
+  font-size: 0.75rem;
+
+  font-weight: 800;
+
+  text-transform: uppercase;
+
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.player-role.captain {
+  color: #39ff14;
+
+  background: rgba(57, 255, 20, 0.12);
+}
+
+/* STATUS */
+
+.player-status {
+  margin-top: 0.8rem;
+
+  font-size: 0.82rem;
+
+  font-weight: 700;
+
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.player-status.active {
+  color: #39ff14;
+}
+
+/* ACTIONS */
+
+.player-actions {
+  margin-top: 1.2rem;
+
+  display: flex;
+
+  gap: 0.8rem;
+}
+
+.action-btn {
+  flex: 1;
+
+  height: 46px;
+
+  border: none;
+
+  border-radius: 14px;
+
+  color: white;
+
+  font-weight: 700;
+
+  transition: 0.25s ease;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+}
+
+.action-btn.edit {
+  background: rgba(59, 130, 246, 0.15);
+}
+
+.action-btn.delete {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.custom-input {
+  height: 56px;
+
+  border: 1px solid rgba(57, 255, 20, 0.15) !important;
+
+  border-radius: 18px !important;
+
+  color: white !important;
+
+  background-color: #1e293b !important;
+
+  box-shadow: none !important;
+}
+
+/* SELECT */
+
+select.custom-input {
+  appearance: none;
+
+  -webkit-appearance: none;
+
+  -moz-appearance: none;
+
+  cursor: pointer;
+
+  padding-right: 2.5rem;
+
+  background-color: #1e293b !important;
+
+  color: white !important;
+}
+
+select.custom-input:focus {
+  background-color: #1e293b !important;
+
+  color: white !important;
+
+  border-color: #39ff14 !important;
+
+  box-shadow: 0 0 0 3px rgba(57, 255, 20, 0.12) !important;
+}
+
+/* OPTIONS */
+
+select.custom-input option {
+  background: #0f172a;
+
+  color: white;
+}
+
+@media (max-width: 1100px) {
+  .access-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .team-access-page {
+    padding: 1rem;
+  }
+
+  .players-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .player-actions {
+    flex-direction: column;
+  }
+
+  .form-card,
+  .players-section {
+    padding: 1rem;
+  }
+
+  .player-card {
+    padding: 1rem;
+  }
+}

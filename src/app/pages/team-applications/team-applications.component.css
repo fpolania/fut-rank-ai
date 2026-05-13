@@ -240,7 +240,17 @@
   transform: translateY(-2px);
 }
 
-/* RESPONSIVE */
+select.custom-input {
+  background: rgba(255, 255, 255, 0.04);
+
+  color: #fff;
+}
+
+select.custom-input option {
+  background: #0f172a;
+
+  color: #fff;
+}
 
 @media (max-width: 900px) {
   .applications-grid {

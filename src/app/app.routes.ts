@@ -130,6 +130,13 @@ export const routes: Routes = [
             (m) => m.TeamApplicationsComponent,
           ),
       },
+      {
+        path: 'team-access',
+        loadComponent: () =>
+          import('./pages/team-access/team-access.component').then(
+            (m) => m.TeamAccessComponent,
+          ),
+      },
     ],
   },
 ];

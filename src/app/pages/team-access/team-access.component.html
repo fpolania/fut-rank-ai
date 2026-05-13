@@ -1,0 +1,138 @@
+<div class="team-access-page">
+  <div class="top-section">
+    <div>
+      <span class="badge-title"> ADMIN PANEL </span>
+      <h1>⚽ Gestión de accesos</h1>
+      <p>Administra jugadores y capitanes del equipo en tiempo real.</p>
+    </div>
+  </div>
+  <div class="access-layout">
+    <div class="form-card" [formGroup]="teamPlayerForm">
+      <div class="card-header">
+        <h2>➕ Nuevo jugador</h2>
+        <span>TEAM ACCESS</span>
+      </div>
+      <div class="form-group">
+        <label>Nombre</label>
+        <input
+          type="text"
+          class="form-control custom-input"
+          formControlName="name"
+          placeholder="Nombre del jugador"
+          [class.is-invalid]="
+            teamPlayerForm.get('name')?.invalid &&
+            teamPlayerForm.get('name')?.touched
+          "
+        />
+        @if (teamPlayerForm.get("name")?.touched) {
+          @if (teamPlayerForm.get("name")?.hasError("required")) {
+            <small class="text-danger"> El nombre es obligatorio. </small>
+          } @else if (teamPlayerForm.get("name")?.hasError("minlength")) {
+            <small class="text-danger">
+              Debes escribir al menos 10 caracteres.
+            </small>
+          } @else if (teamPlayerForm.get("name")?.hasError("pattern")) {
+            <small class="text-danger">
+              No se permiten caracteres especiales inválidos.
+            </small>
+          }
+        }
+      </div>
+
+      <div class="form-group">
+        <label>Llave / Documento</label>
+
+        <input
+          type="text"
+          class="form-control custom-input"
+          formControlName="document"
+          placeholder="Número de llave"
+          [class.is-invalid]="
+            teamPlayerForm.get('document')?.invalid &&
+            teamPlayerForm.get('document')?.touched
+          "
+        />
+        @if (teamPlayerForm.get("document")?.touched) {
+          @if (teamPlayerForm.get("document")?.hasError("required")) {
+            <small class="text-danger"> La llave es obligatoria. </small>
+          } @else if (teamPlayerForm.get("document")?.hasError("minlength")) {
+            <small class="text-danger"> Debe tener mínimo 6 números. </small>
+          } @else if (teamPlayerForm.get("document")?.hasError("maxlength")) {
+            <small class="text-danger"> Máximo 10 números permitidos. </small>
+          } @else if (teamPlayerForm.get("document")?.hasError("pattern")) {
+            <small class="text-danger">
+              Debe contener solo números y no iniciar en 0.
+            </small>
+          }
+        }
+      </div>
+
+      <div class="form-group">
+        <label>Rol</label>
+        <select class="form-select custom-input" formControlName="role">
+          <option value="player">Jugador</option>
+          <option value="captain">Capitán</option>
+        </select>
+      </div>
+
+      <button
+        class="save-btn"
+        (click)="savePlayer()"
+        [disabled]="teamPlayerForm.invalid"
+      >
+        🚀 Guardar jugador
+      </button>
+    </div>
+
+    <div class="players-section">
+      <div class="players-header">
+        <h2>👥 Jugadores registrados</h2>
+        <div class="players-count">
+          {{ players.length }}
+        </div>
+      </div>
+
+      <div class="players-grid">
+        @for (player of players; track player.id) {
+          <div class="player-card">
+            <!-- TOP -->
+
+            <div class="player-top">
+              <div class="player-avatar">⚽</div>
+
+              <div>
+                <h3>
+                  {{ player.name }}
+                </h3>
+
+                <span>
+                  {{ player.document }}
+                </span>
+              </div>
+            </div>
+            <div
+              class="player-role"
+              [class.captain]="player.role === 'captain'"
+            >
+              {{ player.role }}
+            </div>
+
+            <div class="player-status" [class.active]="player.active">
+              {{ player.active ? "🟢 Activo" : "🔴 Inactivo" }}
+            </div>
+
+            <div class="player-actions">
+              <button class="action-btn edit" (click)="editPlayer(player)">
+                ✏️ Editar
+              </button>
+
+              <button class="action-btn delete" (click)="deletePlayer(player)">
+                🗑️ Eliminar
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

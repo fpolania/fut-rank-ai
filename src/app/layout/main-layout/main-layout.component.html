@@ -57,6 +57,15 @@
           🧠 Team Builder
         </a>
       }
+      @if ((authService.currentUser | async)?.role === "captain") {
+        <a
+          routerLink="/team-access"
+          routerLinkActive="active"
+          (click)="closeSidebar()"
+        >
+          🔐 Team Access
+        </a>
+      }
       <a
         routerLink="/match-history"
         routerLinkActive="active"

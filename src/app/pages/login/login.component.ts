@@ -2,8 +2,8 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import Swal from 'sweetalert2';
-import { TEAM_PLAYERS } from '../../core/constants/team-players.constant';
 import { RouterLink } from '@angular/router';
+import { TeamPlayersService } from '../../core/services/team-players.service';
 declare const bootstrap: any;
 
 @Component({
@@ -15,7 +15,7 @@ declare const bootstrap: any;
 })
 export class LoginComponent {
   authService = inject(AuthService);
-
+  private teamPlayersService = inject(TeamPlayersService);
   async login() {
     await this.authService.loginWithGoogle();
   }
@@ -28,64 +28,50 @@ export class LoginComponent {
       const inst =
         bootstrap.Offcanvas.getInstance(opened) ??
         new bootstrap.Offcanvas(opened);
+
       inst.hide();
+
       await new Promise((r) => setTimeout(r, 250));
     }
 
-    const {
-      value: userDocument,
-
-      isDismissed,
-    } = await Swal.fire({
+    const { value: userDocument, isDismissed } = await Swal.fire({
       title: 'Acceso al equipo ⚽',
       input: 'text',
       inputLabel: 'Ingresa tu Llave',
-
       inputPlaceholder: 'Número de llave',
-
       inputAttributes: {
         maxlength: '20',
-
         autocapitalize: 'off',
-
         autocorrect: 'off',
       },
-
       confirmButtonText: 'Continuar',
-
       cancelButtonText: 'Cancelar',
-
       showCancelButton: true,
-
       returnFocus: false,
     });
 
     if (isDismissed || !userDocument) return;
-
     const normalizedDocument = userDocument.trim();
-
-    const player = TEAM_PLAYERS.find(
-      (current) => current.document === normalizedDocument,
-    );
-
-    if (!player) {
+    try {
+      const player =
+        await this.teamPlayersService.getPlayerByDocument(normalizedDocument);
+      if (!player) {
+        await Swal.fire({
+          icon: 'error',
+          title: 'Acceso denegado',
+          text: 'No perteneces al equipo.',
+        });
+        return;
+      }
+      sessionStorage.setItem('teamPlayer', JSON.stringify(player));
+      this.login();
+    } catch (error) {
+      console.error(error);
       await Swal.fire({
         icon: 'error',
-
-        title: 'Acceso denegado',
-
-        text: 'No perteneces al equipo.',
+        title: 'Oops...',
+        text: 'Error validando acceso.',
       });
-
-      return;
     }
-
-    sessionStorage.setItem(
-      'teamPlayer',
-
-      JSON.stringify(player),
-    );
-
-    this.login();
   }
 }
