@@ -1,8 +1,6 @@
 .layout-container {
   display: flex;
-
   min-height: 100vh;
-
   background: #020617;
 }
 
@@ -25,9 +23,13 @@
 
   z-index: 1000;
 
-  transition: 0.3s ease;
+  transition: transform 0.3s ease;
 
   overflow-y: auto;
+
+  will-change: transform;
+
+  -webkit-overflow-scrolling: touch;
 }
 
 /* LOGO */
@@ -96,7 +98,7 @@
 
   border-radius: 18px;
 
-  transition: 0.3s ease;
+  transition: 0.25s ease;
 
   font-weight: 600;
 
@@ -150,6 +152,8 @@
   z-index: 100;
 
   backdrop-filter: blur(6px);
+
+  isolation: isolate;
 }
 
 .topbar h3 {
@@ -235,13 +239,19 @@
 
   font-size: 1.1rem;
 
-  transition: 0.3s ease;
+  transition: 0.25s ease;
 
   display: flex;
 
   justify-content: center;
 
   align-items: center;
+
+  cursor: pointer;
+
+  -webkit-tap-highlight-color: transparent;
+
+  touch-action: manipulation;
 }
 
 .logout-btn:hover {
@@ -276,11 +286,29 @@
 
   font-size: 1.3rem;
 
-  transition: 0.3s ease;
+  transition: 0.25s ease;
+
+  cursor: pointer;
+
+  position: relative;
+
+  z-index: 9999;
+
+  flex-shrink: 0;
+
+  -webkit-tap-highlight-color: transparent;
+
+  touch-action: manipulation;
+
+  user-select: none;
 }
 
 .menu-btn:hover {
   transform: scale(1.05);
+}
+
+.menu-btn:active {
+  transform: scale(0.96);
 }
 
 /* RESPONSIVE */
@@ -299,7 +327,11 @@
   }
 
   .menu-btn {
-    display: block;
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
   }
 }
 

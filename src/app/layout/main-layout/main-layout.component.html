@@ -69,7 +69,9 @@
 
   <main class="content-area">
     <header class="topbar">
-      <button class="menu-btn" (click)="toggleSidebar()">☰</button>
+      <button class="menu-btn" (click)="toggleSidebar()" type="button">
+        ☰
+      </button>
       <div>
         <h3>
           {{ ((authService.currentUser | async)?.name || "").toUpperCase() }}
