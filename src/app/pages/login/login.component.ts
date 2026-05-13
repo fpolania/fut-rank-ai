@@ -39,9 +39,9 @@ export class LoginComponent {
     } = await Swal.fire({
       title: 'Acceso al equipo ⚽',
       input: 'text',
-      inputLabel: 'Ingresa tu documento',
+      inputLabel: 'Ingresa tu Llave',
 
-      inputPlaceholder: 'Número de documento',
+      inputPlaceholder: 'Número de llave',
 
       inputAttributes: {
         maxlength: '20',

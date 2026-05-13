@@ -35,7 +35,7 @@ export const TEAM_PLAYERS = [
     name: 'Andres Herrera',
   },
   {
-    document: '1024486429',
+    document: '1024486469',
     role: 'player',
     name: 'Andres Ricardo',
   },
