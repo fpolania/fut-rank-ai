@@ -20,22 +20,22 @@ export const TEAM_PLAYERS = [
     name: 'Miguel Lasso',
   },
   {
-    document: '',
+    document: '1072662217',
     role: 'player',
     name: 'Gohan Neira',
   },
   {
-    document: '',
+    document: '1030583981',
     role: 'player',
     name: 'Jhon Jimenez',
   },
   {
-    document: '',
+    document: '1032495480',
     role: 'player',
     name: 'Andres Herrera',
   },
   {
-    document: '',
+    document: '1024486429',
     role: 'player',
     name: 'Andres Ricardo',
   },
@@ -43,5 +43,20 @@ export const TEAM_PLAYERS = [
     document: '1012380194',
     role: 'player',
     name: 'Erwin Pardo',
+  },
+  {
+    document: '1026289943',
+    role: 'player',
+    name: 'Jhonatan Diaz',
+  },
+  {
+    document: '1000855445',
+    role: 'player',
+    name: 'Andrey Londoño',
+  },
+  {
+    document: '1012343703',
+    role: 'player',
+    name: 'Jorge Pardo',
   },
 ];

@@ -25,13 +25,9 @@
     </button>
   </div>
 
-  <!-- PLAYERS -->
-
   <div class="players-grid">
     @for (player of players; track player.playerId) {
       <div class="player-card">
-        <!-- HEADER -->
-
         <div class="player-header">
           <div class="player-info">
             <img [src]="player.photo" />
@@ -61,8 +57,6 @@
           </div>
         </div>
 
-        <!-- SLIDER -->
-
         <div class="slider-section">
           <input
             type="range"
@@ -80,9 +74,6 @@
             <span>10</span>
           </div>
         </div>
-
-        <!-- TAGS -->
-
         <div class="tags-section">
           <span
             class="tag"
@@ -92,9 +83,6 @@
             🔥 MVP
           </span>
         </div>
-
-        <!-- COMMENT -->
-
         <textarea
           rows="4"
           [(ngModel)]="player.comment"

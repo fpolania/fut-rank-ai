@@ -1,768 +1,613 @@
 .team-builder-page {
+  min-height: 100vh;
 
-    min-height: 100vh;
+  padding: 2rem;
 
-    padding: 2rem;
+  color: white;
 
-    color: white;
-
-    background:
-        linear-gradient(180deg,
-            #020617,
-            #071226);
-
+  background: linear-gradient(180deg, #020617, #071226);
 }
 
 /* TOP */
 
 .top-section {
+  display: flex;
 
-    display: flex;
+  justify-content: space-between;
 
-    justify-content: space-between;
+  align-items: center;
 
-    align-items: center;
-
-    gap: 2rem;
-
+  gap: 2rem;
 }
 
 .badge-title {
+  color: #39ff14;
 
-    color: #39ff14;
+  letter-spacing: 3px;
 
-    letter-spacing: 3px;
-
-    font-size: .8rem;
-
+  font-size: 0.8rem;
 }
 
 .top-section h1 {
+  margin-top: 10px;
 
-    margin-top: 10px;
+  font-size: clamp(2rem, 4vw, 4rem);
 
-    font-size: clamp(2rem, 4vw, 4rem);
-
-    font-weight: 900;
-
+  font-weight: 900;
 }
 
 .top-section p {
-
-    color:
-        rgba(255, 255, 255, .6);
-
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* BUTTON */
 
 .generate-btn {
+  border: none;
 
-    border: none;
+  height: 56px;
 
-    height: 56px;
+  padding: 0 2rem;
 
-    padding: 0 2rem;
+  border-radius: 18px;
 
-    border-radius: 18px;
+  font-weight: 800;
 
-    font-weight: 800;
+  cursor: pointer;
 
-    cursor: pointer;
+  transition: 0.25s ease;
 
-    transition: .25s ease;
-
-    background:
-        linear-gradient(135deg,
-            #39ff14,
-            #16c60c);
-
+  background: linear-gradient(135deg, #39ff14, #16c60c);
 }
 
 .generate-btn:hover {
-
-    transform:
-        translateY(-3px);
-
+  transform: translateY(-3px);
 }
 
 /* FORMAT */
 
 .format-selector {
+  margin-top: 2rem;
 
-    margin-top: 2rem;
+  display: flex;
 
-    display: flex;
-
-    gap: 1rem;
-
+  gap: 1rem;
 }
 
 .format-btn {
+  border: none;
 
-    border: none;
+  height: 48px;
 
-    height: 48px;
+  padding: 0 1.5rem;
 
-    padding: 0 1.5rem;
+  border-radius: 16px;
 
-    border-radius: 16px;
+  font-weight: 700;
 
-    font-weight: 700;
+  cursor: pointer;
 
-    cursor: pointer;
+  color: white;
 
-    color: white;
+  transition: 0.25s ease;
 
-    transition: .25s ease;
-
-    background:
-        rgba(255, 255, 255, .05);
-
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .format-btn.active {
+  color: #020617;
 
-    color: #020617;
-
-    background:
-        linear-gradient(135deg,
-            #39ff14,
-            #16c60c);
-
+  background: linear-gradient(135deg, #39ff14, #16c60c);
 }
 
 /* LAYOUT */
 
 .builder-layout {
+  margin-top: 2rem;
 
-    margin-top: 2rem;
+  display: grid;
 
-    display: grid;
+  grid-template-columns: minmax(0, 900px) 320px;
 
-    grid-template-columns: minmax(0, 900px) 320px;
+  justify-content: center;
 
-    justify-content: center;
+  gap: 2rem;
 
-    gap: 2rem;
-
-    align-items: start;
-
+  align-items: start;
 }
 
 /* FIELD SECTION */
 
 .field-section {
-    padding: 1.5rem;
-    border-radius: 30px;
-    overflow: hidden;
-    background: rgba(255, 255, 255, .03);
-    max-width: 900px;
-    width: 100%;
+  padding: 1.5rem;
+  border-radius: 30px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.03);
+  max-width: 900px;
+  width: 100%;
 }
 
 .field-header {
+  display: flex;
 
-    display: flex;
+  justify-content: space-between;
 
-    justify-content: space-between;
-
-    align-items: center;
-
+  align-items: center;
 }
 
 .field-header span {
-
-    color: #39ff14;
-
+  color: #39ff14;
 }
 
 /* TEAM RATING */
 
 .team-rating {
+  width: 72px;
 
-    width: 72px;
+  height: 72px;
 
-    height: 72px;
+  border-radius: 22px;
 
-    border-radius: 22px;
+  display: flex;
 
-    display: flex;
+  justify-content: center;
 
-    justify-content: center;
+  align-items: center;
 
-    align-items: center;
+  flex-shrink: 0;
 
-    flex-shrink: 0;
+  font-size: 1.3rem;
 
-    font-size: 1.3rem;
+  font-weight: 900;
 
-    font-weight: 900;
+  color: #39ff14;
 
-    color: #39ff14;
-
-    background:
-        rgba(57, 255, 20, .15);
-
+  background: rgba(57, 255, 20, 0.15);
 }
 
 /* FIELD */
 
 .football-field {
+  margin-top: 2rem;
 
-    margin-top: 2rem;
+  position: relative;
 
-    position: relative;
+  min-height: 620px;
 
-    min-height: 620px;
+  padding: 2rem;
 
-    padding: 2rem;
+  border-radius: 30px;
 
-    border-radius: 30px;
+  overflow: hidden;
 
-    overflow: hidden;
-
-    background:
-        linear-gradient(180deg,
-            #2fa32f,
-            #228b22);
-
+  background: linear-gradient(180deg, #2fa32f, #228b22);
 }
 
 /* GRASS TEXTURE */
 
 .football-field::before {
+  content: "";
 
-    content: '';
+  position: absolute;
 
-    position: absolute;
+  inset: 0;
 
-    inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 0px,
+    rgba(255, 255, 255, 0.03) 60px,
+    transparent 60px,
+    transparent 120px
+  );
 
-    background:
-        repeating-linear-gradient(90deg,
-            rgba(255, 255, 255, .03) 0px,
-            rgba(255, 255, 255, .03) 60px,
-            transparent 60px,
-            transparent 120px);
-
-    opacity: .5;
-
+  opacity: 0.5;
 }
 
 /* OUTER FIELD */
 
 .football-field::after {
+  content: "";
 
-    content: '';
+  position: absolute;
 
-    position: absolute;
+  inset: 20px;
 
-    inset: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.22);
 
-    border:
-        3px solid rgba(255, 255, 255, .22);
-
-    border-radius: 12px;
-
+  border-radius: 12px;
 }
 
 /* CENTER LINE */
 
 .field-middle-line {
+  position: absolute;
 
-    position: absolute;
+  top: 50%;
 
-    top: 50%;
+  left: 20px;
 
-    left: 20px;
+  right: 20px;
 
-    right: 20px;
+  height: 3px;
 
-    height: 3px;
+  background: rgba(255, 255, 255, 0.2);
 
-    background:
-        rgba(255, 255, 255, .2);
+  transform: translateY(-50%);
 
-    transform:
-        translateY(-50%);
-
-    z-index: 1;
-
+  z-index: 1;
 }
 
 /* CENTER CIRCLE */
 
 .field-center-circle {
+  position: absolute;
 
-    position: absolute;
+  top: 50%;
 
-    top: 50%;
+  left: 50%;
 
-    left: 50%;
+  width: 140px;
 
-    width: 140px;
+  height: 140px;
 
-    height: 140px;
+  border-radius: 50%;
 
-    border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.2);
 
-    border:
-        3px solid rgba(255, 255, 255, .2);
+  transform: translate(-50%, -50%);
 
-    transform:
-        translate(-50%, -50%);
-
-    z-index: 1;
-
+  z-index: 1;
 }
 
 /* CENTER POINT */
 
 .field-center-point {
+  position: absolute;
 
-    position: absolute;
+  top: 50%;
 
-    top: 50%;
+  left: 50%;
 
-    left: 50%;
+  width: 10px;
 
-    width: 10px;
+  height: 10px;
 
-    height: 10px;
+  border-radius: 50%;
 
-    border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
 
-    background:
-        rgba(255, 255, 255, .8);
+  transform: translate(-50%, -50%);
 
-    transform:
-        translate(-50%, -50%);
-
-    z-index: 1;
-
+  z-index: 1;
 }
 
 /* TOP AREA */
 
 .field-top-area {
+  position: absolute;
 
-    position: absolute;
+  top: 20px;
 
-    top: 20px;
+  left: 50%;
 
-    left: 50%;
+  width: 220px;
 
-    width: 220px;
+  height: 90px;
 
-    height: 90px;
+  border: 3px solid rgba(255, 255, 255, 0.18);
 
-    border:
-        3px solid rgba(255, 255, 255, .18);
+  border-top: none;
 
-    border-top: none;
+  transform: translateX(-50%);
 
-    transform:
-        translateX(-50%);
-
-    z-index: 1;
-
+  z-index: 1;
 }
 
 /* BOTTOM AREA */
 
 .field-bottom-area {
+  position: absolute;
 
-    position: absolute;
+  bottom: 20px;
 
-    bottom: 20px;
+  left: 50%;
 
-    left: 50%;
+  width: 220px;
 
-    width: 220px;
+  height: 90px;
 
-    height: 90px;
+  border: 3px solid rgba(255, 255, 255, 0.18);
 
-    border:
-        3px solid rgba(255, 255, 255, .18);
+  border-bottom: none;
 
-    border-bottom: none;
+  transform: translateX(-50%);
 
-    transform:
-        translateX(-50%);
-
-    z-index: 1;
-
+  z-index: 1;
 }
 
 /* ROWS */
 
 .field-row {
+  position: relative;
 
-    position: relative;
+  z-index: 2;
 
-    z-index: 2;
+  display: flex;
 
-    display: flex;
+  justify-content: center;
 
-    justify-content: center;
+  align-items: center;
 
-    align-items: center;
-
-    gap: 2rem;
-
+  gap: 2rem;
 }
 
 /* FORMATIONS */
 
 .forwards {
-
-    margin-top: 2rem;
-
+  margin-top: 2rem;
 }
 
 .midfield {
-
-    margin-top: 6rem;
-
+  margin-top: 6rem;
 }
 
 .defense {
-
-    margin-top: 6rem;
-
+  margin-top: 6rem;
 }
 
 .goalkeeper {
-
-    margin-top: 6rem;
-
+  margin-top: 6rem;
 }
 
 /* PLAYER */
 
 .field-player {
+  text-align: center;
 
-    text-align: center;
-
-    transition: .25s ease;
-
+  transition: 0.25s ease;
 }
 
 .field-player:hover {
-
-    transform:
-        translateY(-4px) scale(1.03);
-
+  transform: translateY(-4px) scale(1.03);
 }
 
 .field-player img {
+  width: 62px;
 
-    width: 62px;
+  height: 62px;
 
-    height: 62px;
+  border-radius: 50%;
 
-    border-radius: 50%;
+  object-fit: cover;
 
-    object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.25);
 
-    border:
-        3px solid rgba(255, 255, 255, .25);
-
-    box-shadow:
-        0 10px 25px rgba(0, 0, 0, .2);
-
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
 .field-player span {
+  display: block;
 
-    display: block;
+  margin-top: 0.45rem;
 
-    margin-top: .45rem;
+  font-size: 0.82rem;
 
-    font-size: .82rem;
+  font-weight: 800;
 
-    font-weight: 800;
-
-    text-shadow:
-        0 2px 6px rgba(0, 0, 0, .4);
-
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .field-player small {
+  display: block;
 
-    display: block;
+  margin-top: 0.2rem;
 
-    margin-top: .2rem;
+  font-size: 0.7rem;
 
-    font-size: .7rem;
+  font-weight: 800;
 
-    font-weight: 800;
+  color: #facc15;
 
-    color: #facc15;
-
-    text-shadow:
-        0 2px 6px rgba(0, 0, 0, .4);
-
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 /* SIDEBAR */
 
 .players-sidebar {
+  padding: 1.5rem;
 
-    padding: 1.5rem;
+  border-radius: 30px;
 
-    border-radius: 30px;
+  max-height: 760px;
 
-    max-height: 760px;
+  overflow-y: auto;
 
-    overflow-y: auto;
-
-    background:
-        rgba(255, 255, 255, .03);
-
+  background: rgba(255, 255, 255, 0.03);
 }
 
 /* SCROLL */
 
 .players-sidebar::-webkit-scrollbar {
-
-    width: 6px;
-
+  width: 6px;
 }
 
 .players-sidebar::-webkit-scrollbar-thumb {
+  border-radius: 20px;
 
-    border-radius: 20px;
-
-    background:
-        rgba(57, 255, 20, .35);
-
+  background: rgba(57, 255, 20, 0.35);
 }
 
 /* SIDEBAR TITLE */
 
 .sidebar-title {
+  margin-bottom: 1.5rem;
 
-    margin-bottom: 1.5rem;
+  font-size: 1.2rem;
 
-    font-size: 1.2rem;
-
-    font-weight: 800;
-
+  font-weight: 800;
 }
 
 /* PLAYER CARD */
 
 .player-card {
+  display: flex;
 
-    display: flex;
+  justify-content: space-between;
 
-    justify-content: space-between;
+  align-items: center;
 
-    align-items: center;
+  gap: 1rem;
 
-    gap: 1rem;
+  margin-bottom: 1rem;
 
-    margin-bottom: 1rem;
+  padding: 1rem;
 
-    padding: 1rem;
+  border-radius: 20px;
 
-    border-radius: 20px;
-
-    background:
-        rgba(255, 255, 255, .03);
-
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .player-left {
+  display: flex;
 
-    display: flex;
+  align-items: center;
 
-    align-items: center;
-
-    gap: 1rem;
-
+  gap: 1rem;
 }
 
 .player-left img {
+  width: 58px;
 
-    width: 58px;
+  height: 58px;
 
-    height: 58px;
+  border-radius: 50%;
 
-    border-radius: 50%;
-
-    object-fit: cover;
-
+  object-fit: cover;
 }
 
 .player-left h3 {
-
-    font-size: .92rem;
-
+  font-size: 0.92rem;
 }
 
 .player-left span {
+  font-size: 0.75rem;
 
-    font-size: .75rem;
-
-    color: #39ff14;
-
+  color: #39ff14;
 }
 
 .player-insight {
+  display: block;
 
-    display: block;
+  margin-top: 0.3rem;
 
-    margin-top: .3rem;
+  font-size: 0.72rem;
 
-    font-size: .72rem;
-
-    color:
-        rgba(255, 255, 255, .55);
-
+  color: rgba(255, 255, 255, 0.55);
 }
 
 /* SCORE */
 
 .player-score {
+  width: 52px;
 
-    width: 52px;
+  height: 52px;
 
-    height: 52px;
+  border-radius: 16px;
 
-    border-radius: 16px;
+  display: flex;
 
-    display: flex;
+  justify-content: center;
 
-    justify-content: center;
+  align-items: center;
 
-    align-items: center;
+  font-weight: 900;
 
-    font-weight: 900;
+  color: #39ff14;
 
-    color: #39ff14;
-
-    background:
-        rgba(57, 255, 20, .12);
-
+  background: rgba(57, 255, 20, 0.12);
 }
 
-/* AI LOADING */
-
 .ai-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
 
-    position: absolute;
+  display: flex;
+  flex-direction: column;
 
-    inset: 0;
+  justify-content: center;
+  align-items: center;
 
-    z-index: 30;
+  text-align: center;
 
-    display: flex;
+  padding: 1.5rem;
 
-    flex-direction: column;
+  background: rgba(2, 6, 23, 0.82);
 
-    justify-content: center;
-
-    align-items: center;
-
-    background:
-        rgba(2, 6, 23, .82);
-
-    backdrop-filter: blur(8px);
-
+  backdrop-filter: blur(8px);
 }
 
 .ai-loading h2 {
-
-    font-size: 2rem;
-
-    font-weight: 900;
-
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  font-weight: 900;
+  line-height: 1.1;
+  max-width: 260px;
 }
 
 .ai-loading p {
-
-    margin-top: 1rem;
-
-    color:
-        rgba(255, 255, 255, .7);
-
+  margin-top: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
 }
 
-/* MOBILE */
-
-@media(max-width:1100px) {
-
-    .builder-layout {
-
-        grid-template-columns: 1fr;
-
-    }
-
+@media (max-width: 1100px) {
+  .builder-layout {
+    grid-template-columns: 1fr;
+  }
 }
 
-@media(max-width:768px) {
+@media (max-width: 768px) {
+  .team-builder-page {
+    padding: 1rem;
+  }
 
-    .team-builder-page {
+  .top-section {
+    flex-direction: column;
 
-        padding: 1rem;
+    align-items: flex-start;
+  }
 
-    }
+  .football-field {
+    min-height: 520px;
 
-    .top-section {
+    padding: 1rem;
+  }
 
-        flex-direction: column;
+  .field-row {
+    gap: 1rem;
+  }
 
-        align-items: flex-start;
+  .midfield,
+  .defense,
+  .goalkeeper {
+    margin-top: 4rem;
+  }
 
-    }
+  .field-player img {
+    width: 52px;
 
-    .football-field {
+    height: 52px;
+  }
 
-        min-height: 520px;
+  .field-player span {
+    font-size: 0.72rem;
+  }
 
-        padding: 1rem;
+  .team-rating {
+    width: 60px;
 
-    }
+    height: 60px;
 
-    .field-row {
-
-        gap: 1rem;
-
-    }
-
-    .midfield,
-    .defense,
-    .goalkeeper {
-
-        margin-top: 4rem;
-
-    }
-
-    .field-player img {
-
-        width: 52px;
-
-        height: 52px;
-
-    }
-
-    .field-player span {
-
-        font-size: .72rem;
-
-    }
-
-    .team-rating {
-
-        width: 60px;
-
-        height: 60px;
-
-        font-size: 1rem;
-
-    }
-
+    font-size: 1rem;
+  }
 }
