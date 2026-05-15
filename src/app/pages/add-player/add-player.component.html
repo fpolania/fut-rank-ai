@@ -1,86 +1,72 @@
 <div class="add-player-page">
-    <form class="form-card" [formGroup]="playerForm" (ngSubmit)="savePlayer()">
-        <div class="form-header">
-            <div>
-                <span class="badge-title">
-                    FUT RANK AI
-                </span>
-                <h1>
-                    @if(!editMode){
-                    Crear Jugador ⚽
-                    }
-                    @if(editMode){
-                    Editar Jugador ⚽
-                    }
-                </h1>
-            </div>
-            <div class="preview-container">
-                <img class="preview-img" [src]="previewImage">
-                <label for="photoInput" class="upload-btn">
+  <form class="form-card" [formGroup]="playerForm" (ngSubmit)="savePlayer()">
+    <div class="form-header">
+      <div>
+        <span class="badge-title"> FUT RANK AI </span>
+        <h1>
+          @if (!editMode) {
+            Crear Jugador ⚽
+          }
+          @if (editMode) {
+            Editar Jugador ⚽
+          }
+        </h1>
+      </div>
+      <div class="preview-container">
+        <img class="preview-img" [src]="previewImage" />
+        <label for="photoInput" class="upload-btn"> 📸 </label>
+        <input
+          id="photoInput"
+          type="file"
+          accept="image/*"
+          hidden
+          (change)="onFileSelected($event)"
+        />
+      </div>
+    </div>
 
-                    📸
+    <div class="form-grid">
+      <div class="form-group">
+        <label> Nombre </label>
+        <input type="text" placeholder="Ej: Fabian" formControlName="name" />
+      </div>
 
-                </label>
-                <input id="photoInput" type="file" accept="image/*" hidden (change)="onFileSelected($event)">
-            </div>
-        </div>
-
-        <div class="form-grid">
-            <div class="form-group">
-                <label>
-                    Nombre
-                </label>
-                <input type="text" placeholder="Ej: Fabian" formControlName="name">
-            </div>
-
-            <div class="form-group">
-                <label>
-                    Posición
-                </label>
-                <select formControlName="position">
-                    <option value="">
-                        Selecciona
-                    </option>
-                    @for(position of positions; track position){
-                    <option [value]="position">
-                        {{ position }}
-                    </option>
-                    }
-                </select>
-            </div>
-            <div class="form-group">
-                <label>
-                    Pierna hábil
-                </label>
-                <select formControlName="preferredFoot">
-                    <option value="">
-                        Selecciona
-                    </option>
-                    <option value="Derecha">
-                        Derecha
-                    </option>
-                    <option value="Izquierda">
-                        Izquierda
-                    </option>
-                    <option value="Ambas">
-                        Ambas
-                    </option>
-                </select>
-            </div>
-        </div>
-        <button type="submit" [disabled]="loading">
-            @if(!loading){
-            <span>
-                Guardar Jugador
-            </span>
-            }
-            @if(loading){
-            <span>
-                Guardando...
-            </span>
-            }
-        </button>
-
-    </form>
-
+      <div class="form-group">
+        <label> Posición </label>
+        <select formControlName="position">
+          <option value="">Selecciona</option>
+          @for (position of positions; track position) {
+            <option [value]="position">
+              {{ position }}
+            </option>
+          }
+        </select>
+      </div>
+      <div class="form-group">
+        <label> Pierna hábil </label>
+        <select formControlName="preferredFoot">
+          <option value="">Selecciona</option>
+          <option value="Derecha">Derecha</option>
+          <option value="Izquierda">Izquierda</option>
+          <option value="Ambas">Ambas</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label> Número de Documento </label>
+        <input
+          type="text"
+          placeholder="Ej: 12345678"
+          formControlName="numberDoc"
+        />
+      </div>
+    </div>
+    <button type="submit" [disabled]="loading">
+      @if (!loading) {
+        <span> Guardar Jugador </span>
+      }
+      @if (loading) {
+        <span> Guardando... </span>
+      }
+    </button>
+  </form>
 </div>

@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { AuthService } from '../../core/services/auth.service';
 
 import { TeamPlayersService } from '../../core/services/team-players.service';
+import { LoadingService } from '../../core/services/loading.service';
 
 declare const bootstrap: any;
 
@@ -24,9 +25,8 @@ declare const bootstrap: any;
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-  /* INJECTS */
-
   authService = inject(AuthService);
+  private loadingService = inject(LoadingService);
 
   private teamPlayersService = inject(TeamPlayersService);
   validatedPlayer = false;
@@ -39,52 +39,37 @@ export class LoginComponent {
     const opened = document.querySelector(
       '.offcanvas.show',
     ) as HTMLElement | null;
-
     if (opened) {
       const inst =
         bootstrap.Offcanvas.getInstance(opened) ??
         new bootstrap.Offcanvas(opened);
-
       inst.hide();
-
       await new Promise((r) => setTimeout(r, 250));
     }
-
-    const {
-      value: userDocument,
-
-      isDismissed,
-    } = await Swal.fire({
+    const { value: userDocument, isDismissed } = await Swal.fire({
       title: 'Acceso al equipo ⚽',
-
       input: 'text',
-
       inputLabel: 'Ingresa tu Llave',
-
       inputPlaceholder: 'Número de llave',
-
       inputAttributes: {
         maxlength: '20',
-
         autocapitalize: 'off',
-
         autocorrect: 'off',
       },
-
       confirmButtonText: 'Validar acceso',
-
       cancelButtonText: 'Cancelar',
-
       showCancelButton: true,
-
       returnFocus: false,
     });
     if (isDismissed || !userDocument) return;
     const normalizedDocument = userDocument.trim();
     try {
+      this.loadingService.show();
       const player =
         await this.teamPlayersService.getPlayerByDocument(normalizedDocument);
+      console.log('Player found:', player);
       if (!player) {
+        this.loadingService.hide();
         await Swal.fire({
           icon: 'error',
           title: 'Acceso denegado',
@@ -95,6 +80,7 @@ export class LoginComponent {
 
       sessionStorage.setItem('teamPlayer', JSON.stringify(player));
       this.validatedPlayer = true;
+      this.loadingService.hide();
       await Swal.fire({
         icon: 'success',
         title: 'Acceso aprobado',
@@ -102,12 +88,10 @@ export class LoginComponent {
       });
     } catch (error) {
       console.error(error);
-
+      this.loadingService.hide();
       await Swal.fire({
         icon: 'error',
-
         title: 'Oops...',
-
         text: 'Error validando acceso.',
       });
     }

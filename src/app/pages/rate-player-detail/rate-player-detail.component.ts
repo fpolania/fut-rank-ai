@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Timestamp } from '@angular/fire/firestore';
 
@@ -12,7 +12,11 @@ import { MatchService } from '../../core/services/match.service';
 
 import { RatingService } from '../../core/services/rating.service';
 import { LoadingService } from '../../core/services/loading.service';
-import { errorAlert, successAlert } from '../../core/utils/alert.util';
+import {
+  errorAlert,
+  successAlert,
+  warningAlert,
+} from '../../core/utils/alert.util';
 import { PlayerService } from '../../core/services/player.service';
 import { AiService } from '../../core/services/ai.service';
 import { BAD_WORDS } from '../../core/constants/bad-words.constant';
@@ -25,6 +29,7 @@ import { BAD_WORDS } from '../../core/constants/bad-words.constant';
 })
 export class RatePlayerDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private matchService = inject(MatchService);
   private ratingService = inject(RatingService);
   private loadingService = inject(LoadingService);
@@ -35,9 +40,14 @@ export class RatePlayerDetailComponent implements OnInit {
   matchId: string | null = null;
   match: any;
   players: any[] = [];
+  currentPlayerDocument: string = '';
+  alreadyRated = false;
 
   ngOnInit(): void {
     this.matchId = this.route.snapshot.paramMap.get('id');
+    this.currentPlayerDocument =
+      JSON.parse(sessionStorage.getItem('teamPlayer') || 'null')?.document ||
+      '12345678';
     if (this.matchId) {
       this.getMatch();
     }
@@ -45,18 +55,60 @@ export class RatePlayerDetailComponent implements OnInit {
 
   getMatch() {
     if (!this.matchId) return;
+    this.loadingService.show();
     this.matchService.getMatchById(this.matchId).subscribe({
-      next: (match: any) => {
-        this.match = match;
-        this.players = match.players.map((player: any) => ({
-          ...player,
-          newRating: null,
-          comment: '',
-          isMvp: false,
-          wasRated: false,
-        }));
+      next: async (match: any) => {
+        try {
+          this.match = match;
+          const currentPlayer = JSON.parse(
+            sessionStorage.getItem('teamPlayer') || 'null',
+          );
+          const ratings = await new Promise<any[]>((resolve) => {
+            this.ratingService
+              .getMatchRatings(this.matchId!)
+              .subscribe((data) => resolve(data));
+          });
+          this.players = match.players
+            .filter((player: any) => player.attended === true)
+            .map((player: any) => {
+              const playerRating = ratings.find(
+                (rating: any) => rating.playerId === player.playerId,
+              );
+              const alreadyRated =
+                playerRating?.data?.some(
+                  (item: any) => item.ratedBy === currentPlayer.document,
+                ) || false;
+              return {
+                ...player,
+                alreadyRated,
+                newRating: 1,
+                comment: '',
+                isMvp: false,
+                wasRated: false,
+              };
+            });
+          const availablePlayers = this.players.filter(
+            (player: any) =>
+              player.playerId !== this.currentPlayerDocument &&
+              !player.alreadyRated,
+          );
+          if (!availablePlayers.length) {
+            warningAlert(
+              'Calificaciones completas ⚽🔥',
+              'Ya calificaste a todos los jugadores de este partido.',
+            );
+            this.router.navigate(['/rate-players']);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          this.loadingService.hide();
+        }
       },
+
       error: (error: any) => {
+        this.loadingService.hide();
+
         console.error(error);
       },
     });
@@ -83,7 +135,7 @@ export class RatePlayerDetailComponent implements OnInit {
             .subscribe((data) => resolve(data));
         });
         const newData = {
-          ratedBy: 'Pull Request',
+          ratedBy: this.currentPlayerDocument,
           rating: playerRating,
           comment: player.comment || '',
           anonymous: false,
@@ -205,6 +257,7 @@ export class RatePlayerDetailComponent implements OnInit {
         goals: player.goals,
         assists: player.assists,
         rating: player.rating || 0,
+        attended: player.attended,
       }));
 
       await this.matchService.updateMatch(this.matchId, {

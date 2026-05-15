@@ -39,10 +39,11 @@ export class AddPlayerComponent implements OnInit {
   }
 
   playerForm = this.fb.group({
-    name: ['', Validators.required],
-    photo: ['', Validators.required],
-    position: ['', Validators.required],
-    preferredFoot: ['', Validators.required],
+    name: ['', [Validators.required]],
+    photo: ['', [Validators.required]],
+    position: ['', [Validators.required]],
+    preferredFoot: ['', [Validators.required]],
+    numberDoc: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
   });
 
   async savePlayer() {
@@ -61,6 +62,7 @@ export class AddPlayerComponent implements OnInit {
         photo: photoURL,
         position: this.playerForm.value.position,
         preferredFoot: this.playerForm.value.preferredFoot,
+        numberDoc: this.playerForm.value.numberDoc,
       };
       if (this.editMode && this.playerId) {
         await this.playerService.updatePlayer(this.playerId, player);
@@ -69,22 +71,26 @@ export class AddPlayerComponent implements OnInit {
           'Los datos del jugador fueron actualizados correctamente.',
         );
       } else {
-        await this.playerService.addPlayer({
-          ...(player as any),
-          averageRating: 0,
-          goals: 0,
-          assists: 0,
-          mvps: 0,
-          matchesPlayed: 0,
-          active: true,
-          speed: 60,
-          finishing: 60,
-          vision: 60,
-          stamina: 60,
-          defense: 60,
-          dribbling: 60,
-          createdAt: Timestamp.now(),
-        });
+        await this.playerService.addPlayer(
+          this.playerForm.value.numberDoc as any,
+          {
+            id: this.playerForm.value.numberDoc as any,
+            ...(player as any),
+            averageRating: 0,
+            goals: 0,
+            assists: 0,
+            mvps: 0,
+            matchesPlayed: 0,
+            active: true,
+            speed: 60,
+            finishing: 60,
+            vision: 60,
+            stamina: 60,
+            defense: 60,
+            dribbling: 60,
+            createdAt: Timestamp.now(),
+          },
+        );
         successAlert(
           'Jugador registrado ⚽🔥',
           'El jugador fue agregado correctamente al equipo.',
@@ -122,6 +128,7 @@ export class AddPlayerComponent implements OnInit {
           position: player.position,
           preferredFoot: player.preferredFoot,
           photo: player.photo,
+          numberDoc: player.numberDoc,
         });
         this.previewImage = player.photo;
       },

@@ -30,5 +30,5 @@ export interface MatchPlayer {
   rating: number;
   goals: number;
   assists: number;
-  // isMvp: boolean;
+  attended: boolean;
 }

@@ -126,6 +126,33 @@
               </button>
             </div>
           </div>
+          <div class="stat-card attendance-card">
+            <label> ✅ <strong>¿Asistió?</strong> </label>
+
+            <div class="attendance-toggle">
+              <button
+                class="attendance-btn"
+                [class.active]="player?.attended"
+                [disabled]="
+                  (authService.currentUser | async)?.role !== 'captain'
+                "
+                (click)="player.attended = true"
+              >
+                Sí
+              </button>
+
+              <button
+                class="attendance-btn absent"
+                [class.active]="!player.attended"
+                [disabled]="
+                  (authService.currentUser | async)?.role !== 'captain'
+                "
+                (click)="player.attended = false"
+              >
+                No
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     }

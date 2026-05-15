@@ -9,6 +9,7 @@ import {
   where,
   updateDoc,
   doc,
+  getDocs,
 } from '@angular/fire/firestore';
 
 import { map, Observable } from 'rxjs';
@@ -23,13 +24,9 @@ export class RatingService {
 
   private ratingsCollection = collection(this.firestore, 'ratings');
 
-  /* CREATE RATING */
-
   addRating(rating: Rating) {
     return addDoc(this.ratingsCollection, rating);
   }
-
-  /* GET PLAYER RATINGS */
 
   getPlayerRatings(playerId: string): Observable<Rating[]> {
     const ratingsQuery = query(
@@ -54,12 +51,9 @@ export class RatingService {
   }
   getRatingByPlayerAndMatch(playerId: string, matchId: string) {
     const ratingsRef = collection(this.firestore, 'ratings');
-
     const q = query(
       ratingsRef,
-
       where('playerId', '==', playerId),
-
       where('matchId', '==', matchId),
     );
 
@@ -69,7 +63,6 @@ export class RatingService {
   }
   updateRating(ratingId: string, data: any) {
     const ratingDoc = doc(this.firestore, `ratings/${ratingId}`);
-
     return updateDoc(ratingDoc, data);
   }
 }

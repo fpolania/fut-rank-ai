@@ -29,9 +29,8 @@ export class MatchDetailComponent implements OnInit {
   private playerService = inject(PlayerService);
   private loadingService = inject(LoadingService);
   authService = inject(AuthService);
-
   matchId: string | null = null;
-
+  attended: boolean = false;
   match!: Match;
 
   ngOnInit(): void {
@@ -123,6 +122,7 @@ export class MatchDetailComponent implements OnInit {
     if (!this.matchId || this.match.finished) return;
     try {
       for (const player of this.match.players) {
+        if (!player.attended) continue;
         await this.updatePlayerStats(player);
       }
       const result = this.getMatchResult();
@@ -134,6 +134,7 @@ export class MatchDetailComponent implements OnInit {
         team: player.team,
         goals: player.goals,
         assists: player.assists,
+        attended: player.attended,
       }));
 
       this.match.finished = true;

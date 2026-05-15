@@ -40,7 +40,7 @@ export class TeamApplicationService {
       status: 'approved',
     });
 
-    await this.playerService.addPlayer({
+    await this.playerService.addPlayer(application.number, {
       name: application.name,
       age: application.age,
       position: application.position,

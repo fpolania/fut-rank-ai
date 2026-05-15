@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { MatchService } from '../../core/services/match.service';
 
 import { Match } from '../../core/interfaces/match.interface';
+import { errorAlert } from '../../core/utils/alert.util';
 
 @Component({
   selector: 'app-rate-players',
@@ -44,6 +45,17 @@ export class RatePlayersComponent implements OnInit {
   }
 
   openRate(match: Match) {
+    const document =
+      JSON.parse(sessionStorage.getItem('teamPlayer') || 'null')?.document ||
+      '12345678';
+    const player = match.players.find((p) => p.playerId === document);
+    if (player?.attended === false) {
+      errorAlert(
+        'Ups 😮‍💨',
+        'No puedes calificar este partido porque no participaste en él.',
+      );
+      return;
+    }
     this.router.navigate(['/rate-players', match.id]);
   }
 }
