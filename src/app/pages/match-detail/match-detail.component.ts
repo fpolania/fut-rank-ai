@@ -30,7 +30,6 @@ export class MatchDetailComponent implements OnInit {
   private loadingService = inject(LoadingService);
   authService = inject(AuthService);
   matchId: string | null = null;
-  attended: boolean = false;
   match!: Match;
 
   ngOnInit(): void {

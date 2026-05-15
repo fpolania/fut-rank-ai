@@ -91,7 +91,7 @@ export class CreateMatchComponent implements OnInit {
         goals: 0,
         assists: 0,
         isMvp: false,
-        attended: false,
+        attended: true,
       }));
       const title = this.matchForm.value.name || '';
       const splitTitle = title.split(/vs/i);

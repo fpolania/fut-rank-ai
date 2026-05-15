@@ -132,7 +132,7 @@
             <div class="attendance-toggle">
               <button
                 class="attendance-btn"
-                [class.active]="player?.attended"
+                [class.active]="player.attended === true"
                 [disabled]="
                   (authService.currentUser | async)?.role !== 'captain'
                 "
@@ -143,7 +143,7 @@
 
               <button
                 class="attendance-btn absent"
-                [class.active]="!player.attended"
+                [class.active]="player.attended === false"
                 [disabled]="
                   (authService.currentUser | async)?.role !== 'captain'
                 "
