@@ -81,7 +81,7 @@ export class RatePlayerDetailComponent implements OnInit {
               return {
                 ...player,
                 alreadyRated,
-                newRating: 1,
+                newRating: null,
                 comment: '',
                 isMvp: false,
                 wasRated: false,
