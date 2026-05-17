@@ -1,28 +1,19 @@
-import {
-  Component,
-  OnInit,
-  inject
-} from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
-import {
-  CommonModule
-} from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { PlayerService } from '../../core/services/player.service';
 import { Player } from '../../core/interfaces/player.interface';
-
-
+import { LoadingService } from '../../core/services/loading.service';
 
 @Component({
   selector: 'app-rankings',
-  imports: [
-    CommonModule
-  ],
+  imports: [CommonModule],
   templateUrl: './rankings.component.html',
-  styleUrl: './rankings.component.css'
+  styleUrl: './rankings.component.css',
 })
 export class RankingsComponent implements OnInit {
-  selectedFilter =
-    'Todos';
+  private loadingService = inject(LoadingService);
+  selectedFilter = 'Todos';
   players: Player[] = [];
   topPlayers: Player[] = [];
 
@@ -31,67 +22,36 @@ export class RankingsComponent implements OnInit {
     this.getPlayers();
   }
 
-  filterRanking(
-    filter: string
-  ) {
-    this.selectedFilter =
-      filter;
+  filterRanking(filter: string) {
+    this.selectedFilter = filter;
     switch (filter) {
       case 'MVPs':
-        this.players =
-          [...this.players]
-            .sort(
-              (
-                a,
-                b
-              ) =>
-                b.mvps -
-                a.mvps
-            );
+        this.players = [...this.players].sort((a, b) => b.mvps - a.mvps);
         break;
       default:
-        this.players =
-          [...this.players]
-            .sort(
-              (
-                a,
-                b
-              ) =>
-                b.averageRating -
-                a.averageRating
-            );
+        this.players = [...this.players].sort(
+          (a, b) => b.averageRating - a.averageRating,
+        );
 
         break;
     }
   }
 
   getPlayers() {
-    this.playerService
-      .getPlayers()
-      .subscribe({
-        next: (players) => {
-          this.players =
-            [...players]
-              .sort(
-                (
-                  a,
-                  b
-                ) =>
-
-                  b.averageRating -
-                  a.averageRating
-              );
-          this.topPlayers =
-            this.players.slice(0, 3);
-          this.filterRanking(
-            this.selectedFilter
-          );
-        },
-        error: (error: any) => {
-          console.error(error);
-        }
-      });
-
+    this.loadingService.show();
+    this.playerService.getPlayers().subscribe({
+      next: (players) => {
+        this.players = [...players].sort(
+          (a, b) => b.averageRating - a.averageRating,
+        );
+        this.topPlayers = this.players.slice(0, 3);
+        this.filterRanking(this.selectedFilter);
+        this.loadingService.hide();
+      },
+      error: (error: any) => {
+        console.error(error);
+        this.loadingService.hide();
+      },
+    });
   }
-
 }
