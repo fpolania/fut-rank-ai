@@ -1,41 +1,28 @@
-import {
-  Component,
-  OnInit,
-  inject
-} from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
-import {
-  CommonModule
-} from '@angular/common';
+import { CommonModule } from '@angular/common';
 
-import { RouterLink }
-  from '@angular/router';
+import { RouterLink } from '@angular/router';
 
-import { PlayerService }
-  from '../../core/services/player.service';
+import { PlayerService } from '../../core/services/player.service';
 
-import { MatchService }
-  from '../../core/services/match.service';
+import { MatchService } from '../../core/services/match.service';
 
-import { Player }
-  from '../../core/interfaces/player.interface';
+import { Player } from '../../core/interfaces/player.interface';
 
-import { Match }
-  from '../../core/interfaces/match.interface';
+import { Match } from '../../core/interfaces/match.interface';
+import { LoadingService } from '../../core/services/loading.service';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [
-    CommonModule,
-    RouterLink
-  ],
+  imports: [CommonModule, RouterLink],
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  styleUrl: './dashboard.component.css',
 })
 export class DashboardComponent implements OnInit {
-
   private playerService = inject(PlayerService);
   private matchService = inject(MatchService);
+  private loadingService = inject(LoadingService);
 
   players: Player[] = [];
   matches: Match[] = [];
@@ -51,71 +38,40 @@ export class DashboardComponent implements OnInit {
   }
 
   getPlayers() {
-    this.playerService
-      .getPlayers()
-      .subscribe({
-        next: (players) => {
-          this.players = players;
-          this.totalPlayers =
-            players.length;
-          this.totalMvps =
-            players.reduce(
-              (
-                acc,
-                player
-              ) =>
-                acc + player.mvps,
-              0
-            );
-          const totalRatings =
-            players.reduce(
-              (
-                acc,
-                player
-              ) =>
-                acc +
-                player.averageRating,
-              0
-            );
-          this.averageRating =
-            players.length
-              ? Number(
-                (
-                  totalRatings /
-                  players.length
-                ).toFixed(1)
-              )
-              : 0;
-          this.topPlayers =
-            [...players]
-              .sort(
-                (
-                  a,
-                  b
-                ) =>
-                  b.averageRating -
-                  a.averageRating
-              )
-              .slice(0, 3);
-        },
-        error: (error) => {
-          console.error(error);
-        }
-      });
+    this.loadingService.show();
+    this.playerService.getPlayers().subscribe({
+      next: (players) => {
+        this.players = players;
+        this.totalPlayers = players.length;
+        this.totalMvps = players.reduce((acc, player) => acc + player.mvps, 0);
+        const totalRatings = players.reduce(
+          (acc, player) => acc + player.averageRating,
+          0,
+        );
+        this.averageRating = players.length
+          ? Number((totalRatings / players.length).toFixed(1))
+          : 0;
+        this.topPlayers = [...players]
+          .sort((a, b) => b.averageRating - a.averageRating)
+          .slice(0, 3);
+        this.loadingService.hide();
+      },
+      error: (error) => {
+        console.error(error);
+        this.loadingService.hide();
+      },
+    });
   }
 
   getMatches() {
-    this.matchService
-      .getMatches()
-      .subscribe({
-        next: (matches) => {
-          this.matches = matches;
-          this.totalMatches =
-            matches.length;
-        },
-        error: (error) => {
-          console.error(error);
-        }
-      });
+    this.matchService.getMatches().subscribe({
+      next: (matches) => {
+        this.matches = matches;
+        this.totalMatches = matches.length;
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
   }
 }

@@ -2,146 +2,193 @@ import { Component, OnInit, inject } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 import { ActivatedRoute, Router } from '@angular/router';
-
-import { Timestamp } from '@angular/fire/firestore';
-
 import { MatchService } from '../../core/services/match.service';
-
 import { RatingService } from '../../core/services/rating.service';
 import { LoadingService } from '../../core/services/loading.service';
 import {
-  errorAlert,
   successAlert,
   warningAlert,
+  errorAlert,
 } from '../../core/utils/alert.util';
 import { PlayerService } from '../../core/services/player.service';
-import { AiService } from '../../core/services/ai.service';
 import { BAD_WORDS } from '../../core/constants/bad-words.constant';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-rate-player-detail',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './rate-player-detail.component.html',
   styleUrl: './rate-player-detail.component.css',
 })
 export class RatePlayerDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private fb = inject(FormBuilder);
   private matchService = inject(MatchService);
+  authService = inject(AuthService);
   private ratingService = inject(RatingService);
-  private loadingService = inject(LoadingService);
   private playerService = inject(PlayerService);
-  private aiService = inject(AiService);
-  playersForm: FormGroup = new FormGroup({});
-  badWords = BAD_WORDS;
+  private loadingService = inject(LoadingService);
+
   matchId: string | null = null;
   match: any;
-  players: any[] = [];
-  currentPlayerDocument: string = '';
-  alreadyRated = false;
+  currentPlayerDocument = '';
+  badWords = BAD_WORDS;
+  playersForm = this.fb.group({
+    players: this.fb.array([]),
+  });
 
   ngOnInit(): void {
     this.matchId = this.route.snapshot.paramMap.get('id');
-    this.currentPlayerDocument =
-      JSON.parse(sessionStorage.getItem('teamPlayer') || 'null')?.document ||
-      '12345678';
-    if (this.matchId) {
-      this.getMatch();
-    }
-  }
-
-  getMatch() {
-    if (!this.matchId) return;
-    this.loadingService.show();
-    this.matchService.getMatchById(this.matchId).subscribe({
-      next: async (match: any) => {
-        try {
-          this.match = match;
-          const currentPlayer = JSON.parse(
-            sessionStorage.getItem('teamPlayer') || 'null',
-          );
-          const ratings = await new Promise<any[]>((resolve) => {
-            this.ratingService
-              .getMatchRatings(this.matchId!)
-              .subscribe((data) => resolve(data));
-          });
-          this.players = match.players
-            .filter((player: any) => player.attended === true)
-            .map((player: any) => {
-              const playerRating = ratings.find(
-                (rating: any) => rating.playerId === player.playerId,
-              );
-              const alreadyRated =
-                playerRating?.data?.some(
-                  (item: any) => item.ratedBy === currentPlayer.document,
-                ) || false;
-              return {
-                ...player,
-                alreadyRated,
-                newRating: null,
-                comment: '',
-                isMvp: false,
-                wasRated: false,
-              };
-            });
-          const availablePlayers = this.players.filter(
-            (player: any) =>
-              player.playerId !== this.currentPlayerDocument &&
-              !player.alreadyRated,
-          );
-          if (!availablePlayers.length) {
-            warningAlert(
-              'Calificaciones completas ⚽🔥',
-              'Ya calificaste a todos los jugadores de este partido.',
-            );
-            this.router.navigate(['/rate-players']);
-          }
-        } catch (error) {
-          console.error(error);
-        } finally {
-          this.loadingService.hide();
-        }
-      },
-
-      error: (error: any) => {
-        this.loadingService.hide();
-
-        console.error(error);
-      },
+    this.authService.currentUser.subscribe((user: any) => {
+      if (!user) {
+        return;
+      }
+      this.currentPlayerDocument = user.document || '';
+      if (this.matchId) {
+        this.getMatch();
+      }
     });
   }
 
-  async sendRatings() {
-    this.loadingService.show();
-    if (!this.matchId) return;
-    try {
-      const updatedPlayers = [...this.players];
-      for (const player of this.players) {
-        if (!this.hasPlayerInteraction(player)) continue;
-        const playerRating = Number(player.newRating);
-        const currentPlayer = await new Promise<any>((resolve) => {
-          this.playerService
-            .getPlayerById(player.playerId)
-            .subscribe((data) => resolve(data));
-        });
+  get playersArray(): FormArray {
+    return this.playersForm.get('players') as FormArray;
+  }
 
-        const shouldGenerateAi = !currentPlayer.aiInsight;
-        const currentRating = await new Promise<any>((resolve) => {
-          this.ratingService
-            .getRatingByPlayerAndMatch(player.playerId, this.matchId!)
-            .subscribe((data) => resolve(data));
-        });
+  get playersControls() {
+    return this.playersArray.controls;
+  }
+
+  async getMatch() {
+    if (!this.matchId) return;
+    this.loadingService.show();
+    try {
+      const match = await new Promise<any>((resolve) => {
+        this.matchService
+          .getMatchById(this.matchId!)
+          .subscribe((data) => resolve(data));
+      });
+
+      this.match = match;
+      const ratings = await new Promise<any[]>((resolve) => {
+        this.ratingService
+          .getMatchRatings(this.matchId!)
+          .subscribe((data) => resolve(data));
+      });
+
+      const players = match.players.filter((player: any) => {
+        if (player.attended !== true) {
+          return false;
+        }
+
+        if (String(player.playerId) === String(this.currentPlayerDocument)) {
+          return false;
+        }
+
+        const playerRating = ratings.find(
+          (rating: any) => String(rating.playerId) === String(player.playerId),
+        );
+
+        const alreadyRated =
+          playerRating?.data?.some(
+            (item: any) =>
+              String(item.ratedBy) === String(this.currentPlayerDocument),
+          ) || false;
+        return !alreadyRated;
+      });
+
+      if (!players.length) {
+        warningAlert(
+          'Calificaciones completas ⚽🔥',
+          'Ya calificaste a todos los jugadores.',
+        );
+
+        this.router.navigate(['/rate-players']);
+        return;
+      }
+
+      this.buildForm(players);
+    } catch (error) {
+      console.error(error);
+      errorAlert('Ups 😮‍💨', 'Error cargando el partido.');
+    } finally {
+      this.loadingService.hide();
+    }
+  }
+
+  /* BUILD FORM */
+
+  buildForm(players: any[]) {
+    this.playersArray.clear();
+    players.forEach((player: any) => {
+      this.playersArray.push(
+        this.fb.group({
+          playerId: [player.playerId],
+          name: [player.name],
+          photo: [player.photo],
+          position: [player.position],
+          rating: [
+            0,
+            [Validators.required, Validators.min(1), Validators.max(5)],
+          ],
+          comment: [
+            '',
+            [
+              Validators.required,
+              Validators.minLength(10),
+              Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s.,]+$/),
+            ],
+          ],
+          isMvp: [false],
+        }),
+      );
+    });
+  }
+
+  toggleMvp(index: number) {
+    debugger;
+    const player = this.playersArray.at(index);
+    const currentValue = player.get('isMvp')?.value;
+    player.get('isMvp')?.setValue(!currentValue);
+  }
+
+  canSendRatings(): boolean {
+    return this.playersArray.controls.some((control) => control.valid);
+  }
+
+  async sendRatings() {
+    if (!this.matchId || !this.canSendRatings()) {
+      return;
+    }
+    this.loadingService.show();
+    try {
+      const validPlayers = this.playersArray.controls.filter(
+        (control) => control.valid,
+      );
+      for (const player of validPlayers) {
+        const value = player.value;
         const newData = {
           ratedBy: this.currentPlayerDocument,
-          rating: playerRating,
-          comment: player.comment || '',
+          rating: value.rating,
+          comment: value.comment,
           anonymous: false,
-          isMvp: player.isMvp,
-          createdAt: Timestamp.now(),
+          isMvp: value.isMvp,
+          createdAt: new Date(),
         };
+        const currentRating = await new Promise<any>((resolve) => {
+          this.ratingService
+            .getRatingByPlayerAndMatch(value.playerId!, this.matchId!)
+            .subscribe((data) => resolve(data));
+        });
 
         if (currentRating) {
           const updatedData = [...currentRating.data, newData];
@@ -149,9 +196,7 @@ export class RatePlayerDetailComponent implements OnInit {
             (acc: number, item: any) => acc + item.rating,
             0,
           );
-
           const averageRating = Number((total / updatedData.length).toFixed(1));
-
           await this.ratingService.updateRating(currentRating.id, {
             data: updatedData,
             averageRating,
@@ -159,19 +204,19 @@ export class RatePlayerDetailComponent implements OnInit {
           });
         } else {
           await this.ratingService.addRating({
-            playerId: player.playerId,
+            playerId: value.playerId!,
             matchId: this.matchId,
-            playerName: player.name,
-            averageRating: playerRating,
+            playerName: value.name!,
+            averageRating: value.rating!,
             totalRatings: 1,
-            createdAt: Timestamp.now(),
-            data: [newData],
+            createdAt: new Date() as any,
+            data: [newData as any],
           });
         }
 
         const playerRatings = await new Promise<any[]>((resolve) => {
           this.ratingService
-            .getPlayerRatings(player.playerId)
+            .getPlayerRatings(value.playerId!)
             .subscribe((data) => resolve(data));
         });
 
@@ -184,140 +229,47 @@ export class RatePlayerDetailComponent implements OnInit {
           ? Number((totalGlobal / playerRatings.length).toFixed(1))
           : 0;
 
-        if (shouldGenerateAi) {
-          const response: any = await this.aiService.generatePlayerInsight(
-            {
-              ...player,
-              averageRating: globalAverage,
-              totalMvpVotes: player.isMvp ? 1 : 0,
-              totalMatches: playerRatings.length,
-            },
-            [player.comment || ''],
-          );
-
-          await this.playerService.updatePlayer(player.playerId, {
-            aiInsight: response.data.insight,
-            aiUpdatedAt: new Date(),
-          });
-        }
-
-        await this.playerService.updatePlayer(player.playerId, {
-          averageRating: globalAverage,
-        });
-
-        const playerIndex = updatedPlayers.findIndex(
-          (current) => current.playerId === player.playerId,
-        );
-        if (playerIndex !== -1) {
-          updatedPlayers[playerIndex] = {
-            ...updatedPlayers[playerIndex],
-            rating: globalAverage,
-          };
-        }
-      }
-
-      const matchRatings = await new Promise<any[]>((resolve) => {
-        this.ratingService
-          .getMatchRatings(this.matchId!)
-          .subscribe((data) => resolve(data));
-      });
-      const mvpMap = new Map<string, number>();
-      for (const rating of matchRatings) {
-        const totalVotes = rating.data.filter((item: any) => item.isMvp).length;
-        mvpMap.set(rating.playerId, totalVotes);
-      }
-
-      let winnerId = '';
-      let maxVotes = 0;
-      mvpMap.forEach((votes, playerId) => {
-        if (votes > maxVotes) {
-          maxVotes = votes;
-          winnerId = playerId;
-        }
-      });
-
-      if (winnerId) {
         const currentPlayer = await new Promise<any>((resolve) => {
           this.playerService
-            .getPlayerById(winnerId)
+            .getPlayerById(value.playerId!)
             .subscribe((data) => resolve(data));
         });
 
-        await this.playerService.updatePlayer(winnerId, {
-          mvps: currentPlayer.mvps + 1,
+        const updateData: any = {
+          averageRating: globalAverage,
+        };
+
+        if (value.isMvp) {
+          updateData.mvps = (currentPlayer.mvps || 0) + 1;
+        }
+        await this.playerService.updatePlayer(value.playerId!, updateData);
+        await this.matchService.updateMatch(this.matchId, {
+          mvpPlayerId: value.isMvp ? value.playerId! : null,
+          mvpPlayerName: value.isMvp ? value.name! : 'Sin MVP',
         });
       }
 
-      const cleanPlayers = updatedPlayers.map((player) => ({
-        playerId: player.playerId,
-        name: player.name,
-        photo: player.photo,
-        position: player.position,
-        team: player.team,
-        goals: player.goals,
-        assists: player.assists,
-        rating: player.rating || 0,
-        attended: player.attended,
-      }));
-
-      await this.matchService.updateMatch(this.matchId, {
-        players: cleanPlayers,
-      });
       successAlert(
-        'Calificación registrada ⭐🔥',
-        'La IA analizó el rendimiento correctamente.',
+        'Calificaciones enviadas ⭐🔥',
+        'Las calificaciones fueron registradas correctamente.',
       );
+      this.getMatch();
+      this.playersForm.reset();
+      this.buildForm([]);
     } catch (error) {
-      errorAlert(
-        'No se pudo registrar 😮‍💨',
-        'Ocurrió un error enviando la calificación.',
-      );
       console.error(error);
+      errorAlert('Ups 😮‍💨', 'Ocurrió un error enviando las calificaciones.');
     } finally {
       this.loadingService.hide();
     }
   }
-  hasPlayerInteraction(player: any): boolean {
-    return (
-      player.newRating !== null || !!player.comment?.trim() || player.isMvp
-    );
-  }
-
-  sanitizeComment(player: any): void {
-    let comment = player.comment || '';
+  sanitizeComment(event: any) {
+    const input = event.target as HTMLInputElement;
+    let sanitizedValue = input.value;
     this.badWords.forEach((word) => {
-      const regex = new RegExp(word, 'gi');
-      comment = comment.replace(regex, '');
+      const regex = new RegExp(`\\b${word}\\b`, 'gi');
+      sanitizedValue = sanitizedValue.replace(regex, '**');
     });
-
-    comment = comment.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s.,]/g, '');
-    comment = comment.replace(/\s+/g, ' ');
-    comment = comment.substring(0, 180);
-    player.comment = comment.trim();
-  }
-  canSendRatings(): boolean {
-    const validPlayers = this.players.filter((player) => {
-      const hasRating = player.newRating !== null;
-      const hasComment = !!player.comment?.trim();
-      const validComment = !player.invalidComment;
-      return hasRating && hasComment && validComment;
-    });
-    return validPlayers.length > 0;
-  }
-  validateComment(player: any): void {
-    const comment = (player.comment || '').trim().toLowerCase();
-    if (!comment) {
-      player.invalidComment = false;
-      return;
-    }
-    if (comment.length < 5) {
-      player.invalidComment = true;
-      return;
-    }
-
-    const validTextRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s.,]+$/;
-    const hasValidText = validTextRegex.test(comment);
-    const hasBadWords = this.badWords.some((word) => comment.includes(word));
-    player.invalidComment = !hasValidText || hasBadWords;
+    input.value = sanitizedValue;
   }
 }

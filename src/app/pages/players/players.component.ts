@@ -25,9 +25,11 @@ export class PlayersComponent implements OnInit {
   private loadingService = inject(LoadingService);
   authService = inject(AuthService);
   ngOnInit() {
+    this.loadingService.show();
     this.playerService.getPlayers().subscribe({
       next: (players) => {
         this.players = players;
+        this.loadingService.hide();
       },
     });
   }

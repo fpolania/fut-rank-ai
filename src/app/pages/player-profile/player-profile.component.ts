@@ -13,6 +13,10 @@ import { RatingService } from '../../core/services/rating.service';
 import { Player } from '../../core/interfaces/player.interface';
 import { AiInsight } from '../../core/interfaces/rating.interface';
 import { AuthService } from '../../core/services/auth.service';
+import { LoadingService } from '../../core/services/loading.service';
+import { errorAlert, successAlert } from '../../core/utils/alert.util';
+import Swal from 'sweetalert2';
+type EditableStatField = 'matchesPlayed' | 'goals' | 'assists' | 'mvps';
 
 @Component({
   selector: 'app-player-profile',
@@ -25,6 +29,7 @@ export class PlayerProfileComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private playerService = inject(PlayerService);
   private ratingService = inject(RatingService);
+  private loadingService = inject(LoadingService);
 
   ratings: any[] = [];
   playerId: string | null = null;
@@ -36,6 +41,34 @@ export class PlayerProfileComponent implements OnInit {
     weaknesses: [],
     tips: [],
   };
+  visibleComments = 4;
+  showAllComments = false;
+
+  stats: {
+    label: string;
+
+    field: EditableStatField;
+  }[] = [
+    {
+      label: 'Partidos',
+      field: 'matchesPlayed',
+    },
+
+    {
+      label: 'Goles',
+      field: 'goals',
+    },
+
+    {
+      label: 'Asistencias',
+      field: 'assists',
+    },
+
+    {
+      label: 'MVPs',
+      field: 'mvps',
+    },
+  ];
 
   ngOnInit(): void {
     this.playerId = this.route.snapshot.paramMap.get('id');
@@ -44,8 +77,15 @@ export class PlayerProfileComponent implements OnInit {
       this.getPlayerComments();
     }
   }
+  get displayedComments() {
+    if (this.showAllComments) {
+      return this.ratings;
+    }
+    return this.ratings.slice(0, this.visibleComments);
+  }
   getPlayer() {
     if (!this.playerId) return;
+    this.loadingService.show();
     this.playerService.getPlayerById(this.playerId).subscribe({
       next: (player: any) => {
         this.player = player;
@@ -54,50 +94,110 @@ export class PlayerProfileComponent implements OnInit {
           weaknesses: [],
           tips: [],
         };
+        this.loadingService.hide();
       },
-
       error: (error: any) => {
         console.error(error);
+        this.loadingService.hide();
       },
     });
   }
 
   getPlayerComments() {
     if (!this.playerId) return;
+    this.loadingService.show();
     this.ratingService.getPlayerRatings(this.playerId).subscribe({
       next: (ratings: any) => {
-        this.ratings = ratings.flatMap((rating: any) => rating.data || []);
+        this.ratings = ratings
+          .flatMap((rating: any) => rating.data || [])
+          .filter((item: any) => item.comment)
+          .sort(
+            (a: any, b: any) =>
+              new Date(
+                b.createdAt?.seconds ? b.createdAt.seconds * 1000 : b.createdAt,
+              ).getTime() -
+              new Date(
+                a.createdAt?.seconds ? a.createdAt.seconds * 1000 : a.createdAt,
+              ).getTime(),
+          );
+        this.loadingService.hide();
       },
 
       error: (error: any) => {
         console.error(error);
+        this.loadingService.hide();
       },
     });
   }
 
   async updateAttribute() {
     if (!this.playerId) return;
+    try {
+      await this.playerService.updatePlayer(this.playerId, {
+        speed: this.player.speed,
+        finishing: this.player.finishing,
+        vision: this.player.vision,
+        stamina: this.player.stamina,
+        defense: this.player.defense,
+        dribbling: this.player.dribbling,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  async editStat(
+    field: 'averageRating' | 'matchesPlayed' | 'goals' | 'assists' | 'mvps',
+
+    currentValue: number,
+  ) {
+    const result = await Swal.fire({
+      title: 'Editar estadística ⚽',
+      input: 'number',
+      inputValue: currentValue,
+      showCancelButton: true,
+      confirmButtonText: 'Guardar',
+      cancelButtonText: 'Cancelar',
+      background: '#020617',
+      color: '#fff',
+      confirmButtonColor: '#39ff14',
+      cancelButtonColor: '#374151',
+
+      customClass: {
+        popup: 'futrank-swal',
+        title: 'futrank-title',
+        confirmButton: 'futrank-confirm',
+        cancelButton: 'futrank-cancel',
+        input: 'futrank-input',
+      },
+    });
+
+    if (result.value === undefined || result.value === null) {
+      return;
+    }
 
     try {
-      await this.playerService.updatePlayer(
-        this.playerId,
+      this.loadingService.show();
 
-        {
-          speed: this.player.speed,
+      const newValue = Number(result.value);
 
-          finishing: this.player.finishing,
+      await this.playerService.updatePlayer(this.playerId!, {
+        [field]: newValue,
+      });
 
-          vision: this.player.vision,
+      (this.player as any)[field] = newValue;
 
-          stamina: this.player.stamina,
+      this.loadingService.hide();
 
-          defense: this.player.defense,
-
-          dribbling: this.player.dribbling,
-        },
+      await successAlert(
+        'Estadística actualizada ⚽🔥',
+        'Los cambios fueron guardados correctamente.',
       );
     } catch (error) {
       console.error(error);
+
+      this.loadingService.hide();
+
+      await errorAlert('Ups 😮‍💨', 'No se pudo actualizar la estadística.');
     }
   }
 }

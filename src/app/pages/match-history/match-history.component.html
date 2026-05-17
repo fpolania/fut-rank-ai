@@ -31,62 +31,73 @@
       FUT 8
     </button>
   </section>
-  <section class="matches-grid">
-    @for (match of filteredMatches; track match.id) {
-      <div class="match-card">
-        <div class="match-header">
-          <span class="match-type">
-            {{ match.type }}
-          </span>
+  @if (filteredMatches.length > 0) {
+    <section class="matches-grid">
+      @for (match of filteredMatches; track match.id) {
+        <div class="match-card">
+          <div class="match-header">
+            <span class="match-type">
+              {{ match.type }}
+            </span>
 
-          <span class="match-date">
-            {{ match.date }}
-          </span>
-        </div>
-        <div class="teams-section">
-          <div class="team">
-            <h3>
-              {{ match.teamA }}
-            </h3>
-
-            <span class="score">
-              {{ match.scoreA }}
+            <span class="match-date">
+              {{ match.date }}
             </span>
           </div>
+          <div class="teams-section">
+            <div class="team">
+              <h3>
+                {{ match.teamA }}
+              </h3>
 
-          <div class="vs">VS</div>
+              <span class="score">
+                {{ match.scoreA }}
+              </span>
+            </div>
 
-          <div class="team">
-            <h3>
-              {{ match.teamB }}
-            </h3>
+            <div class="vs">VS</div>
 
-            <span class="score">
-              {{ match.scoreB }}
-            </span>
+            <div class="team">
+              <h3>
+                {{ match.teamB }}
+              </h3>
+
+              <span class="score">
+                {{ match.scoreB }}
+              </span>
+            </div>
           </div>
-        </div>
-        <div class="match-info">
-          <div>📍 {{ match.field }}</div>
+          <div class="match-info">
+            <div>📍 {{ match.field }}</div>
 
-          <div>
-            ⭐ MVP:
-            {{ getMvpName(match) }}
+            <div>
+              ⭐ MVP:
+              {{ match.mvpPlayerName! }}
+            </div>
+
+            <div>🕒 {{ match.time }}</div>
+          </div>
+          <div class="timeline">
+            <div class="timeline-item">⚽ Partido creado</div>
+            @if (match.finished) {
+              <div class="timeline-item">🏁 Partido finalizado</div>
+            }
+            @if (match.analyzed) {
+              <div class="timeline-item">🤖 Análisis generado</div>
+            } @else {
+              <div class="timeline-item">🤖 Análisis pendiente por generar</div>
+            }
           </div>
 
-          <div>🕒 {{ match.time }}</div>
+          <button
+            class="analysis-btn"
+            [disabled]="match.analyzed === true"
+            (click)="generateAnalysis(match)"
+          >
+            Generar análisis
+          </button>
         </div>
-        <div class="timeline">
-          <div class="timeline-item">⚽ Partido creado</div>
-          @if (match.finished) {
-            <div class="timeline-item">🏁 Partido finalizado</div>
-          }
-          <div class="timeline-item">🤖 IA analizando estadísticas</div>
-        </div>
-        <button class="analysis-btn" (click)="openMatch(match)">
-          Ver análisis
-        </button>
-      </div>
-    }
-  </section>
+      }
+    </section>
+  }
 </div>

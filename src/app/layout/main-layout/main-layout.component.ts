@@ -18,7 +18,6 @@ export class MainLayoutComponent {
   }
   logout() {
     this.authService.logout();
-    sessionStorage.clear();
   }
   closeSidebar() {
     this.sidebarOpen = false;

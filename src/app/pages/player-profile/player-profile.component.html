@@ -40,50 +40,46 @@
       <div class="hero-rating">
         <span> Overall </span>
 
-        <h2>
-          {{ player.averageRating }}
-        </h2>
+        <div class="editable-stat">
+          <h2>
+            {{ player.averageRating }}
+          </h2>
+
+          @if ((authService.currentUser | async)?.role === "captain") {
+            <button
+              class="edit-stat-btn"
+              (click)="editStat('averageRating', player.averageRating)"
+            >
+              <i class="bi bi-pencil-square"></i>
+            </button>
+          }
+        </div>
       </div>
     </section>
-
-    <!-- STATS -->
-
     <section class="stats-grid">
-      <div class="stat-card">
-        <span> Partidos </span>
+      @for (stat of stats; track stat.field) {
+        <div class="stat-card">
+          <span>
+            {{ stat.label }}
+          </span>
 
-        <h3>
-          {{ player.matchesPlayed }}
-        </h3>
-      </div>
+          <div class="editable-stat">
+            <h3>
+              {{ player[stat.field] }}
+            </h3>
 
-      <div class="stat-card">
-        <span> Goles </span>
-
-        <h3>
-          {{ player.goals }}
-        </h3>
-      </div>
-
-      <div class="stat-card">
-        <span> Asistencias </span>
-
-        <h3>
-          {{ player.assists }}
-        </h3>
-      </div>
-
-      <div class="stat-card">
-        <span> MVPs </span>
-
-        <h3>
-          {{ player.mvps }}
-        </h3>
-      </div>
+            @if ((authService.currentUser | async)?.role === "captain") {
+              <button
+                class="edit-stat-btn"
+                (click)="editStat(stat.field, player[stat.field])"
+              >
+                <i class="bi bi-pencil-square"></i>
+              </button>
+            }
+          </div>
+        </div>
+      }
     </section>
-
-    <!-- ATTRIBUTES -->
-    <!-- ATTRIBUTES -->
 
     <section class="attributes-section">
       <div class="section-title">🎮 Player Attributes</div>
@@ -145,8 +141,6 @@
           (change)="updateAttribute()"
         />
       </div>
-
-      <!-- STAMINA -->
 
       <div class="attribute-item">
         <div class="attribute-header">
@@ -210,9 +204,9 @@
       <div class="ai-title">🤖 AI Analysis</div>
 
       @if (
-        aiInsight.strengths?.length ||
-        aiInsight.weaknesses?.length ||
-        aiInsight.tips?.length
+        aiInsight.strengths.length ||
+        aiInsight.weaknesses.length ||
+        aiInsight.tips.length
       ) {
         <div class="ai-grid">
           <div class="ai-box strengths">
@@ -247,18 +241,29 @@
       <div class="section-title">💬 Comentarios del Equipo</div>
 
       <div class="comments-grid">
-        @for (rating of ratings; track rating.id) {
-          @if (rating.comment) {
-            <div class="comment-card">
-              <span> ⭐ </span>
+        @for (rating of displayedComments; track $index) {
+          <div class="comment-card">
+            <span> ⭐ </span>
 
-              <p>"{{ rating.comment }}"</p>
+            <p>"{{ rating.comment }}"</p>
 
-              <small> — Pull Request Team </small>
-            </div>
-          }
+            <small> — Pull Request Team </small>
+          </div>
         }
       </div>
+
+      @if (ratings.length > visibleComments) {
+        <div class="show-more-wrapper">
+          <button
+            class="show-more-btn"
+            (click)="showAllComments = !showAllComments"
+          >
+            <i class="bi bi-chat-dots-fill"></i>
+
+            {{ showAllComments ? "Ver menos" : "Ver más comentarios" }}
+          </button>
+        </div>
+      }
     </section>
   }
 </div>

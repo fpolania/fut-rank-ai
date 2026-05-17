@@ -28,21 +28,18 @@ export class AuthService {
     }),
   );
 
-  async loginWithGoogle() {
+  async loginWithGoogle(player: any) {
     try {
       const provider = new GoogleAuthProvider();
-      const playerRole =
-        JSON.parse(sessionStorage.getItem('teamPlayer') || 'null')?.role ||
-        'player';
       const result = await signInWithPopup(this.auth, provider);
-
       const firebaseUser = result.user;
       await this.userService.createUser({
         uid: firebaseUser.uid,
         name: firebaseUser.displayName || '',
         email: firebaseUser.email || '',
         photoURL: firebaseUser.photoURL || '',
-        role: playerRole,
+        role: player?.role || 'player',
+        document: player?.document || '',
         active: true,
         createdAt: Timestamp.now(),
       });

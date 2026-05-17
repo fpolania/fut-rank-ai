@@ -85,6 +85,81 @@ Reglas:
 
 - Consejos realistas.
 
+- Analiza al jugador
+  según su posición.
+
+- Un arquero NO debe
+  evaluarse por goles
+  o aporte ofensivo.
+
+- Un defensa debe
+  priorizar:
+  marca,
+  orden,
+  salida limpia
+  y posicionamiento.
+
+- Un mediocampista debe
+  aportar:
+  creación,
+  recuperación
+  y ritmo.
+
+- Un delantero debe
+  aportar:
+  definición,
+  movilidad
+  y presencia ofensiva.
+
+- Basa el análisis en:
+  comentarios,
+  rating promedio,
+  posición del jugador,
+  cantidad de partidos jugados,
+  MVPs
+  y contexto futbolístico.
+
+- La posición del jugador
+  es fundamental para
+  interpretar correctamente
+  el rendimiento.
+
+- La cantidad de partidos
+  debe influir en el nivel
+  de confianza del análisis.
+
+- Si el jugador tiene
+  pocos partidos,
+  evita conclusiones
+  extremas o definitivas.
+
+- Las recomendaciones deben
+  ser coherentes con las
+  estadísticas del jugador.
+
+- Si el jugador tiene
+  goles o asistencias,
+  evita decir que no aporta
+  ofensivamente, a menos
+  que los comentarios
+  lo indiquen claramente.
+
+- No contradigas
+  estadísticas positivas
+  con críticas negativas
+  sin contexto suficiente.
+
+- NO inventes críticas
+  ofensivas para
+  defensas o arqueros
+  si los comentarios
+  no lo indican.
+
+- Si hay comentarios
+  repetidos sobre
+  una debilidad,
+  dale prioridad.
+
                   `,
           },
 
@@ -99,7 +174,10 @@ ${player?.name || 'Sin nombre'}
 Posición:
 ${player?.position || 'Sin posición'}
 
-Rating:
+Partidos jugados:
+${player?.totalMatches || 0}
+
+Rating promedio:
 ${player?.averageRating || 0}
 
 Goles:
@@ -111,16 +189,21 @@ ${player?.assists || 0}
 MVPs:
 ${player?.mvps || 0}
 
+Votos MVP del partido:
+${player?.totalMvpVotes || 0}
+
 Comentarios:
-${comments.join(', ') || 'Sin comentarios'}
+${comments.join('. ') || 'Sin comentarios'}
 
                   `,
           },
         ],
       });
+
       const content = String(completion.choices[0]?.message?.content || '{}');
 
       console.log('AI RESPONSE:', content);
+
       let parsedInsight;
 
       try {

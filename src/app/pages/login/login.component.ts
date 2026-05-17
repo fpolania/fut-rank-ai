@@ -27,12 +27,12 @@ declare const bootstrap: any;
 export class LoginComponent {
   authService = inject(AuthService);
   private loadingService = inject(LoadingService);
-
   private teamPlayersService = inject(TeamPlayersService);
   validatedPlayer = false;
+  playerLoged: any;
 
   async login() {
-    await this.authService.loginWithGoogle();
+    await this.authService.loginWithGoogle(this.playerLoged);
   }
 
   async showDocumentPrompt() {
@@ -65,10 +65,9 @@ export class LoginComponent {
     const normalizedDocument = userDocument.trim();
     try {
       this.loadingService.show();
-      const player =
+      this.playerLoged =
         await this.teamPlayersService.getPlayerByDocument(normalizedDocument);
-      console.log('Player found:', player);
-      if (!player) {
+      if (!this.playerLoged) {
         this.loadingService.hide();
         await Swal.fire({
           icon: 'error',
@@ -77,8 +76,6 @@ export class LoginComponent {
         });
         return;
       }
-
-      sessionStorage.setItem('teamPlayer', JSON.stringify(player));
       this.validatedPlayer = true;
       this.loadingService.hide();
       await Swal.fire({

@@ -1,4 +1,4 @@
-<div class="rate-page">
+<form class="rate-page" [formGroup]="playersForm">
   <div class="top-section">
     <div>
       <span class="match-badge">
@@ -17,6 +17,7 @@
     </div>
 
     <button
+      type="button"
       class="send-btn"
       (click)="sendRatings()"
       [disabled]="!canSendRatings()"
@@ -25,84 +26,100 @@
     </button>
   </div>
 
-  <div class="players-grid">
-    @for (player of players; track player.playerId) {
-      @if (player.playerId !== currentPlayerDocument && !player.alreadyRated) {
-        <div class="player-card">
-          <div class="player-header">
-            <div class="player-info">
-              <img [src]="player.photo" />
+  <div class="players-grid" formArrayName="players">
+    @for (player of playersControls; track $index; let i = $index) {
+      <div class="player-card" [formGroupName]="i">
+        <div class="player-header">
+          <div class="player-info">
+            <img [src]="player.get('photo')?.value" />
 
-              <div>
-                <h3>
-                  {{ player.name }}
-                </h3>
+            <div>
+              <h3>
+                {{ player.get("name")?.value }}
+              </h3>
 
-                <span>
-                  {{ player.position }}
-                </span>
-              </div>
-            </div>
-
-            <div
-              class="rating-badge"
-              [ngClass]="{
-                elite: player.newRating >= 4,
-                good: player.newRating >= 3 && player.newRating < 4,
-                average: player.newRating < 3,
-              }"
-            >
-              {{ player.newRating || "-" }}
+              <span>
+                {{ player.get("position")?.value }}
+              </span>
             </div>
           </div>
 
-          <div class="slider-section">
-            <input
-              type="range"
-              min="1"
-              max="5"
-              step="0.1"
-              [ngModel]="player.newRating || 1"
-              (ngModelChange)="
-                player.newRating = $event; player.wasRated = true
-              "
-              class="custom-slider"
-            />
+          <div
+            class="rating-badge"
+            [ngClass]="{
+              elite: player.get('rating')?.value >= 4,
 
-            <div class="slider-labels">
-              <span>1</span>
+              good:
+                player.get('rating')?.value >= 3 &&
+                player.get('rating')?.value < 4,
 
-              <span>5</span>
-            </div>
+              average: player.get('rating')?.value < 3,
+            }"
+          >
+            {{ player.get("rating")?.value || "-" }}
           </div>
+        </div>
+
+        <div class="slider-section">
+          <input
+            type="range"
+            min="1"
+            max="5"
+            step="0.1"
+            class="custom-slider"
+            formControlName="rating"
+          />
+
+          <div class="slider-labels">
+            <span>1</span>
+
+            <span>5</span>
+          </div>
+
+          @if (player.get("rating")?.touched && player.get("rating")?.invalid) {
+            <small class="comment-error">
+              Debes asignar una calificación ⚠️
+            </small>
+          }
+        </div>
+        @if ((authService.currentUser | async)?.role === "captain") {
           <div class="tags-section">
             <span
               class="tag"
-              [class.active]="player.isMvp"
-              (click)="player.isMvp = !player.isMvp; player.wasRated = true"
+              [class.active]="player.get('isMvp')?.value"
+              (click)="toggleMvp(i)"
             >
               🔥 MVP
             </span>
           </div>
-          <textarea
-            rows="4"
-            [(ngModel)]="player.comment"
-            #commentRef="ngModel"
-            placeholder="
-                  Comentario anónimo...
-              "
-            minlength="5"
-            (ngModelChange)="validateComment(player)"
-          >
-          </textarea>
+        }
 
-          @if (player.invalidComment) {
-            <small class="comment-error">
-              Escribe un comentario válido ⚠️
-            </small>
-          }
-        </div>
-      }
+        <textarea
+          rows="4"
+          formControlName="comment"
+          placeholder="
+            Comentario anónimo...
+          "
+          (input)="sanitizeComment($event)"
+        >
+        </textarea>
+
+        @if (player.get("comment")?.touched && player.get("comment")?.invalid) {
+          <small class="comment-error">
+            @if (player.get("comment")?.hasError("required")) {
+              El comentario es obligatorio ⚠️
+            }
+
+            @if (player.get("comment")?.hasError("minlength")) {
+              El comentario debe tener mínimo 10 caracteres ⚠️
+            }
+
+            @if (player.get("comment")?.hasError("pattern")) {
+              El comentario solo puede contener letras, comas y puntos ⚠️
+            }
+          </small>
+        }
+      </div>
     }
   </div>
-</div>
+</form>

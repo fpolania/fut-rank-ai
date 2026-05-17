@@ -20,6 +20,8 @@ export interface Match {
   didWin: boolean;
   result: string;
   finishedAt: Timestamp;
+  analyzed?: boolean;
+  mvpPlayerName?: string;
 }
 export interface MatchPlayer {
   playerId: string;

@@ -6,6 +6,8 @@ import { Router, RouterLink } from '@angular/router';
 import { MatchService } from '../../core/services/match.service';
 import { Match } from '../../core/interfaces/match.interface';
 import { AuthService } from '../../core/services/auth.service';
+import { errorAlert, successAlert } from '../../core/utils/alert.util';
+import { LoadingService } from '../../core/services/loading.service';
 
 @Component({
   selector: 'app-matches',
@@ -16,6 +18,8 @@ import { AuthService } from '../../core/services/auth.service';
 export class MatchesComponent implements OnInit {
   private matchService = inject(MatchService);
   private router = inject(Router);
+  private loadingService = inject(LoadingService);
+
   authService = inject(AuthService);
   matches: Match[] = [];
 
@@ -36,5 +40,22 @@ export class MatchesComponent implements OnInit {
 
   openMatch(match: Match) {
     this.router.navigate(['/match-detail', match.id]);
+  }
+  async deleteMatch(event: Event, match: Match) {
+    event.stopPropagation();
+    if (!match.id) return;
+    try {
+      this.loadingService.show();
+      await this.matchService.deleteMatch(match.id);
+      this.loadingService.hide();
+      successAlert(
+        'Partido eliminado ⚽🔥',
+        'El partido fue eliminado correctamente.',
+      );
+    } catch (error) {
+      console.error(error);
+      this.loadingService.hide();
+      errorAlert('Ups 😮‍💨', 'No se pudo eliminar el partido.');
+    }
   }
 }
