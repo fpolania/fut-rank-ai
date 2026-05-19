@@ -26,6 +26,15 @@
       >
         ⭐ Calificar
       </a>
+      @if ((authService.currentUser | async)?.role === "captain") {
+        <a
+          routerLink="/create-competition"
+          routerLinkActive="active"
+          (click)="closeSidebar()"
+        >
+          🏆 Crear Competencia
+        </a>
+      }
 
       <a
         routerLink="/players"

@@ -22,6 +22,9 @@ export interface Match {
   finishedAt: Timestamp;
   analyzed?: boolean;
   mvpPlayerName?: string;
+  competitionId?: string;
+  competitionName?: string;
+  status?: 'En curso' | 'Finalizado';
 }
 export interface MatchPlayer {
   playerId: string;

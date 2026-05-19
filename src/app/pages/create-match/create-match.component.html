@@ -1,183 +1,126 @@
 <div class="create-match-page">
+  <!-- HEADER -->
 
-    <!-- HEADER -->
+  <div class="top-section">
+    <div>
+      <span class="badge-title"> FUT RANK AI </span>
 
-    <div class="top-section">
+      <h1>Crear Partido ⚽</h1>
 
-        <div>
-
-            <span class="badge-title">
-                FUT RANK AI
-            </span>
-
-            <h1>
-                Crear Partido ⚽
-            </h1>
-
-            <p>
-                Organiza equipos y selecciona jugadores.
-            </p>
-
-        </div>
-
-        <button class="create-btn" (click)="createMatch()">
-
-            Crear Partido
-
-        </button>
-
+      <p>Organiza equipos y selecciona jugadores.</p>
     </div>
 
-    <!-- FORM -->
+    <button class="create-btn" (click)="createMatch()">Crear Partido</button>
+  </div>
 
-    <form class="form-grid" [formGroup]="matchForm">
+  <form class="form-grid" [formGroup]="matchForm">
+    <div class="input-card">
+      <label> Nombre del Partido </label>
 
-        <!-- NAME -->
+      <input
+        type="text"
+        placeholder="Ej: Verdes vs Negros"
+        formControlName="name"
+      />
+    </div>
 
-        <div class="input-card">
+    <div class="input-card">
+      <label> Fecha </label>
+      <input type="date" formControlName="date" />
+    </div>
 
-            <label>
-                Nombre del Partido
-            </label>
+    <div class="input-card">
+      <label> Hora </label>
+      <input type="time" formControlName="time" />
+    </div>
 
-            <input type="text" placeholder="Ej: Verdes vs Negros" formControlName="name">
+    <div class="input-card">
+      <label> Cancha </label>
+      <input
+        type="text"
+        placeholder="Ej: Cancha Praga"
+        formControlName="field"
+      />
+    </div>
+    <div class="input-card">
+      <label> Competición </label>
 
+      <select
+        class="custom-select"
+        formControlName="competitionId"
+        (change)="competitionSelected($event)"
+      >
+        <option value="">Seleccionar competición</option>
+
+        @for (competition of competitions; track competition.id) {
+          <option [value]="competition.id">
+            {{ competition.name }}
+          </option>
+        }
+      </select>
+    </div>
+  </form>
+
+  <section class="formation-section">
+    <div class="section-title">⚽ Tipo de Partido</div>
+
+    <div class="formations-grid">
+      @for (type of matchTypes; track type) {
+        <div
+          class="formation-card"
+          [class.active]="selectedMatchType === type"
+          (click)="selectMatchType(type)"
+        >
+          {{ type }}
         </div>
+      }
+    </div>
+  </section>
 
-        <!-- DATE -->
+  <!-- PLAYERS -->
 
-        <div class="input-card">
+  <section class="players-section">
+    <div class="players-header">
+      <div class="section-title">🔥 Seleccionar Jugadores</div>
 
-            <label>
-                Fecha
-            </label>
+      <span class="selected-count">
+        {{ selectedPlayers.length }}
 
-            <input type="date" formControlName="date">
+        /
 
+        {{ selectedMatchType === "FUT 5" ? 10 : 16 }}
+      </span>
+    </div>
+
+    <div class="players-grid">
+      @for (player of players; track player.id) {
+        <div
+          class="player-card"
+          [class.selected]="isSelected(player)"
+          (click)="togglePlayer(player)"
+        >
+          <!-- IMAGE -->
+
+          <img [src]="player.photo" />
+
+          <!-- INFO -->
+
+          <h3>
+            {{ player.name }}
+          </h3>
+
+          <span>
+            {{ player.position }}
+          </span>
+
+          <!-- RATING -->
+
+          <div class="player-rating">
+            ⭐
+            {{ player.averageRating }}
+          </div>
         </div>
-
-        <!-- TIME -->
-
-        <div class="input-card">
-
-            <label>
-                Hora
-            </label>
-
-            <input type="time" formControlName="time">
-
-        </div>
-
-        <!-- FIELD -->
-
-        <div class="input-card">
-
-            <label>
-                Cancha
-            </label>
-
-            <input type="text" placeholder="Ej: Cancha Praga" formControlName="field">
-
-        </div>
-
-    </form>
-
-    <!-- MATCH TYPE -->
-
-    <section class="formation-section">
-
-        <div class="section-title">
-            ⚽ Tipo de Partido
-        </div>
-
-        <div class="formations-grid">
-
-            @for(type of matchTypes; track type){
-
-            <div class="formation-card" [class.active]="
-                  selectedMatchType === type
-                " (click)="selectMatchType(type)">
-
-                {{ type }}
-
-            </div>
-
-            }
-
-        </div>
-
-    </section>
-
-    <!-- PLAYERS -->
-
-    <section class="players-section">
-
-        <div class="players-header">
-
-            <div class="section-title">
-                🔥 Seleccionar Jugadores
-            </div>
-
-            <span class="selected-count">
-
-                {{
-                selectedPlayers.length
-                }}
-
-                /
-
-                {{
-                selectedMatchType ===
-                'FUT 5'
-                ? 10
-                : 16
-                }}
-
-            </span>
-
-        </div>
-
-        <div class="players-grid">
-
-            @for(player of players; track player.id){
-
-            <div class="player-card" [class.selected]="
-                    isSelected(player)
-                  " (click)="togglePlayer(player)">
-
-                <!-- IMAGE -->
-
-                <img [src]="
-                        player.photo
-                      ">
-
-                <!-- INFO -->
-
-                <h3>
-                    {{ player.name }}
-                </h3>
-
-                <span>
-                    {{ player.position }}
-                </span>
-
-                <!-- RATING -->
-
-                <div class="player-rating">
-
-                    ⭐
-                    {{
-                    player.averageRating
-                    }}
-
-                </div>
-
-            </div>
-
-            }
-
-        </div>
-
-    </section>
-
+      }
+    </div>
+  </section>
 </div>

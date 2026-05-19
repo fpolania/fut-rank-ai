@@ -137,6 +137,14 @@ export const routes: Routes = [
             (m) => m.TeamAccessComponent,
           ),
       },
+      {
+        path: 'create-competition',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./pages/competition-create/competition-create.component').then(
+            (m) => m.CompetitionCreateComponent,
+          ),
+      },
     ],
   },
 ];

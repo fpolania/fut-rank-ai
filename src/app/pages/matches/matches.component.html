@@ -2,9 +2,12 @@
   <div class="top-section">
     <div>
       <span class="badge-title"> FUT RANK AI </span>
+
       <h1>Partidos ⚽</h1>
+
       <p>Historial y administración de partidos.</p>
     </div>
+
     <button
       *ngIf="(authService.currentUser | async)?.role === 'captain'"
       type="button"
@@ -15,7 +18,51 @@
     </button>
   </div>
 
-  @if (matches.length === 0) {
+  <section class="filters-section">
+    <div class="filters-left">
+      <button
+        class="filter"
+        [class.active]="selectedFilter === 'Todos'"
+        (click)="
+          selectedFilter = 'Todos';
+          selectedCompetitionFilter = '';
+          applyFilters()
+        "
+      >
+        Todos
+      </button>
+
+      <button
+        class="filter"
+        [class.active]="selectedFilter === 'En curso'"
+        (click)="selectedFilter = 'En curso'; applyFilters()"
+      >
+        En curso
+      </button>
+
+      <button
+        class="filter"
+        [class.active]="selectedFilter === 'Finalizados'"
+        (click)="selectedFilter = 'Finalizados'; applyFilters()"
+      >
+        Finalizados
+      </button>
+    </div>
+
+    <div class="competition-filters">
+      @for (competition of competitions; track competition.id) {
+        <button
+          class="competition-chip"
+          [class.active]="selectedCompetitionFilter === competition.id"
+          (click)="selectedCompetitionFilter = competition.id!; applyFilters()"
+        >
+          <strong> {{ competition.name }}</strong>
+        </button>
+      }
+    </div>
+  </section>
+
+  @if (filteredMatches.length === 0) {
     <div class="empty-state">
       <h2>No hay partidos 😮‍💨</h2>
       <p>Crea el primero para empezar.</p>
@@ -23,8 +70,8 @@
   }
 
   @if (matches.length > 0) {
-    <div class="matches-grid">
-      @for (match of matches; track match.id) {
+    <div class="matches-grid mt-4">
+      @for (match of filteredMatches; track match.id) {
         <div class="match-card" (click)="openMatch(match)">
           <div class="match-status">
             @if (match.finished) {
@@ -42,17 +89,19 @@
               </button>
             }
           </div>
+
           <h2>
             {{ match.teamA }}
             <span> vs </span>
-
             {{ match.teamB }}
           </h2>
           <div class="score">
             <strong>
               {{ match.scoreA }}
             </strong>
+
             <span> - </span>
+
             <strong>
               {{ match.scoreB }}
             </strong>
@@ -61,15 +110,26 @@
           <div class="match-info">
             <div>
               <i class="bi bi-calendar"></i>
+
               {{ match.date }}
             </div>
+
             <div>
               <i class="bi bi-clock"></i>
+
               {{ match.time }}
             </div>
+
             <div>
               <i class="bi bi-geo-alt"></i>
+
               {{ match.field }}
+            </div>
+
+            <div class="competition-info-badge">
+              <i class="bi bi-trophy-fill"></i>
+
+              {{ match.competitionName }}
             </div>
           </div>
 

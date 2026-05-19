@@ -1,0 +1,680 @@
+.competition-page {
+  min-height: 100vh;
+
+  background: #020617;
+
+  color: white;
+
+  padding: 2rem;
+}
+
+/* TOP */
+
+.badge-title {
+  color: #39ff14;
+
+  letter-spacing: 3px;
+
+  font-size: 0.8rem;
+}
+
+.top-section h1 {
+  font-size: clamp(2rem, 4vw, 4rem);
+
+  font-weight: 900;
+
+  margin-top: 10px;
+}
+
+.top-section p {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* PANELS */
+
+.competition-form,
+.competition-list-card {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.02)
+  );
+
+  border: 1px solid rgba(255, 255, 255, 0.05);
+
+  border-radius: 32px;
+
+  padding: 2rem;
+
+  backdrop-filter: blur(12px);
+}
+
+/* FORM */
+
+.competition-form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 1.5rem;
+
+  height: 100%;
+}
+
+/* GROUP */
+
+.form-group {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0.7rem;
+}
+
+.form-group label {
+  font-weight: 700;
+
+  font-size: 0.95rem;
+}
+
+/* INPUTS */
+
+.form-group input,
+.form-group select {
+  height: 55px;
+
+  border: 1px solid transparent;
+
+  border-radius: 18px;
+
+  padding: 0 1rem;
+
+  background: rgba(255, 255, 255, 0.05);
+
+  color: white;
+
+  outline: none;
+
+  transition: 0.3s ease;
+
+  font-weight: 600;
+}
+
+.form-group input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: rgba(57, 255, 20, 0.4);
+
+  box-shadow: 0 0 0 4px rgba(57, 255, 20, 0.08);
+}
+
+/* SELECT */
+
+.form-group select {
+  appearance: none;
+
+  -webkit-appearance: none;
+
+  -moz-appearance: none;
+
+  cursor: pointer;
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6 6 6-6'/%3E%3C/svg%3E");
+
+  background-repeat: no-repeat;
+
+  background-position: right 1rem center;
+
+  background-size: 16px;
+
+  padding-right: 3rem;
+}
+
+.form-group select option {
+  background: #0f172a;
+
+  color: white;
+}
+
+/* SWITCH */
+
+.switch-group {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+}
+
+.switch-group label {
+  font-weight: 700;
+}
+
+/* CHECKBOX */
+
+.switch-group input[type="checkbox"] {
+  appearance: none;
+
+  width: 58px;
+
+  height: 30px;
+
+  border-radius: 30px;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  position: relative;
+
+  cursor: pointer;
+
+  transition: 0.3s ease;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.switch-group input[type="checkbox"]::before {
+  content: "";
+
+  position: absolute;
+
+  top: 3px;
+
+  left: 4px;
+
+  width: 20px;
+
+  height: 20px;
+
+  border-radius: 50%;
+
+  background: white;
+
+  transition: 0.3s ease;
+}
+
+.switch-group input[type="checkbox"]:checked {
+  background: linear-gradient(135deg, #39ff14, #16c60c);
+
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.25);
+}
+
+.switch-group input[type="checkbox"]:checked::before {
+  transform: translateX(27px);
+
+  background: #020617;
+}
+
+/* BUTTON */
+
+.save-btn {
+  margin-top: 1rem;
+
+  height: 58px;
+
+  border: none;
+
+  border-radius: 18px;
+
+  font-weight: 800;
+
+  color: #020617;
+
+  background: linear-gradient(135deg, #39ff14, #16c60c);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 0.8rem;
+
+  transition: 0.3s ease;
+}
+
+.save-btn:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 0 30px rgba(57, 255, 20, 0.25);
+}
+
+.save-btn:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
+}
+
+/* LIST CARD */
+
+.competition-list-card {
+  height: fit-content;
+}
+
+/* HEADER */
+
+.list-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 2rem;
+}
+
+.list-header h3 {
+  margin: 0;
+
+  font-size: 2rem;
+
+  font-weight: 900;
+}
+
+.list-header p {
+  margin-top: 0.4rem;
+
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* COUNT */
+
+.competition-count {
+  width: 54px;
+
+  height: 54px;
+
+  border-radius: 50%;
+
+  background: rgba(57, 255, 20, 0.12);
+
+  color: #39ff14;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-weight: 900;
+
+  font-size: 1.1rem;
+}
+
+/* EMPTY */
+
+.empty-state {
+  min-height: 250px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 1rem;
+
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.empty-state i {
+  font-size: 3rem;
+
+  color: #39ff14;
+}
+
+/* GRID */
+
+.competition-grid {
+  display: grid;
+
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+
+  gap: 1rem;
+}
+
+/* CARD */
+
+.competition-card {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.04),
+    rgba(255, 255, 255, 0.02)
+  );
+
+  border: 1px solid rgba(255, 255, 255, 0.05);
+
+  border-radius: 24px;
+
+  padding: 1rem;
+
+  transition: 0.3s ease;
+}
+
+.competition-card:hover {
+  transform: translateY(-4px);
+
+  border-color: rgba(57, 255, 20, 0.18);
+
+  box-shadow: 0 0 25px rgba(57, 255, 20, 0.08);
+}
+
+/* CARD TOP */
+
+.competition-card-top {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 1rem;
+
+  margin-bottom: 1rem;
+}
+
+/* CARD LEFT */
+
+.competition-card-left {
+  display: flex;
+
+  align-items: center;
+
+  gap: 0.8rem;
+
+  flex: 1;
+
+  min-width: 0;
+}
+
+/* ICON */
+
+.competition-icon {
+  width: 52px;
+
+  height: 52px;
+
+  border-radius: 16px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 1.3rem;
+
+  flex-shrink: 0;
+}
+
+.competition-icon.tournament {
+  background: rgba(255, 193, 7, 0.12);
+}
+
+.competition-icon.friendly {
+  background: rgba(0, 191, 255, 0.12);
+}
+
+.competition-icon.reta {
+  background: rgba(255, 87, 34, 0.12);
+}
+
+/* STATUS */
+
+.competition-status {
+  padding: 0.35rem 0.8rem;
+
+  border-radius: 30px;
+
+  font-size: 0.72rem;
+
+  font-weight: 700;
+
+  background: rgba(255, 255, 255, 0.05);
+
+  color: rgba(255, 255, 255, 0.5);
+
+  white-space: nowrap;
+}
+
+.competition-status.active {
+  background: rgba(57, 255, 20, 0.12);
+
+  color: #39ff14;
+}
+
+/* INFO */
+
+.competition-info {
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  min-width: 0;
+}
+
+.competition-info strong {
+  display: block;
+
+  font-size: 1rem;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+.competition-info small {
+  display: block;
+
+  margin-top: 4px;
+
+  color: rgba(255, 255, 255, 0.45);
+
+  text-transform: capitalize;
+
+  font-size: 0.82rem;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+/* ACTIONS */
+
+.competition-actions {
+  margin-top: 1rem;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 0.6rem;
+}
+
+.action-btn {
+  width: 44px;
+
+  height: 44px;
+
+  border: none;
+
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.05);
+
+  color: white;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  transition: 0.3s ease;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* EDIT */
+
+.action-btn.edit:hover {
+  background: rgba(0, 191, 255, 0.12);
+
+  color: #00bfff;
+}
+
+/* DELETE */
+
+.action-btn.delete:hover {
+  background: rgba(255, 77, 77, 0.12);
+
+  color: #ff4d4d;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 992px) {
+  .competition-page {
+    padding: 1rem;
+  }
+
+  .competition-form,
+  .competition-list-card {
+    padding: 1.5rem;
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+  .competition-page {
+    padding: 0.8rem;
+
+    overflow-x: hidden;
+  }
+
+  /* TOP */
+
+  .top-section h1 {
+    font-size: 2rem;
+  }
+
+  .top-section p {
+    font-size: 0.9rem;
+  }
+
+  /* PANELS */
+
+  .competition-form,
+  .competition-list-card {
+    padding: 1rem;
+
+    border-radius: 24px;
+  }
+
+  /* GRID */
+
+  .competition-grid {
+    grid-template-columns: 1fr;
+
+    gap: 0.8rem;
+  }
+
+  /* CARD */
+
+  .competition-card {
+    width: 100%;
+
+    min-width: 0;
+
+    padding: 0.9rem;
+  }
+
+  /* TOP */
+
+  .competition-card-top {
+    align-items: flex-start;
+
+    gap: 0.7rem;
+  }
+
+  .competition-card-left {
+    gap: 0.7rem;
+  }
+
+  /* ICON */
+
+  .competition-icon {
+    width: 46px;
+
+    height: 46px;
+
+    font-size: 1.1rem;
+
+    border-radius: 14px;
+  }
+
+  /* TEXT */
+
+  .competition-info strong {
+    font-size: 0.9rem;
+  }
+
+  .competition-info small {
+    font-size: 0.75rem;
+  }
+
+  /* STATUS */
+
+  .competition-status {
+    font-size: 0.65rem;
+
+    padding: 0.3rem 0.6rem;
+  }
+
+  /* ACTIONS */
+
+  .competition-actions {
+    margin-top: 0.8rem;
+  }
+
+  .action-btn {
+    width: 40px;
+
+    height: 40px;
+
+    border-radius: 12px;
+  }
+
+  /* HEADER */
+
+  .list-header {
+    margin-bottom: 1.2rem;
+  }
+
+  .list-header h3 {
+    font-size: 1.5rem;
+  }
+
+  .competition-count {
+    width: 46px;
+
+    height: 46px;
+
+    font-size: 0.95rem;
+  }
+}

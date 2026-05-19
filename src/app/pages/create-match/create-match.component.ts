@@ -12,6 +12,8 @@ import {
   successAlert,
   warningAlert,
 } from '../../core/utils/alert.util';
+import { CompetitionService } from '../../core/services/competition.service';
+import { Competition } from '../../core/interfaces/competition.interface';
 
 @Component({
   selector: 'app-create-match',
@@ -24,19 +26,37 @@ export class CreateMatchComponent implements OnInit {
   private playerService = inject(PlayerService);
   private matchService = inject(MatchService);
   private loadingService = inject(LoadingService);
+  private competitionService = inject(CompetitionService);
   players: Player[] = [];
   selectedPlayers: Player[] = [];
   selectedMatchType = 'FUT 5';
   matchTypes = ['FUT 5', 'FUT 8'];
+  competitions: Competition[] = [];
+  selectedCompetition: Competition | null = null;
   matchForm = this.fb.group({
     name: ['', Validators.required],
     date: ['', Validators.required],
     time: ['', Validators.required],
     field: ['', Validators.required],
+    competitionId: ['', Validators.required],
   });
   ngOnInit(): void {
     this.getPlayers();
+    this.getCompetitions();
   }
+  getCompetitions() {
+    this.loadingService.show();
+    this.competitionService.getCompetitions().subscribe({
+      next: (competitions) => {
+        this.competitions = competitions.filter((c) => c.active);
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
+    this.loadingService.hide();
+  }
+
   getPlayers() {
     this.loadingService.show();
     this.playerService.getPlayers().subscribe({
@@ -74,9 +94,21 @@ export class CreateMatchComponent implements OnInit {
   isSelected(player: Player) {
     return this.selectedPlayers.some((p) => p.id === player.id);
   }
+  competitionSelected(event: any) {
+    const competitionId = event.target.value;
+    this.selectedCompetition =
+      this.competitions.find((c) => c.id === competitionId) || null;
+  }
   async createMatch() {
     if (this.matchForm.invalid) {
       this.matchForm.markAllAsTouched();
+      return;
+    }
+    if (this.selectedPlayers.length === 0) {
+      warningAlert(
+        'Selecciona jugadores ⚽🔥',
+        'Debes seleccionar al menos un jugador para crear el partido.',
+      );
       return;
     }
     try {
@@ -122,6 +154,9 @@ export class CreateMatchComponent implements OnInit {
         finished: false,
         createdAt: Timestamp.now(),
         finishedAt: null,
+        competitionId: this.matchForm.value.competitionId || '',
+        competitionName: this.selectedCompetition?.name || '',
+        status: 'En curso',
       };
 
       await this.matchService.addMatch(match as any);
@@ -132,6 +167,7 @@ export class CreateMatchComponent implements OnInit {
 
       this.matchForm.reset();
       this.selectedPlayers = [];
+      this.selectedCompetition = null;
     } catch (error) {
       errorAlert(
         'No se pudo crear el squad 😮‍💨',

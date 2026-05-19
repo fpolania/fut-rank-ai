@@ -144,6 +144,7 @@ export class MatchDetailComponent implements OnInit {
         scoreB: this.match.scoreB,
         players: cleanPlayers,
         finishedAt: Timestamp.now(),
+        status: 'Finalizado',
       });
 
       successAlert(

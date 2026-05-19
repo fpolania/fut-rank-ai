@@ -1,0 +1,189 @@
+<div class="competition-page">
+  <!-- TOP -->
+
+  <div class="top-section">
+    <div>
+      <span class="badge-title"> FUT RANK AI </span>
+
+      <h1>Crear Competencia 🏆</h1>
+
+      <p>Organiza torneos, amistosos y retas.</p>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+
+  <div class="row g-4 mt-2">
+    <!-- FORM -->
+
+    <div class="col-12 col-xl-4">
+      <form [formGroup]="competitionForm" class="competition-form">
+        <div class="form-group">
+          <label> Nombre </label>
+
+          <input
+            type="text"
+            formControlName="name"
+            placeholder="Ej: Torneo Apertura 2026"
+          />
+        </div>
+
+        <div class="form-group">
+          <label> Tipo </label>
+          <select formControlName="type">
+            <option value="tournament">🏆 Torneo</option>
+            <option value="friendly">🤝 Amistoso</option>
+            <option value="reta">⚡ Reta</option>
+          </select>
+        </div>
+
+        <!-- SEASON -->
+
+        <div class="form-group">
+          <label> Temporada </label>
+
+          <input type="text" formControlName="season" placeholder="2026" />
+        </div>
+
+        <!-- ACTIVE -->
+
+        <div class="switch-group">
+          <label> Competencia activa </label>
+
+          <input type="checkbox" formControlName="active" />
+        </div>
+
+        <!-- BTN -->
+
+        <button
+          type="button"
+          class="save-btn"
+          [disabled]="competitionForm.invalid"
+          (click)="saveCompetition()"
+        >
+          <i class="bi bi-trophy-fill"></i>
+
+          @if (selectedCompetition) {
+            Actualizar competencia
+          } @else {
+            Crear competencia
+          }
+        </button>
+      </form>
+    </div>
+
+    <!-- LIST -->
+
+    <div class="col-12 col-xl-8">
+      <div class="competition-list-card">
+        <!-- HEADER -->
+
+        <div class="list-header">
+          <div>
+            <h3>Competiciones ⚽</h3>
+
+            <p>Torneos y eventos creados.</p>
+          </div>
+
+          <span class="competition-count">
+            {{ competitions.length }}
+          </span>
+        </div>
+
+        <!-- EMPTY -->
+
+        @if (competitions.length === 0) {
+          <div class="empty-state">
+            <i class="bi bi-trophy"></i>
+
+            <p>No hay competencias creadas.</p>
+          </div>
+        }
+
+        <!-- GRID -->
+
+        <div class="competition-grid">
+          @for (competition of competitions; track competition.id) {
+            <div class="competition-card">
+              <!-- TOP -->
+
+              <div class="competition-card-top">
+                <!-- LEFT -->
+
+                <div class="competition-card-left">
+                  <div
+                    class="competition-icon"
+                    [ngClass]="{
+                      tournament: competition.type === 'tournament',
+
+                      friendly: competition.type === 'friendly',
+
+                      reta: competition.type === 'reta',
+                    }"
+                  >
+                    @if (competition.type === "tournament") {
+                      🏆
+                    }
+
+                    @if (competition.type === "friendly") {
+                      🤝
+                    }
+
+                    @if (competition.type === "reta") {
+                      ⚡
+                    }
+                  </div>
+
+                  <!-- INFO -->
+
+                  <div class="competition-info">
+                    <strong>
+                      {{ competition.name }}
+                    </strong>
+
+                    <small>
+                      {{ competition.season }}
+
+                      •
+
+                      {{ competition.type }}
+                    </small>
+                  </div>
+                </div>
+
+                <!-- STATUS -->
+
+                <div
+                  class="competition-status"
+                  [class.active]="competition.active"
+                >
+                  @if (competition.active) {
+                    Activa
+                  } @else {
+                    Inactiva
+                  }
+                </div>
+              </div>
+
+              <div class="competition-actions">
+                <button
+                  class="action-btn edit"
+                  (click)="editCompetition(competition)"
+                >
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+
+                <button
+                  class="action-btn delete"
+                  (click)="deleteCompetition(competition.id!)"
+                >
+                  <i class="bi bi-trash3"></i>
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

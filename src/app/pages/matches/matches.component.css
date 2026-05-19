@@ -1,44 +1,14 @@
+.matches-page * {
+  box-sizing: border-box;
+}
+
 .matches-page {
   padding: 2rem;
+
+  overflow-x: hidden;
 }
 
-.match-status {
-  display: flex;
-
-  align-items: center;
-
-  gap: 10px;
-}
-
-.delete-match-btn {
-  width: 38px;
-
-  height: 38px;
-
-  border: none;
-
-  border-radius: 12px;
-
-  background: transparent;
-
-  color: #ff4d4d;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  cursor: pointer;
-
-  transition: 0.25s ease;
-}
-
-.delete-match-btn:hover {
-  transform: scale(1.08);
-
-  background: rgba(255, 77, 77, 0.15);
-}
+/* TOP */
 
 .top-section {
   display: flex;
@@ -63,7 +33,7 @@
 .top-section h1 {
   color: white;
 
-  font-size: 3rem;
+  font-size: clamp(2rem, 4vw, 3.5rem);
 
   margin: 0.5rem 0;
 
@@ -90,6 +60,189 @@
   color: black;
 
   font-weight: 800;
+
+  transition: 0.3s ease;
+}
+
+.create-btn:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 0 25px rgba(57, 255, 20, 0.2);
+}
+
+/* FILTERS */
+
+.filters-section {
+  margin-top: 2rem;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 1rem;
+
+  flex-wrap: wrap;
+}
+
+/* LEFT */
+
+.filters-left {
+  display: flex;
+
+  gap: 1rem;
+
+  flex-wrap: wrap;
+}
+
+/* FILTER */
+
+.filter {
+  border: none;
+
+  height: 48px;
+
+  padding: 0 1.4rem;
+
+  border-radius: 30px;
+
+  background: rgba(255, 255, 255, 0.05);
+
+  color: white;
+
+  font-weight: 700;
+
+  transition: 0.3s ease;
+
+  flex-shrink: 0;
+}
+
+.filter.active,
+.filter:hover {
+  background: rgba(57, 255, 20, 0.14);
+
+  color: #39ff14;
+}
+
+/* DESKTOP SELECT */
+
+.competition-filter {
+  height: 48px;
+
+  min-width: 240px;
+
+  border: none;
+
+  border-radius: 18px;
+
+  padding: 0 1rem;
+
+  background: rgba(255, 255, 255, 0.05);
+
+  color: white;
+
+  outline: none;
+
+  font-weight: 600;
+
+  appearance: none;
+
+  -webkit-appearance: none;
+
+  cursor: pointer;
+
+  transition: 0.3s ease;
+}
+
+.competition-filter:focus {
+  box-shadow: 0 0 0 4px rgba(57, 255, 20, 0.08);
+}
+
+.competition-filter option {
+  background: #0f172a;
+
+  color: white;
+}
+
+/* MOBILE FILTERS */
+
+.competition-mobile-filters {
+  display: none;
+}
+
+/* MOBILE CHIP */
+
+.competition-chip {
+  border: none;
+
+  height: 42px;
+
+  padding: 0 1rem;
+
+  border-radius: 30px;
+
+  background: rgba(255, 255, 255, 0.05);
+
+  color: white;
+
+  font-size: 0.8rem;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  flex-shrink: 0;
+
+  transition: 0.3s ease;
+}
+
+.competition-chip.active {
+  background: rgba(57, 255, 20, 0.14);
+
+  color: #39ff14;
+}
+
+/* ACTIVE FILTERS */
+
+.active-filters {
+  margin-top: 1rem;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 0.7rem;
+
+  flex-wrap: wrap;
+}
+
+.active-filter-chip {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 0.5rem;
+
+  padding: 0.45rem 1rem;
+
+  border-radius: 30px;
+
+  background: rgba(57, 255, 20, 0.12);
+
+  border: 1px solid rgba(57, 255, 20, 0.14);
+
+  color: #39ff14;
+
+  font-size: 0.82rem;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  width: fit-content;
+
+  max-width: 100%;
 }
 
 /* EMPTY */
@@ -121,9 +274,11 @@
 .matches-grid {
   display: grid;
 
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 
-  gap: 1.5rem;
+  gap: 1.2rem;
+
+  width: 100%;
 }
 
 /* CARD */
@@ -139,15 +294,23 @@
 
   border-radius: 28px;
 
-  padding: 1.5rem;
+  padding: 1.2rem;
 
   cursor: pointer;
 
   transition: 0.3s ease;
+
+  width: 100%;
+
+  min-width: 0;
 }
 
 .match-card:hover {
   transform: translateY(-4px);
+
+  border-color: rgba(57, 255, 20, 0.12);
+
+  box-shadow: 0 0 30px rgba(57, 255, 20, 0.08);
 }
 
 /* STATUS */
@@ -155,7 +318,11 @@
 .match-status {
   display: flex;
 
-  justify-content: flex-end;
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 0.8rem;
 }
 
 .match-status span {
@@ -180,6 +347,40 @@
   color: white;
 }
 
+/* DELETE */
+
+.delete-match-btn {
+  width: 40px;
+
+  height: 40px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: transparent;
+
+  color: #ff4d4d;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition: 0.25s ease;
+
+  flex-shrink: 0;
+}
+
+.delete-match-btn:hover {
+  transform: scale(1.08);
+
+  background: rgba(255, 77, 77, 0.15);
+}
+
 /* TITLE */
 
 .match-card h2 {
@@ -188,6 +389,14 @@
   text-align: center;
 
   margin: 1rem 0;
+
+  font-size: 1.4rem;
+
+  font-weight: 800;
+
+  line-height: 1.4;
+
+  word-break: break-word;
 }
 
 .match-card h2 span {
@@ -212,6 +421,8 @@
   color: #39ff14;
 
   font-size: 3rem;
+
+  font-weight: 900;
 }
 
 .score span {
@@ -232,16 +443,54 @@
 
 .match-info div {
   color: rgba(255, 255, 255, 0.65);
+
+  font-size: 0.9rem;
 }
 
 .match-info i {
   margin-right: 0.5rem;
 }
 
+/* COMPETITION */
+
+.competition-info-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 0.5rem;
+
+  padding: 0.45rem 0.9rem;
+
+  border-radius: 999px;
+
+  width: fit-content;
+
+  background: linear-gradient(
+    135deg,
+    rgba(255, 215, 0, 0.15),
+    rgba(255, 255, 255, 0.03)
+  );
+
+  border: 1px solid rgba(255, 215, 0, 0.18);
+
+  color: #ffd54a;
+
+  font-size: 0.82rem;
+
+  font-weight: 700;
+
+  box-shadow: 0 0 18px rgba(255, 215, 0, 0.06);
+}
+
+.competition-info-badge i {
+  font-size: 0.75rem;
+}
+
 /* TYPE */
 
 .match-type {
-  margin-top: 1.5rem;
+  margin-top: 1.3rem;
 
   background: rgba(57, 255, 20, 0.12);
 
@@ -258,4 +507,220 @@
   align-items: center;
 
   font-weight: 700;
+
+  font-size: 0.9rem;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+  .matches-page {
+    padding: 1rem;
+
+    overflow-x: hidden;
+  }
+
+  /* TOP */
+
+  .top-section {
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 1rem;
+
+    margin-bottom: 1.2rem;
+  }
+
+  .top-section h1 {
+    font-size: 2rem;
+
+    line-height: 1.1;
+  }
+
+  .top-section p {
+    font-size: 0.85rem;
+  }
+
+  .create-btn {
+    width: 100%;
+
+    height: 50px;
+
+    border-radius: 16px;
+
+    font-size: 0.9rem;
+  }
+
+  /* FILTERS */
+
+  .filters-section {
+    margin-top: 0.5rem;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 0.8rem;
+  }
+
+  /* STATUS FILTERS */
+
+  .filters-left {
+    width: 100%;
+
+    display: flex;
+
+    gap: 0.6rem;
+
+    overflow-x: auto;
+
+    flex-wrap: nowrap;
+
+    scrollbar-width: none;
+
+    padding-bottom: 0.2rem;
+  }
+
+  .filters-left::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter {
+    height: 38px;
+
+    padding: 0 0.9rem;
+
+    font-size: 0.72rem;
+
+    border-radius: 999px;
+
+    flex-shrink: 0;
+  }
+
+  /* HIDE DESKTOP SELECT */
+
+  .filters-right {
+    display: none;
+  }
+
+  /* MOBILE COMPETITIONS */
+
+  .competition-mobile-filters {
+    width: 100%;
+
+    display: flex;
+
+    gap: 0.6rem;
+
+    overflow-x: auto;
+
+    scrollbar-width: none;
+
+    padding-bottom: 0.2rem;
+  }
+
+  .competition-mobile-filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .competition-chip {
+    height: 36px;
+
+    padding: 0 0.8rem;
+
+    border-radius: 999px;
+
+    font-size: 0.68rem;
+
+    flex-shrink: 0;
+  }
+
+  /* GRID */
+
+  .matches-grid {
+    margin-top: 1rem !important;
+
+    grid-template-columns: 1fr;
+
+    gap: 0.8rem;
+  }
+
+  /* CARD */
+
+  .match-card {
+    padding: 0.9rem;
+
+    border-radius: 20px;
+  }
+
+  /* STATUS */
+
+  .match-status span {
+    font-size: 0.6rem;
+
+    padding: 0.35rem 0.65rem;
+  }
+
+  .delete-match-btn {
+    width: 32px;
+
+    height: 32px;
+  }
+
+  /* TITLE */
+
+  .match-card h2 {
+    font-size: 1rem;
+
+    line-height: 1.35;
+
+    margin: 0.8rem 0;
+
+    word-break: break-word;
+  }
+
+  /* SCORE */
+
+  .score {
+    gap: 0.7rem;
+
+    margin-bottom: 1rem;
+  }
+
+  .score strong {
+    font-size: 2.2rem;
+  }
+
+  .score span {
+    font-size: 1.2rem;
+  }
+
+  /* INFO */
+
+  .match-info {
+    gap: 0.65rem;
+  }
+
+  .match-info div {
+    font-size: 0.75rem;
+
+    line-height: 1.3;
+  }
+
+  .match-info i {
+    margin-right: 0.35rem;
+  }
+
+  /* COMPETITION */
+
+  .match-type {
+    margin-top: 0.9rem;
+
+    height: 38px;
+
+    border-radius: 12px;
+
+    font-size: 0.72rem;
+  }
 }
