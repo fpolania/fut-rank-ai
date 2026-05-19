@@ -25,7 +25,28 @@
       Enviar Calificaciones
     </button>
   </div>
+  @if (currenPlayerRole === "captain") {
+    <div class="mvp-alert">
+      <i class="bi bi-trophy-fill"></i>
+      <div>
+        <strong> Solo puede haber un MVP por partido </strong>
 
+        <p>Selecciona cuidadosamente al jugador más determinante ⚽🔥</p>
+      </div>
+    </div>
+  } @else {
+    <div class="captain-alert">
+      <i class="bi bi-shield-fill-check"></i>
+
+      <div>
+        <strong> El MVP solo puede ser asignado por capitanes </strong>
+
+        <p>
+          Los jugadores únicamente pueden calificar rendimiento y comentarios ⚽
+        </p>
+      </div>
+    </div>
+  }
   <div class="players-grid" formArrayName="players">
     @for (player of playersControls; track $index; let i = $index) {
       <div class="player-card" [formGroupName]="i">

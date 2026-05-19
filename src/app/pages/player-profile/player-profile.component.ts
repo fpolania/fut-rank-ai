@@ -16,6 +16,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { errorAlert, successAlert } from '../../core/utils/alert.util';
 import Swal from 'sweetalert2';
+import { UploadFileService } from '../../core/services/upload-file.service';
 type EditableStatField = 'matchesPlayed' | 'goals' | 'assists' | 'mvps';
 
 @Component({
@@ -35,6 +36,7 @@ export class PlayerProfileComponent implements OnInit {
   playerId: string | null = null;
   player!: Player;
   authService = inject(AuthService);
+  private fileUpload = inject(UploadFileService);
   user = this.authService.currentUser;
   aiInsight: AiInsight = {
     strengths: [],
@@ -102,7 +104,29 @@ export class PlayerProfileComponent implements OnInit {
       },
     });
   }
-
+  async changePhoto(event: any) {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+    try {
+      this.loadingService.show();
+      const photoUrl = await this.fileUpload.uploadFile(file, 'players');
+      await this.playerService.updatePlayer(this.playerId!, {
+        photo: photoUrl,
+      });
+      this.player.photo = photoUrl;
+      successAlert(
+        'Foto actualizada 📸🔥',
+        'La foto de perfil fue actualizada correctamente.',
+      );
+    } catch (error) {
+      console.error(error);
+      errorAlert('Ups 😮‍💨', 'No se pudo actualizar la foto.');
+    } finally {
+      this.loadingService.hide();
+    }
+  }
   getPlayerComments() {
     if (!this.playerId) return;
     this.loadingService.show();

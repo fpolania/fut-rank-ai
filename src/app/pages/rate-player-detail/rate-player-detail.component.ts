@@ -42,6 +42,7 @@ export class RatePlayerDetailComponent implements OnInit {
   matchId: string | null = null;
   match: any;
   currentPlayerDocument = '';
+  currenPlayerRole = '';
   badWords = BAD_WORDS;
   playersForm = this.fb.group({
     players: this.fb.array([]),
@@ -54,6 +55,7 @@ export class RatePlayerDetailComponent implements OnInit {
         return;
       }
       this.currentPlayerDocument = user.document || '';
+      this.currenPlayerRole = user.role || '';
       if (this.matchId) {
         this.getMatch();
       }

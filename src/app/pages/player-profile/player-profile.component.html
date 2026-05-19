@@ -4,7 +4,21 @@
 
     <section class="hero-section">
       <div class="hero-left">
-        <img [src]="player.photo" />
+        <div class="profile-photo-wrapper">
+          <img [src]="player.photo" />
+
+          <button class="edit-photo-btn" (click)="fileInput.click()">
+            <i class="bi bi-camera-fill"></i>
+          </button>
+
+          <input
+            type="file"
+            hidden
+            accept="image/*"
+            #fileInput
+            (change)="changePhoto($event)"
+          />
+        </div>
 
         <div>
           <span class="position-badge">
@@ -16,8 +30,6 @@
           </h1>
 
           <p>“El rendimiento habla por ti.”</p>
-
-          <!-- BADGES -->
 
           <div class="badges">
             @if (player.mvps >= 1) {

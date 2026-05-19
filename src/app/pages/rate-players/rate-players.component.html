@@ -40,6 +40,13 @@
             {{ match.type }}
           </span>
           <span class="tag"> 📍 {{ match.field }} </span>
+          <span class="tag">
+            Vigente hasta:
+            {{
+              match.finishedAt?.seconds! * 1000 + 86400000
+                | date: "dd/MM/yyyy hh:mm a"
+            }}
+          </span>
         </div>
 
         <button

@@ -26,7 +26,6 @@ export class AddPlayerComponent implements OnInit {
   private fileUpload = inject(UploadFileService);
   private playerService = inject(PlayerService);
   private route = inject(ActivatedRoute);
-  private loadingService = inject(LoadingService);
 
   ngOnInit() {
     this.route.params.subscribe((params) => {
