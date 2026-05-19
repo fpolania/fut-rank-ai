@@ -1,4 +1,6 @@
 <div class="rankings-page">
+  <!-- TOP -->
+
   <div class="top-section">
     <div>
       <span class="badge-title"> FUT RANK AI </span>
@@ -10,6 +12,9 @@
 
     <button class="season-btn">Temporada 2026</button>
   </div>
+
+  <!-- PODIUM -->
+
   <section class="podium-section">
     @if (topPlayers[1]) {
       <div class="podium-card second">
@@ -74,6 +79,8 @@
     }
   </section>
 
+  <!-- FILTERS -->
+
   <section class="filters-section">
     <button
       class="filter"
@@ -82,6 +89,7 @@
     >
       Todos
     </button>
+
     <button
       class="filter"
       [class.active]="selectedFilter === 'MVPs'"
@@ -90,31 +98,41 @@
       MVPs
     </button>
   </section>
+
+  <!-- DESKTOP TABLE -->
+
   <section class="table-section">
     <div class="table-header">
       <span>#</span>
+
       <span>Jugador</span>
+
       <span>Posición</span>
+
       <span>Promedio</span>
+
       <span>MVPs</span>
+
       <span>Tendencia</span>
     </div>
+
     @for (player of players; track player.id; let i = $index) {
       <div class="table-row">
         <span>
           {{ i + 1 }}
         </span>
+
         <div class="player-cell">
           <img [src]="player.photo" />
+
           <strong>
             {{ player.name }}
           </strong>
         </div>
+
         <span>
           {{ player.position }}
         </span>
-
-        <!-- RATING -->
 
         <span class="green">
           {{ player.averageRating }}
@@ -125,6 +143,40 @@
         </span>
 
         <span class="trend-up"> 🔥 Top Player </span>
+      </div>
+    }
+  </section>
+
+  <!-- MOBILE RANKING -->
+
+  <section class="mobile-ranking">
+    @for (player of players; track player.id; let i = $index) {
+      <div class="mobile-player-card">
+        <div class="mobile-rank">#{{ i + 1 }}</div>
+
+        <div class="mobile-player-info">
+          <img [src]="player.photo" />
+
+          <div>
+            <strong>
+              {{ player.name }}
+            </strong>
+
+            <small>
+              {{ player.position }}
+            </small>
+
+            <span class="trend-up"> 🔥 Top Player </span>
+          </div>
+        </div>
+
+        <div class="mobile-player-stats">
+          <span class="mobile-rating">
+            {{ player.averageRating }}
+          </span>
+
+          <small> 🏆 {{ player.mvps }} </small>
+        </div>
       </div>
     }
   </section>

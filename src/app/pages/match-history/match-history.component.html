@@ -1,12 +1,20 @@
 <div class="history-page">
+  <!-- TOP -->
+
   <div class="top-section">
     <div>
       <span class="badge-title"> FUT RANK AI </span>
+
       <h1>Historial de Partidos ⚽</h1>
+
       <p>Revive estadísticas, MVPs y análisis IA.</p>
     </div>
+
     <button class="season-btn">Temporada 2026</button>
   </div>
+
+  <!-- FILTERS -->
+
   <section class="filters-section">
     <button
       class="filter"
@@ -15,6 +23,7 @@
     >
       Todos
     </button>
+
     <button
       class="filter"
       [class.active]="selectedFilter === 'FUT 5'"
@@ -31,10 +40,15 @@
       FUT 8
     </button>
   </section>
+
+  <!-- MATCHES -->
+
   @if (filteredMatches.length > 0) {
     <section class="matches-grid">
       @for (match of filteredMatches; track match.id) {
         <div class="match-card">
+          <!-- HEADER -->
+
           <div class="match-header">
             <span class="match-type">
               {{ match.type }}
@@ -44,8 +58,11 @@
               {{ match.date }}
             </span>
           </div>
-          <div class="teams-section">
-            <div class="team">
+
+          <!-- SCORE -->
+
+          <div class="scoreboard">
+            <div class="team-block">
               <h3>
                 {{ match.teamA }}
               </h3>
@@ -57,7 +74,7 @@
 
             <div class="vs">VS</div>
 
-            <div class="team">
+            <div class="team-block">
               <h3>
                 {{ match.teamB }}
               </h3>
@@ -67,25 +84,54 @@
               </span>
             </div>
           </div>
+
+          <!-- INFO -->
+
           <div class="match-info">
             <div>📍 {{ match.field }}</div>
 
-            <div>
-              ⭐ MVP:
-              {{ match.mvpPlayerName! }}
-            </div>
-
             <div>🕒 {{ match.time }}</div>
           </div>
+
+          <!-- MVP -->
+
+          <div class="mvp-box">
+            <span class="mvp-label"> 🏆 MVP DEL PARTIDO </span>
+
+            <strong>
+              {{ match.mvpPlayerName || "Sin MVP" }}
+            </strong>
+          </div>
+
+          <!-- TIMELINE -->
+
           <div class="timeline">
-            <div class="timeline-item">⚽ Partido creado</div>
+            <div class="timeline-item">
+              <div class="timeline-dot success"></div>
+
+              <span> ⚽ Partido creado </span>
+            </div>
+
             @if (match.finished) {
-              <div class="timeline-item">🏁 Partido finalizado</div>
+              <div class="timeline-item">
+                <div class="timeline-dot success"></div>
+
+                <span> 🏁 Partido finalizado </span>
+              </div>
             }
+
             @if (match.analyzed) {
-              <div class="timeline-item">🤖 Análisis generado</div>
+              <div class="timeline-item">
+                <div class="timeline-dot ai"></div>
+
+                <span> 🤖 Análisis generado </span>
+              </div>
             } @else {
-              <div class="timeline-item">🤖 Análisis pendiente por generar</div>
+              <div class="timeline-item">
+                <div class="timeline-dot pending"></div>
+
+                <span> 🤖 Análisis pendiente </span>
+              </div>
             }
           </div>
 
@@ -94,7 +140,9 @@
             [disabled]="match.analyzed === true"
             (click)="generateAnalysis(match)"
           >
-            Generar análisis
+            <i class="bi bi-stars"></i>
+
+            Generar análisis IA
           </button>
         </div>
       }

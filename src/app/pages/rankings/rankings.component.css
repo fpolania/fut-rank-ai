@@ -1,413 +1,508 @@
 .rankings-page {
+  min-height: 100vh;
 
-    min-height: 100vh;
+  background: #020617;
 
-    background: #020617;
+  color: white;
 
-    color: white;
-
-    padding: 2rem;
-
+  padding: 2rem;
 }
 
 /* TOP */
 
 .top-section {
+  display: flex;
 
-    display: flex;
+  justify-content: space-between;
 
-    justify-content: space-between;
-
-    align-items: center;
-
+  align-items: center;
 }
 
 .badge-title {
+  color: #39ff14;
 
-    color: #39ff14;
+  letter-spacing: 3px;
 
-    letter-spacing: 3px;
-
-    font-size: .8rem;
-
+  font-size: 0.8rem;
 }
 
 .top-section h1 {
+  font-size: clamp(2rem, 4vw, 4rem);
 
-    font-size: clamp(2rem, 4vw, 4rem);
+  font-weight: 900;
 
-    font-weight: 900;
-
-    margin-top: 10px;
-
+  margin-top: 10px;
 }
 
 .top-section p {
-
-    color: rgba(255, 255, 255, .6);
-
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .season-btn {
+  border: none;
 
-    border: none;
+  height: 55px;
 
-    height: 55px;
+  padding: 0 2rem;
 
-    padding: 0 2rem;
+  border-radius: 18px;
 
-    border-radius: 18px;
+  font-weight: 700;
 
-    font-weight: 700;
+  background: linear-gradient(135deg, #39ff14, #16c60c);
 
-    background:
-        linear-gradient(135deg,
-            #39ff14,
-            #16c60c);
+  transition: 0.3s ease;
+}
 
+.season-btn:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.25);
 }
 
 /* PODIUM */
 
 .podium-section {
+  margin-top: 3rem;
 
-    margin-top: 3rem;
+  display: flex;
 
-    display: flex;
+  justify-content: center;
 
-    justify-content: center;
+  align-items: end;
 
-    align-items: end;
-
-    gap: 1.5rem;
-
+  gap: 1.5rem;
 }
 
 .podium-card {
+  width: 280px;
 
-    width: 280px;
+  background: rgba(255, 255, 255, 0.04);
 
-    background: rgba(255, 255, 255, .04);
+  border-radius: 30px;
 
-    border-radius: 30px;
+  padding: 2rem;
 
-    padding: 2rem;
+  text-align: center;
 
-    text-align: center;
+  position: relative;
 
-    position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 
-    border: 1px solid rgba(255, 255, 255, .05);
+  transition: 0.3s ease;
+}
 
+.podium-card:hover {
+  transform: translateY(-5px);
 }
 
 .podium-card img {
+  width: 110px;
 
-    width: 110px;
-    height: 110px;
+  height: 110px;
 
-    border-radius: 50%;
+  border-radius: 50%;
 
-    margin-top: 1rem;
+  object-fit: cover;
 
+  margin-top: 1rem;
+
+  border: 3px solid rgba(57, 255, 20, 0.2);
 }
 
 .podium-card h3 {
+  margin-top: 1rem;
 
-    margin-top: 1rem;
-
-    font-size: 1.5rem;
-
+  font-size: 1.5rem;
 }
 
 .podium-card span {
-
-    color: rgba(255, 255, 255, .6);
-
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .position {
-
-    font-size: 2rem;
-
+  font-size: 2rem;
 }
 
 .first {
+  transform: scale(1.05);
 
-    transform: scale(1.05);
+  border-color: rgba(57, 255, 20, 0.25);
 
-    border-color: rgba(57, 255, 20, .25);
-
-    background:
-        linear-gradient(135deg,
-            rgba(57, 255, 20, .12),
-            rgba(255, 255, 255, .03));
-
+  background: linear-gradient(
+    135deg,
+    rgba(57, 255, 20, 0.12),
+    rgba(255, 255, 255, 0.03)
+  );
 }
 
 .second {
-
-    margin-top: 5rem;
-
+  margin-top: 5rem;
 }
 
 .third {
-
-    margin-top: 8rem;
-
+  margin-top: 8rem;
 }
 
 .crown {
+  position: absolute;
 
-    position: absolute;
+  top: -20px;
 
-    top: -20px;
-    right: 20px;
+  right: 20px;
 
-    font-size: 2rem;
-
+  font-size: 2rem;
 }
 
 .score {
+  margin-top: 1rem;
 
-    margin-top: 1rem;
+  font-size: 2rem;
 
-    font-size: 2rem;
+  font-weight: 900;
 
-    font-weight: 900;
-
-    color: #39ff14;
-
+  color: #39ff14;
 }
 
 /* FILTERS */
 
 .filters-section {
+  margin-top: 3rem;
 
-    margin-top: 3rem;
+  display: flex;
 
-    display: flex;
+  gap: 1rem;
 
-    gap: 1rem;
-
-    flex-wrap: wrap;
-
+  flex-wrap: wrap;
 }
 
 .filter {
+  border: none;
 
-    border: none;
+  height: 50px;
 
-    height: 50px;
+  padding: 0 1.5rem;
 
-    padding: 0 1.5rem;
+  border-radius: 30px;
 
-    border-radius: 30px;
+  background: rgba(255, 255, 255, 0.05);
 
-    background: rgba(255, 255, 255, .05);
+  color: white;
 
-    color: white;
-
-    transition: .3s ease;
-
+  transition: 0.3s ease;
 }
 
 .filter.active,
 .filter:hover {
+  background: rgba(57, 255, 20, 0.15);
 
-    background: rgba(57, 255, 20, .15);
-
-    color: #39ff14;
-
+  color: #39ff14;
 }
 
 /* TABLE */
 
 .table-section {
-
-    margin-top: 3rem;
-
+  margin-top: 3rem;
 }
 
 .table-header,
 .table-row {
+  display: grid;
 
-    display: grid;
+  grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr 1fr;
 
-    grid-template-columns:
-        .5fr 2fr 1fr 1fr 1fr 1fr;
+  align-items: center;
 
-    align-items: center;
-
-    padding: 1.2rem;
-
+  padding: 1.2rem;
 }
 
 .table-header {
+  background: rgba(255, 255, 255, 0.03);
 
-    background: rgba(255, 255, 255, .03);
+  border-radius: 20px;
 
-    border-radius: 20px;
-
-    color: rgba(255, 255, 255, .6);
-
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .table-row {
+  margin-top: 1rem;
 
-    margin-top: 1rem;
+  background: rgba(255, 255, 255, 0.04);
 
-    background: rgba(255, 255, 255, .04);
+  border-radius: 20px;
 
-    border-radius: 20px;
+  transition: 0.3s ease;
+}
 
+.table-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+
+  transform: translateY(-2px);
 }
 
 .player-cell {
+  display: flex;
 
-    display: flex;
+  align-items: center;
 
-    align-items: center;
-
-    gap: 1rem;
-
+  gap: 1rem;
 }
 
 .player-cell img {
+  width: 50px;
 
-    width: 50px;
-    height: 50px;
+  height: 50px;
 
-    border-radius: 50%;
+  border-radius: 50%;
 
+  object-fit: cover;
+
+  border: 2px solid rgba(57, 255, 20, 0.15);
 }
 
 .green {
+  color: #39ff14;
 
-    color: #39ff14;
-
-    font-weight: 700;
-
+  font-weight: 700;
 }
 
 .trend-up {
+  color: #39ff14;
 
-    color: #39ff14;
-
+  font-weight: 700;
 }
 
 .trend-down {
+  color: #ff4d4d;
+}
 
-    color: #ff4d4d;
+/* MOBILE RANKING */
 
+.mobile-ranking {
+  display: none;
 }
 
 /* AI */
 
 .ai-section {
-
-    margin-top: 3rem;
-
+  margin-top: 3rem;
 }
 
 .section-title {
+  font-size: 1.5rem;
 
-    font-size: 1.5rem;
+  font-weight: 800;
 
-    font-weight: 800;
-
-    margin-bottom: 1rem;
-
+  margin-bottom: 1rem;
 }
 
 .ai-grid {
+  display: grid;
 
-    display: grid;
+  grid-template-columns: repeat(3, 1fr);
 
-    grid-template-columns: repeat(3, 1fr);
-
-    gap: 1.5rem;
-
+  gap: 1.5rem;
 }
 
 .ai-card {
+  background: linear-gradient(
+    135deg,
+    rgba(57, 255, 20, 0.1),
+    rgba(255, 255, 255, 0.03)
+  );
 
-    background:
-        linear-gradient(135deg,
-            rgba(57, 255, 20, .10),
-            rgba(255, 255, 255, .03));
+  border-radius: 24px;
 
-    border-radius: 24px;
-
-    padding: 1.5rem;
-
+  padding: 1.5rem;
 }
 
 .ai-card span {
-
-    font-size: 2rem;
-
+  font-size: 2rem;
 }
 
 .ai-card p {
+  margin-top: 1rem;
 
-    margin-top: 1rem;
-
-    color: rgba(255, 255, 255, .7);
-
+  color: rgba(255, 255, 255, 0.7);
 }
 
 /* RESPONSIVE */
 
-@media(max-width:1200px) {
+@media (max-width: 1200px) {
+  .podium-section {
+    flex-direction: column;
 
-    .podium-section {
+    align-items: center;
+  }
 
-        flex-direction: column;
+  .second,
+  .third {
+    margin-top: 0;
+  }
 
-        align-items: center;
-
-    }
-
-    .second,
-    .third {
-
-        margin-top: 0;
-
-    }
-
-    .ai-grid {
-
-        grid-template-columns: 1fr;
-
-    }
-
+  .ai-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-@media(max-width:768px) {
+@media (max-width: 768px) {
+  .rankings-page {
+    padding: 1rem;
+  }
 
-    .top-section {
+  .top-section {
+    flex-direction: column;
 
-        flex-direction: column;
+    align-items: flex-start;
 
-        align-items: flex-start;
+    gap: 1rem;
+  }
 
-        gap: 1rem;
+  .season-btn {
+    width: 100%;
+  }
 
-    }
+  .podium-section {
+    gap: 1rem;
+  }
 
-    .table-header {
+  .podium-card {
+    width: 100%;
 
-        display: none;
+    padding: 1.5rem;
+  }
 
-    }
+  .podium-card img {
+    width: 90px;
 
-    .table-row {
+    height: 90px;
+  }
 
-        grid-template-columns: 1fr;
+  .podium-card h3 {
+    font-size: 1.2rem;
+  }
 
-        gap: 1rem;
+  .score {
+    font-size: 1.7rem;
+  }
 
-    }
+  /* HIDE TABLE */
 
+  .table-section {
+    display: none;
+  }
+
+  /* MOBILE CARDS */
+
+  .mobile-ranking {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 1rem;
+
+    margin-top: 2rem;
+  }
+
+  .mobile-player-card {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 1rem;
+
+    padding: 1rem;
+
+    border-radius: 24px;
+
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.05),
+      rgba(255, 255, 255, 0.02)
+    );
+
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .mobile-rank {
+    font-size: 1.2rem;
+
+    font-weight: 900;
+
+    color: #39ff14;
+
+    min-width: 28px;
+  }
+
+  .mobile-player-info {
+    flex: 1;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.8rem;
+  }
+
+  .mobile-player-info img {
+    width: 58px;
+
+    height: 58px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    border: 2px solid rgba(57, 255, 20, 0.25);
+  }
+
+  .mobile-player-info strong {
+    display: block;
+
+    font-size: 0.95rem;
+  }
+
+  .mobile-player-info small {
+    display: block;
+
+    color: rgba(255, 255, 255, 0.6);
+
+    margin-top: 3px;
+
+    font-size: 0.72rem;
+  }
+
+  .mobile-player-stats {
+    text-align: right;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0.35rem;
+  }
+
+  .mobile-rating {
+    font-size: 1.3rem;
+
+    font-weight: 900;
+
+    color: #39ff14;
+  }
+
+  .mobile-player-stats small {
+    color: rgba(255, 255, 255, 0.7);
+
+    font-size: 0.75rem;
+  }
+
+  .trend-up {
+    display: inline-block;
+
+    margin-top: 5px;
+
+    font-size: 0.72rem;
+  }
 }
