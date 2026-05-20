@@ -1,0 +1,269 @@
+<div class="analysis-page">
+  <div class="top-section">
+    <div>
+      <span class="badge-title"> FUT RANK AI </span>
+
+      <h1>Análisis IA ⚽</h1>
+
+      <p>Sube un video y obtén análisis táctico del equipo.</p>
+    </div>
+  </div>
+  <form [formGroup]="analysisForm" class="analysis-form">
+    <div class="analysis-layout">
+      <div class="left-panel">
+        <div class="section-card">
+          <label> Partido </label>
+
+          <select formControlName="matchId" (change)="macthSelected($event)">
+            <option value="">Seleccionar partido</option>
+
+            @for (match of matches; track match.id) {
+              <option [value]="match.id">
+                {{ match.teamA }}
+                vs
+                {{ match.teamB }}
+              </option>
+            }
+          </select>
+        </div>
+        <div class="section-card">
+          <div class="config-block">
+            <label> Color del equipo </label>
+            <div class="colors">
+              <button
+                type="button"
+                class="color black"
+                [class.active]="selectedColor === 'black'"
+                (click)="selectColor('black')"
+              ></button>
+
+              <button
+                type="button"
+                class="color white"
+                [class.active]="selectedColor === 'white'"
+                (click)="selectColor('white')"
+              ></button>
+
+              <button
+                type="button"
+                class="color blue"
+                [class.active]="selectedColor === 'blue'"
+                (click)="selectColor('blue')"
+              ></button>
+
+              <button
+                type="button"
+                class="color red"
+                [class.active]="selectedColor === 'red'"
+                (click)="selectColor('red')"
+              ></button>
+
+              <button
+                type="button"
+                class="color green"
+                [class.active]="selectedColor === 'green'"
+                (click)="selectColor('green')"
+              ></button>
+            </div>
+          </div>
+
+          <div class="config-block mt-4">
+            <label> Tipo </label>
+
+            <div class="types">
+              <button
+                type="button"
+                class="type-btn"
+                [class.active]="selectedType === 'FUT 5'"
+                (click)="selectType('FUT 5')"
+              >
+                FUT 5
+              </button>
+
+              <button
+                type="button"
+                class="type-btn"
+                [class.active]="selectedType === 'FUT 8'"
+                (click)="selectType('FUT 8')"
+              >
+                FUT 8
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <label> Video del partido </label>
+
+          <div class="upload-area">
+            <input
+              type="file"
+              accept="video/*"
+              #videoInput
+              hidden
+              (change)="onVideoSelected($event)"
+            />
+
+            <div class="upload-content" (click)="videoInput.click()">
+              <div class="upload-icon">🎥</div>
+
+              @if (!selectedVideo) {
+                <h3>Subir video</h3>
+
+                <p>MP4 • Máx 5 minutos</p>
+              }
+
+              @if (selectedVideo) {
+                <div class="video-selected">
+                  <h3>✅ Video seleccionado</h3>
+
+                  <span>
+                    {{ selectedVideo.name }}
+                  </span>
+                </div>
+              }
+            </div>
+
+            <div class="video-actions">
+              <button
+                type="button"
+                class="upload-btn"
+                [disabled]="!selectedVideo"
+                (click)="uploadVideo()"
+              >
+                ☁️ Cargar video
+              </button>
+
+              <button
+                type="button"
+                class="clear-btn"
+                [disabled]="!selectedVideo"
+                (click)="clearVideo()"
+              >
+                🗑 Limpiar
+              </button>
+            </div>
+
+            @if (videoUrl) {
+              <div class="uploaded-state">
+                <i class="bi bi-check-circle-fill"></i>
+
+                Video cargado correctamente
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="section-card">
+          <label> ¿Qué deseas analizar? </label>
+
+          <textarea
+            rows="5"
+            formControlName="focus"
+            placeholder="
+Ej:
+- presión alta
+- defensa
+- salida del balón
+- transiciones
+- movimientos sin balón
+            "
+          ></textarea>
+        </div>
+
+        <button
+          type="button"
+          class="generate-btn"
+          [disabled]="!videoUrl || analysisForm.invalid"
+          (click)="saveData()"
+        >
+          Guardar Información
+        </button>
+      </div>
+
+      <div class="right-panel">
+        <div class="analysis-history-header">
+          <div>
+            <h3>Historial IA 🤖</h3>
+
+            <p>Análisis generados del equipo.</p>
+          </div>
+
+          <span class="analysis-count">
+            {{ analyses.length }}
+          </span>
+        </div>
+
+        @if (analyses.length === 0) {
+          <div class="empty-analysis">
+            <i class="bi bi-camera-video"></i>
+
+            <p>Aún no hay análisis generados.</p>
+          </div>
+        }
+
+        <div class="analysis-list">
+          @for (analysis of analyses; track analysis.id) {
+            <div class="analysis-card">
+              <div class="analysis-card-top">
+                <div class="analysis-match">
+                  <h2>
+                    ⚽
+
+                    {{ analysis.matchName | uppercase }}
+                  </h2>
+                </div>
+
+                <div
+                  class="analysis-status"
+                  [class.completed]="analysis.status === 'completed'"
+                >
+                  {{ analysis.status }}
+                </div>
+              </div>
+              <div class="analysis-meta">
+                @if (analysis.focus) {
+                  <div class="meta-chip focus-chip">
+                    <h6>
+                      🎯
+
+                      {{ analysis.focus | uppercase }}
+                    </h6>
+                  </div>
+                }
+
+                <div class="meta-chip">
+                  🕒
+
+                  {{ analysis.createdAt | date: "short" }}
+                </div>
+
+                <div class="meta-chip type-chip">
+                  ⚽
+
+                  {{ analysis.matchType }}
+                </div>
+              </div>
+
+              @if (analysis.analysis) {
+                <div
+                  class="analysis-result"
+                  [innerHTML]="formatAnalysis(analysis.analysis)"
+                ></div>
+              }
+
+              <button
+                type="button"
+                [disabled]="analysis.status === 'completed'"
+                class="view-analysis-btn"
+                (click)="viewAnalysis(analysis)"
+              >
+                Ver análisis
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,4 +1,6 @@
 <div class="layout-container">
+  <!-- SIDEBAR -->
+
   <aside class="sidebar" [class.open]="sidebarOpen">
     <div class="logo-section">
       <div class="logo-circle">⚽</div>
@@ -9,6 +11,7 @@
         <span> AI Platform </span>
       </div>
     </div>
+
     <nav class="menu">
       <a
         routerLink="/"
@@ -19,6 +22,16 @@
         🏠 Dashboard
       </a>
 
+      @if ((authService.currentUser | async)?.role === "captain") {
+        <a
+          routerLink="/ai-analysis"
+          routerLinkActive="active"
+          (click)="closeSidebar()"
+        >
+          🤖 Análisis IA
+        </a>
+      }
+
       <a
         routerLink="/rate-players"
         routerLinkActive="active"
@@ -26,6 +39,7 @@
       >
         ⭐ Calificar
       </a>
+
       @if ((authService.currentUser | async)?.role === "captain") {
         <a
           routerLink="/create-competition"
@@ -43,6 +57,7 @@
       >
         👤 Jugadores
       </a>
+
       <a
         routerLink="/matches"
         routerLinkActive="active"
@@ -50,6 +65,7 @@
       >
         ⚽ Partidos
       </a>
+
       <a
         routerLink="/team-applications"
         routerLinkActive="active"
@@ -57,6 +73,7 @@
       >
         📥 Postulaciones
       </a>
+
       @if ((authService.currentUser | async)?.role === "captain") {
         <a
           routerLink="/team-builder"
@@ -66,6 +83,7 @@
           🧠 Team Builder
         </a>
       }
+
       @if ((authService.currentUser | async)?.role === "captain") {
         <a
           routerLink="/team-access"
@@ -75,6 +93,7 @@
           🔐 Team Access
         </a>
       }
+
       <a
         routerLink="/match-history"
         routerLinkActive="active"
@@ -85,11 +104,16 @@
     </nav>
   </aside>
 
+  <!-- CONTENT -->
+
   <main class="content-area">
+    <!-- TOPBAR -->
+
     <header class="topbar">
       <button class="menu-btn" (click)="toggleSidebar()" type="button">
         ☰
       </button>
+
       <div>
         <h3>
           {{ ((authService.currentUser | async)?.name || "").toUpperCase() }}
@@ -97,7 +121,22 @@
         </h3>
       </div>
 
+      <!-- PROFILE -->
+
       <div class="profile-section">
+        <!-- SETTINGS -->
+
+        @if ((authService.currentUser | async)?.role === "captain") {
+          <button
+            class="settings-btn"
+            (click)="openTeamSettings = !openTeamSettings"
+          >
+            <i class="bi bi-gear-fill"></i>
+          </button>
+        }
+
+        <!-- USER -->
+
         <div class="user-info">
           <img
             [src]="
@@ -121,11 +160,38 @@
           </div>
         </div>
 
+        <!-- LOGOUT -->
+
         <button class="logout-btn" (click)="logout()">
           <i class="bi bi-box-arrow-right"></i>
         </button>
+
+        @if (openTeamSettings) {
+          <div class="settings-dropdown">
+            <div class="settings-header">
+              <h3>⚽ Configuración equipo</h3>
+
+              <p>Personaliza tu equipo.</p>
+            </div>
+
+            <div class="settings-body">
+              <label> Nombre del equipo </label>
+
+              <input
+                type="text"
+                [(ngModel)]="teamName"
+                placeholder="Ej: Pull Request"
+              />
+
+              <button class="save-settings-btn" (click)="saveTeamSettings()">
+                💾 Guardar cambios
+              </button>
+            </div>
+          </div>
+        }
       </div>
     </header>
+
     <div class="router-container">
       <router-outlet></router-outlet>
     </div>

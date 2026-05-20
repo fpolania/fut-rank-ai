@@ -17,6 +17,7 @@ import { LoadingService } from '../../core/services/loading.service';
 import { errorAlert, successAlert } from '../../core/utils/alert.util';
 import Swal from 'sweetalert2';
 import { UploadFileService } from '../../core/services/upload-file.service';
+import { TeamSettingsService } from '../../core/services/settings.service';
 type EditableStatField = 'matchesPlayed' | 'goals' | 'assists' | 'mvps';
 
 @Component({
@@ -38,6 +39,7 @@ export class PlayerProfileComponent implements OnInit {
   authService = inject(AuthService);
   private fileUpload = inject(UploadFileService);
   user = this.authService.currentUser;
+  private teamSettingsService = inject(TeamSettingsService);
   aiInsight: AiInsight = {
     strengths: [],
     weaknesses: [],
@@ -45,7 +47,7 @@ export class PlayerProfileComponent implements OnInit {
   };
   visibleComments = 4;
   showAllComments = false;
-
+  teamName: string = '';
   stats: {
     label: string;
 
@@ -77,6 +79,13 @@ export class PlayerProfileComponent implements OnInit {
     if (this.playerId) {
       this.getPlayer();
       this.getPlayerComments();
+      this.loadTeamSettings();
+    }
+  }
+  async loadTeamSettings() {
+    const settings = await this.teamSettingsService.getTeamSettings();
+    if (settings?.['name']) {
+      this.teamName = settings['name'];
     }
   }
   get displayedComments() {

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 
@@ -14,6 +14,7 @@ import {
 import Swal from 'sweetalert2';
 import { LoadingService } from '../../core/services/loading.service';
 import { errorAlert, successAlert } from '../../core/utils/alert.util';
+import { TeamSettingsService } from '../../core/services/settings.service';
 
 @Component({
   selector: 'app-join-team',
@@ -22,11 +23,12 @@ import { errorAlert, successAlert } from '../../core/utils/alert.util';
   templateUrl: './join-team.component.html',
   styleUrls: ['./join-team.component.css'],
 })
-export class JoinTeamComponent {
+export class JoinTeamComponent implements OnInit {
   private fb = inject(FormBuilder);
   private firestore = inject(Firestore);
   private loadingService = inject(LoadingService);
-
+  private teamSettingsService = inject(TeamSettingsService);
+  teamName: string = '';
   positions = ['Arquero', 'Defensa', 'Mediocampo', 'Delantero'];
   joinForm = this.fb.group({
     name: [
@@ -56,7 +58,15 @@ export class JoinTeamComponent {
       ],
     ],
   });
-
+  ngOnInit(): void {
+    this.loadTeamSettings();
+  }
+  async loadTeamSettings() {
+    const settings = await this.teamSettingsService.getTeamSettings();
+    if (settings?.['name']) {
+      this.teamName = settings['name'];
+    }
+  }
   async submitApplication() {
     if (this.joinForm.invalid) return;
     this.loadingService.show();

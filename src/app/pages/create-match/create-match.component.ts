@@ -14,6 +14,7 @@ import {
 } from '../../core/utils/alert.util';
 import { CompetitionService } from '../../core/services/competition.service';
 import { Competition } from '../../core/interfaces/competition.interface';
+import { TeamSettingsService } from '../../core/services/settings.service';
 
 @Component({
   selector: 'app-create-match',
@@ -27,12 +28,14 @@ export class CreateMatchComponent implements OnInit {
   private matchService = inject(MatchService);
   private loadingService = inject(LoadingService);
   private competitionService = inject(CompetitionService);
+  private teamSettingsService = inject(TeamSettingsService);
   players: Player[] = [];
   selectedPlayers: Player[] = [];
   selectedMatchType = 'FUT 5';
   matchTypes = ['FUT 5', 'FUT 8'];
   competitions: Competition[] = [];
   selectedCompetition: Competition | null = null;
+  teamName: string = '';
   matchForm = this.fb.group({
     name: ['', Validators.required],
     date: ['', Validators.required],
@@ -43,6 +46,13 @@ export class CreateMatchComponent implements OnInit {
   ngOnInit(): void {
     this.getPlayers();
     this.getCompetitions();
+    this.loadTeamSettings();
+  }
+  async loadTeamSettings() {
+    const settings = await this.teamSettingsService.getTeamSettings();
+    if (settings?.['name']) {
+      this.teamName = settings['name'];
+    }
   }
   getCompetitions() {
     this.loadingService.show();
@@ -118,7 +128,7 @@ export class CreateMatchComponent implements OnInit {
         name: player.name,
         photo: player.photo,
         position: player.position,
-        team: 'PULL_REQUEST',
+        team: this.teamName as any,
         rating: player.averageRating,
         goals: 0,
         assists: 0,
@@ -127,10 +137,12 @@ export class CreateMatchComponent implements OnInit {
       }));
       const title = this.matchForm.value.name || '';
       const splitTitle = title.split(/vs/i);
-      let teamA = splitTitle[0]?.trim() || 'Pull Request';
+      let teamA = splitTitle[0]?.trim() || this.teamName;
       let teamB = splitTitle[1]?.trim() || 'Rival';
 
-      const isPullRequestOnRight = teamB.toLowerCase().includes('pull request');
+      const isPullRequestOnRight = teamB
+        .toLowerCase()
+        .includes(this.teamName.toLowerCase());
       if (isPullRequestOnRight) {
         const temp = teamA;
         teamA = teamB;
@@ -162,7 +174,7 @@ export class CreateMatchComponent implements OnInit {
       await this.matchService.addMatch(match as any);
       successAlert(
         'Partido Creado ⚽🔥',
-        'El squad Pull Request fue creado correctamente.',
+        `El squad ${this.teamName} fue creado correctamente.`,
       );
 
       this.matchForm.reset();

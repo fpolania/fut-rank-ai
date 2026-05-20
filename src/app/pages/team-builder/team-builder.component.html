@@ -7,7 +7,7 @@
 
       <h1>Team Builder IA 🧠⚽</h1>
 
-      <p>Construcción inteligente de titulares Pull Request.</p>
+      <p>Construcción inteligente de titulares {{ teamName }}.</p>
     </div>
 
     <button class="generate-btn" (click)="generateTeams()">
@@ -39,17 +39,11 @@
     </button>
   </div>
 
-  <!-- MAIN -->
-
   <div class="builder-layout">
-    <!-- FIELD -->
-
     <section class="field-section">
-      <!-- HEADER -->
-
       <div class="field-header">
         <div>
-          <h2>🔥 Pull Request Titulares</h2>
+          <h2>🔥 {{ teamName }} Titulares</h2>
 
           <span> IA automática </span>
         </div>

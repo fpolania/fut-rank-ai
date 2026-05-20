@@ -5,7 +5,7 @@
         <div class="join-card">
           <div class="text-center mb-5">
             <div class="ball-icon">⚽</div>
-            <span class="join-badge"> PULL REQUEST TEAM </span>
+            <span class="join-badge">{{ teamName }} TEAM </span>
             <h1 class="join-title">Únete al equipo</h1>
 
             <p class="join-subtitle">
@@ -190,14 +190,12 @@
                     <small class="text-danger">
                       Las fortalezas son obligatorias.
                     </small>
-
                   } @else if (
                     joinForm.get("strengths")?.hasError("minlength")
                   ) {
                     <small class="text-danger">
                       Debes escribir al menos 10 caracteres.
                     </small>
-
                   } @else if (joinForm.get("strengths")?.hasError("pattern")) {
                     <small class="text-danger">
                       No se permiten caracteres especiales inválidos.

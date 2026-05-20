@@ -1,14 +1,17 @@
 import { onCall } from 'firebase-functions/v2/https';
-
 import { defineSecret } from 'firebase-functions/params';
-
 import OpenAI from 'openai';
-
-/* SECRET */
+import axios from 'axios';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as os from 'os';
+import ffmpeg from 'fluent-ffmpeg';
+import ffmpegPath from 'ffmpeg-static';
 
 const openAiKey = defineSecret('OPENAI_API_KEY');
+ffmpeg.setFfmpegPath(ffmpegPath as string);
 
-/* FUNCTION */
+/* PLAYER INSIGHT */
 
 export const generatePlayerInsight = onCall(
   {
@@ -19,19 +22,13 @@ export const generatePlayerInsight = onCall(
 
   async (request) => {
     try {
-      /* OPENAI */
-
       const openai = new OpenAI({
         apiKey: openAiKey.value(),
       });
 
-      /* DATA */
-
       const player = request.data.player;
 
       const comments = request.data.comments || [];
-
-      /* GPT */
 
       const completion = await openai.chat.completions.create({
         model: 'gpt-4.1-mini',
@@ -52,115 +49,16 @@ RESPONDE SOLO
 EN FORMATO JSON.
 
 NO uses markdown.
-NO agregues texto
-fuera del JSON.
 
 Formato obligatorio:
 
 {
-  "strengths": [
-    "fortaleza 1",
-    "fortaleza 2"
-  ],
-
-  "weaknesses": [
-    "debilidad 1",
-    "debilidad 2"
-  ],
-
-  "tips": [
-    "consejo 1",
-    "consejo 2"
-  ]
+  "strengths": [],
+  "weaknesses": [],
+  "tips": []
 }
 
-Reglas:
-
-- Máximo 4 items
-  por sección.
-
-- Frases cortas.
-
-- Lenguaje futbolero.
-
-- Consejos realistas.
-
-- Analiza al jugador
-  según su posición.
-
-- Un arquero NO debe
-  evaluarse por goles
-  o aporte ofensivo.
-
-- Un defensa debe
-  priorizar:
-  marca,
-  orden,
-  salida limpia
-  y posicionamiento.
-
-- Un mediocampista debe
-  aportar:
-  creación,
-  recuperación
-  y ritmo.
-
-- Un delantero debe
-  aportar:
-  definición,
-  movilidad
-  y presencia ofensiva.
-
-- Basa el análisis en:
-  comentarios,
-  rating promedio,
-  posición del jugador,
-  cantidad de partidos jugados,
-  MVPs
-  y contexto futbolístico.
-
-- La posición del jugador
-  es fundamental para
-  interpretar correctamente
-  el rendimiento.
-
-- La cantidad de partidos
-  debe influir en el nivel
-  de confianza del análisis.
-
-- Si el jugador tiene
-  pocos partidos,
-  evita conclusiones
-  extremas o definitivas.
-
-- Las recomendaciones deben
-  ser coherentes con las
-  estadísticas del jugador.
-
-- Si el jugador tiene
-  goles o asistencias,
-  evita decir que no aporta
-  ofensivamente, a menos
-  que los comentarios
-  lo indiquen claramente.
-
-- No contradigas
-  estadísticas positivas
-  con críticas negativas
-  sin contexto suficiente.
-
-- NO inventes críticas
-  ofensivas para
-  defensas o arqueros
-  si los comentarios
-  no lo indican.
-
-- Si hay comentarios
-  repetidos sobre
-  una debilidad,
-  dale prioridad.
-
-                  `,
+                `,
           },
 
           {
@@ -174,10 +72,10 @@ ${player?.name || 'Sin nombre'}
 Posición:
 ${player?.position || 'Sin posición'}
 
-Partidos jugados:
+Partidos:
 ${player?.totalMatches || 0}
 
-Rating promedio:
+Rating:
 ${player?.averageRating || 0}
 
 Goles:
@@ -189,28 +87,21 @@ ${player?.assists || 0}
 MVPs:
 ${player?.mvps || 0}
 
-Votos MVP del partido:
-${player?.totalMvpVotes || 0}
-
 Comentarios:
 ${comments.join('. ') || 'Sin comentarios'}
 
-                  `,
+                `,
           },
         ],
       });
 
       const content = String(completion.choices[0]?.message?.content || '{}');
 
-      console.log('AI RESPONSE:', content);
-
       let parsedInsight;
 
       try {
         parsedInsight = JSON.parse(content);
-      } catch (parseError) {
-        console.error('JSON PARSE ERROR:', parseError);
-
+      } catch {
         parsedInsight = {
           strengths: [],
 
@@ -234,6 +125,253 @@ ${comments.join('. ') || 'Sin comentarios'}
 
           tips: [],
         },
+      };
+    }
+  },
+);
+
+/* MATCH ANALYSIS */
+
+export const generateMatchAnalysis = onCall(
+  {
+    secrets: [openAiKey],
+
+    invoker: 'public',
+  },
+
+  async (request) => {
+    try {
+      /* OPENAI */
+
+      const openai = new OpenAI({
+        apiKey: openAiKey.value(),
+      });
+
+      /* DATA */
+
+      const { videoUrl, teamColor, matchType, focus } = request.data;
+
+      /* PATHS */
+
+      const tempDir = os.tmpdir();
+
+      const videoPath = path.join(tempDir, `video-${Date.now()}.mp4`);
+
+      const framesDir = path.join(tempDir, `frames-${Date.now()}`);
+
+      /* CREATE DIR */
+
+      if (!fs.existsSync(framesDir)) {
+        fs.mkdirSync(framesDir);
+      }
+
+      /* DOWNLOAD VIDEO */
+
+      console.log('DOWNLOADING VIDEO...');
+
+      const response = await axios({
+        url: videoUrl,
+
+        method: 'GET',
+
+        responseType: 'stream',
+      });
+
+      const writer = fs.createWriteStream(videoPath);
+
+      response.data.pipe(writer);
+
+      await new Promise((resolve, reject) => {
+        writer.on('finish', resolve);
+
+        writer.on('error', reject);
+      });
+
+      console.log('VIDEO DOWNLOADED');
+
+      /* EXTRACT FRAMES */
+
+      console.log('EXTRACTING FRAMES...');
+
+      await new Promise((resolve, reject) => {
+        ffmpeg(videoPath)
+          .output(path.join(framesDir, 'frame-%03d.jpg'))
+
+          .outputOptions(['-vf fps=0.5'])
+
+          .on(
+            'end',
+
+            () => {
+              console.log('FRAMES EXTRACTED');
+
+              resolve(true);
+            },
+          )
+
+          .on(
+            'error',
+
+            (error: any) => {
+              console.error(error);
+
+              reject(error);
+            },
+          )
+
+          .run();
+      });
+
+      /* FRAMES */
+
+      const frames = fs.readdirSync(framesDir).slice(0, 8);
+
+      console.log('TOTAL FRAMES:', frames.length);
+
+      /* IMAGES */
+
+      const imageMessages = frames.map((frame) => {
+        const imagePath = path.join(framesDir, frame);
+
+        const imageBuffer = fs.readFileSync(imagePath);
+
+        const base64 = imageBuffer.toString('base64');
+
+        return {
+          type: 'image_url' as const,
+
+          image_url: {
+            url: `data:image/jpeg;base64,${base64}`,
+          },
+        };
+      });
+
+      /* GPT */
+
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-4.1-mini',
+
+        messages: [
+          {
+            role: 'system',
+
+            content: `
+
+Eres un analista táctico
+de fútbol amateur.
+
+Analiza:
+- presión
+- espacios
+- líneas defensivas
+- transiciones
+- posicionamiento
+- errores tácticos
+- organización colectiva
+
+NO inventes jugadas.
+
+Habla como entrenador profesional.
+
+RESPONDE EN FORMATO MARKDOWN.
+
+Usa títulos cortos.
+
+Divide el análisis
+por secciones.
+
+Formato obligatorio:
+
+## 🔥 Presión
+
+texto...
+
+## 🛡 Defensa
+
+texto...
+
+## ⚡ Transiciones
+
+texto...
+
+## 📈 Recomendaciones
+
+texto...
+
+Reglas:
+
+- máximo 2 párrafos
+  por sección
+
+- evita bloques
+  gigantes
+
+- frases claras
+
+- lenguaje futbolero
+
+- sé directo
+
+              `,
+          },
+
+          {
+            role: 'user',
+
+            content: [
+              {
+                type: 'text',
+
+                text: `
+
+Analiza al equipo:
+${teamColor}
+
+Tipo:
+${matchType}
+
+Enfoque:
+${focus || 'General'}
+
+                  `,
+              },
+
+              ...imageMessages,
+            ],
+          },
+        ],
+      });
+
+      /* RESPONSE */
+
+      const analysis = completion.choices[0]?.message?.content || '';
+
+      console.log('AI ANALYSIS:', analysis);
+
+      /* CLEAN FILES */
+
+      fs.rmSync(framesDir, {
+        recursive: true,
+
+        force: true,
+      });
+
+      fs.unlinkSync(videoPath);
+
+      /* RETURN */
+
+      return {
+        success: true,
+
+        analysis,
+      };
+    } catch (error) {
+      console.error('MATCH AI ERROR:', error);
+
+      return {
+        success: false,
+
+        analysis: '',
       };
     }
   },

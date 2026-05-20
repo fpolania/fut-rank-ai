@@ -145,6 +145,13 @@ export const routes: Routes = [
             (m) => m.CompetitionCreateComponent,
           ),
       },
+      {
+        path: 'ai-analysis',
+        loadComponent: () =>
+          import('./pages/ai-analysis/ai-analysis.component').then(
+            (m) => m.AiAnalysisComponent,
+          ),
+      },
     ],
   },
 ];
