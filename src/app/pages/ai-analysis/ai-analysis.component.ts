@@ -174,7 +174,7 @@ export class AiAnalysisComponent implements OnInit {
         matchType: this.selectedType,
         videoUrl: this.videoUrl,
         status: 'pending',
-        matchName: this.matchSelected?.name || 'Partido sin nombre',
+        matchName: this.matchSelected?.title || 'Partido sin nombre',
         createdAt: Date.now(),
       };
 
