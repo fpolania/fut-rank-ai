@@ -197,7 +197,7 @@ export const generateMatchAnalysis = onCall(
         ffmpeg(videoPath)
           .output(path.join(framesDir, 'frame-%03d.jpg'))
 
-          .outputOptions(['-vf fps=0.5'])
+          .outputOptions(['-vf fps=1'])
 
           .on(
             'end',
@@ -224,7 +224,7 @@ export const generateMatchAnalysis = onCall(
 
       /* FRAMES */
 
-      const frames = fs.readdirSync(framesDir).slice(0, 8);
+      const frames = fs.readdirSync(framesDir).slice(0, 20);
 
       console.log('TOTAL FRAMES:', frames.length);
 
@@ -251,6 +251,8 @@ export const generateMatchAnalysis = onCall(
       const completion = await openai.chat.completions.create({
         model: 'gpt-4.1-mini',
 
+        temperature: 0.3,
+
         messages: [
           {
             role: 'system',
@@ -260,25 +262,70 @@ export const generateMatchAnalysis = onCall(
 Eres un analista táctico
 de fútbol amateur.
 
-Analiza:
-- presión
+Tu trabajo es analizar
+SOLO patrones visuales
+claramente visibles.
+
+NO inventes:
+- dorsales
+- posiciones exactas
+- nombres
+- roles tácticos
+- sistemas
+- movimientos específicos
+- jugadas no visibles
+
+NO afirmes cosas
+con certeza absoluta
+si no son evidentes.
+
+Usa lenguaje prudente:
+- "parece"
+- "se observa"
+- "probablemente"
+- "da la impresión"
+
+NO digas:
+- "el #6"
+- "el pivote"
+- "el lateral"
+
+porque no puedes
+identificar jugadores
+con precisión.
+
+Solo analiza:
+- compactación
 - espacios
-- líneas defensivas
-- transiciones
-- posicionamiento
-- errores tácticos
-- organización colectiva
+- amplitud
+- intensidad general
+- presión aproximada
+- ocupación de cancha
+- velocidad de transición
+- orden defensivo
+- comportamiento colectivo
 
-NO inventes jugadas.
+Si no hay suficiente
+información visual,
+dilo claramente.
 
-Habla como entrenador profesional.
+IMPORTANTE:
+
+Debes analizar SOLO
+al equipo indicado.
+
+NO analices:
+- rival
+- equipo contrario
+- jugadores rivales
+
+NO cambies de equipo
+durante el análisis.
+
+Habla como entrenador
+de fútbol amateur.
 
 RESPONDE EN FORMATO MARKDOWN.
-
-Usa títulos cortos.
-
-Divide el análisis
-por secciones.
 
 Formato obligatorio:
 
@@ -303,14 +350,16 @@ Reglas:
 - máximo 2 párrafos
   por sección
 
-- evita bloques
-  gigantes
+- evita textos largos
 
 - frases claras
 
 - lenguaje futbolero
 
-- sé directo
+- NO inventes detalles
+  tácticos avanzados
+
+- NO sobreanalices
 
               `,
           },
@@ -324,8 +373,27 @@ Reglas:
 
                 text: `
 
-Analiza al equipo:
+IMPORTANTE:
+
+Analiza ÚNICAMENTE
+al equipo con:
+
 ${teamColor}
+
+IGNORA completamente
+al equipo rival.
+
+NO describas acciones
+del equipo contrario.
+
+NO cambies de equipo
+durante el análisis.
+
+Si el equipo con
+${teamColor}
+no se ve claramente,
+indica que no hay
+suficiente información visual.
 
 Tipo:
 ${matchType}
@@ -333,7 +401,14 @@ ${matchType}
 Enfoque:
 ${focus || 'General'}
 
-                  `,
+Analiza únicamente
+lo claramente visible
+en las imágenes.
+
+NO inventes
+detalles tácticos.
+
+                    `,
               },
 
               ...imageMessages,
