@@ -201,11 +201,13 @@ export class AiAnalysisComponent implements OnInit {
         'Análisis iniciado 🤖🔥',
         'La IA comenzará a procesar el video.',
       );
+      this.analysisForm.reset();
+      this.selectedColor = 'black';
+      this.selectedType = 'FUT 5';
+      this.clearVideo();
       this.getAnalyses();
-      console.log('ANALYSIS:', payload);
     } catch (error) {
       console.error(error);
-
       warningAlert('Error ⚽🔥', 'Ocurrió un error generando el análisis.');
     } finally {
       this.loadingService.hide();
@@ -222,12 +224,8 @@ export class AiAnalysisComponent implements OnInit {
         matchType: analysis.matchType,
         focus: analysis.focus,
       });
-
-      const result = response.data as any;
-      console.log('AI RESULT:', result);
-
       await this.aiAnalysisService.updateAnalysis(analysis.id!, {
-        analysis: result.analysis,
+        analysis: response.analysis,
         status: 'completed',
       });
 

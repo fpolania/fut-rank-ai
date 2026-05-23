@@ -32,9 +32,20 @@ export class AnalysisService {
     }) as Observable<MatchAnalysis[]>;
   }
   async generateMatchAnalysis(payload: any) {
-    const callable = httpsCallable(this.functions, 'generateMatchAnalysis');
+    const response = await fetch(
+      'https://us-central1-fut-rank-ai.cloudfunctions.net/generateMatchAnalysis',
+      {
+        method: 'POST',
 
-    return callable(payload);
+        headers: {
+          'Content-Type': 'application/json',
+        },
+
+        body: JSON.stringify(payload),
+      },
+    );
+
+    return await response.json();
   }
 
   updateAnalysis(analysisId: string, data: Partial<MatchAnalysis>) {

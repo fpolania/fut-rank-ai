@@ -7,6 +7,7 @@ import * as path from 'path';
 import * as os from 'os';
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegPath from 'ffmpeg-static';
+import { onRequest } from 'firebase-functions/v2/https';
 
 const openAiKey = defineSecret('OPENAI_API_KEY');
 ffmpeg.setFfmpegPath(ffmpegPath as string);
@@ -132,14 +133,18 @@ ${comments.join('. ') || 'Sin comentarios'}
 
 /* MATCH ANALYSIS */
 
-export const generateMatchAnalysis = onCall(
+export const generateMatchAnalysis = onRequest(
   {
     secrets: [openAiKey],
 
-    invoker: 'public',
+    cors: true,
+
+    timeoutSeconds: 540,
+
+    memory: '2GiB',
   },
 
-  async (request) => {
+  async (req, res) => {
     try {
       /* OPENAI */
 
@@ -149,15 +154,17 @@ export const generateMatchAnalysis = onCall(
 
       /* DATA */
 
-      const { videoUrl, teamColor, matchType, focus } = request.data;
+      const { videoUrl, teamColor, matchType, focus } = req.body;
 
       /* PATHS */
 
       const tempDir = os.tmpdir();
 
-      const videoPath = path.join(tempDir, `video-${Date.now()}.mp4`);
+      const timestamp = Date.now();
 
-      const framesDir = path.join(tempDir, `frames-${Date.now()}`);
+      const videoPath = path.join(tempDir, `video-${timestamp}.mp4`);
+
+      const framesDir = path.join(tempDir, `frames-${timestamp}`);
 
       /* CREATE DIR */
 
@@ -197,7 +204,7 @@ export const generateMatchAnalysis = onCall(
         ffmpeg(videoPath)
           .output(path.join(framesDir, 'frame-%03d.jpg'))
 
-          .outputOptions(['-vf fps=1'])
+          .outputOptions(['-vf fps=0.25,scale=640:-1', '-q:v 12'])
 
           .on(
             'end',
@@ -213,7 +220,7 @@ export const generateMatchAnalysis = onCall(
             'error',
 
             (error: any) => {
-              console.error(error);
+              console.error('FFMPEG ERROR:', error);
 
               reject(error);
             },
@@ -224,7 +231,7 @@ export const generateMatchAnalysis = onCall(
 
       /* FRAMES */
 
-      const frames = fs.readdirSync(framesDir).slice(0, 20);
+      const frames = fs.readdirSync(framesDir).slice(0, 6);
 
       console.log('TOTAL FRAMES:', frames.length);
 
@@ -248,10 +255,12 @@ export const generateMatchAnalysis = onCall(
 
       /* GPT */
 
+      console.log('SENDING TO OPENAI...');
+
       const completion = await openai.chat.completions.create({
         model: 'gpt-4.1-mini',
 
-        temperature: 0.3,
+        temperature: 0.2,
 
         messages: [
           {
@@ -408,7 +417,7 @@ en las imágenes.
 NO inventes
 detalles tácticos.
 
-                    `,
+                  `,
               },
 
               ...imageMessages,
@@ -425,29 +434,34 @@ detalles tácticos.
 
       /* CLEAN FILES */
 
-      fs.rmSync(framesDir, {
-        recursive: true,
+      try {
+        fs.rmSync(framesDir, {
+          recursive: true,
+          force: true,
+        });
 
-        force: true,
-      });
-
-      fs.unlinkSync(videoPath);
+        if (fs.existsSync(videoPath)) {
+          fs.unlinkSync(videoPath);
+        }
+      } catch (cleanError) {
+        console.error('CLEAN ERROR:', cleanError);
+      }
 
       /* RETURN */
 
-      return {
+      res.status(200).json({
         success: true,
 
         analysis,
-      };
+      });
     } catch (error) {
       console.error('MATCH AI ERROR:', error);
 
-      return {
+      res.status(500).json({
         success: false,
 
         analysis: '',
-      };
+      });
     }
   },
 );
