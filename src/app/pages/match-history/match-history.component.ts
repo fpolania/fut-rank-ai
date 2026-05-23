@@ -11,7 +11,11 @@ import { AiService } from '../../core/services/ai.service';
 import { RatingService } from '../../core/services/rating.service';
 import { PlayerService } from '../../core/services/player.service';
 import { LoadingService } from '../../core/services/loading.service';
-import { errorAlert, successAlert } from '../../core/utils/alert.util';
+import {
+  errorAlert,
+  successAlert,
+  warningAlert,
+} from '../../core/utils/alert.util';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
@@ -42,6 +46,7 @@ export class MatchHistoryComponent implements OnInit {
       next: (matches) => {
         this.matches = [...matches].reverse();
         this.filteredMatches = this.matches;
+        console.log(this.matches);
         this.loadingService.hide();
       },
       error: (error) => {
@@ -71,8 +76,15 @@ export class MatchHistoryComponent implements OnInit {
   }
 
   async generateAnalysis(match: Match) {
+    const canGenerate = this.validateCompetitionDate(match.finishedAt);
+
+    if (!canGenerate) {
+      return;
+    }
+
     try {
       this.loadingService.show();
+
       const listPlayers = match.players.filter(
         (player: any) => player.attended,
       );
@@ -83,6 +95,7 @@ export class MatchHistoryComponent implements OnInit {
             .getRatingByPlayerAndMatch(player.playerId, match.id as string)
             .subscribe((data) => resolve(data));
         });
+
         if (!ratings || !ratings.data?.length) {
           continue;
         }
@@ -99,8 +112,10 @@ export class MatchHistoryComponent implements OnInit {
 
         const totalRatings = ratings.data.reduce(
           (acc: number, item: any) => acc + item.rating,
+
           0,
         );
+
         const averageRating = Number(
           (totalRatings / ratings.data.length).toFixed(1),
         );
@@ -112,36 +127,80 @@ export class MatchHistoryComponent implements OnInit {
         const response: any = await this.aiService.generatePlayerInsight(
           {
             ...player,
+
             averageRating,
+
             totalMvpVotes,
+
             totalMatches: currentPlayer.matchesPlayed,
+
             goals: currentPlayer.goals,
+
             assists: currentPlayer.assists,
+
             mvps: currentPlayer.mvps,
+
             position: currentPlayer.position,
           },
 
           comments,
         );
 
-        await this.playerService.updatePlayer(player.playerId, {
-          aiInsight: response.data.insight,
-          aiUpdatedAt: new Date(),
-        });
-        await this.matchService.updateMatch(match.id as string, {
-          analyzed: true,
-        });
+        await this.playerService.updatePlayer(
+          player.playerId,
+
+          {
+            aiInsight: response.data.insight,
+
+            aiUpdatedAt: new Date(),
+          },
+        );
+
+        await this.matchService.updateMatch(
+          match.id as string,
+
+          {
+            analyzed: true,
+          },
+        );
       }
 
       successAlert(
         'Análisis generado 🤖⚽',
+
         'La IA analizó el partido correctamente.',
       );
     } catch (error) {
       console.error(error);
-      errorAlert('Ups 😮‍💨', 'No se pudo generar el análisis.');
+
+      errorAlert(
+        'Ups 😮‍💨',
+
+        'No se pudo generar el análisis.',
+      );
     } finally {
       this.loadingService.hide();
     }
+  }
+
+  validateCompetitionDate(finishedAt: any): boolean {
+    const finishedDate = finishedAt?.seconds ? finishedAt.seconds * 1000 : 0;
+    const availableAt = finishedDate + 86400000;
+    const now = Date.now();
+    if (now < availableAt) {
+      const availableDate = new Date(availableAt).toLocaleString('es-CO', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+      warningAlert(
+        'Análisis no disponible aún ⚽🤖',
+        `El análisis IA estará disponible después del ${availableDate}.`,
+      );
+      return false;
+    }
+    return true;
   }
 }

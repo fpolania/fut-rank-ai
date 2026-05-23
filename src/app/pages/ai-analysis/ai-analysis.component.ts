@@ -90,26 +90,44 @@ export class AiAnalysisComponent implements OnInit {
 
   onVideoSelected(event: Event) {
     const input = event.target as HTMLInputElement;
-    if (!input.files?.length) return;
+
+    if (!input.files?.length) {
+      return;
+    }
+
     const file = input.files[0];
+
+    /* VALID VIDEO */
+
     if (!file.type.includes('video')) {
       warningAlert(
         'Archivo no válido ⚽🔥',
+
         'El archivo seleccionado no es un video. Por favor, selecciona un archivo de video.',
       );
+
       return;
     }
 
-    const maxSize = 100 * 1024 * 1024;
-    if (file.size > maxSize) {
-      warningAlert(
-        'Archivo muy pesado ⚽🔥',
-        'El video supera el tamaño permitido de 100MB.',
-      );
-      return;
-    }
+    /* VALID DURATION */
 
-    this.selectedVideo = file;
+    const video = document.createElement('video');
+
+    video.preload = 'metadata';
+
+    video.onloadedmetadata = () => {
+      window.URL.revokeObjectURL(video.src);
+      const duration = video.duration;
+      if (duration > 300) {
+        warningAlert(
+          'Video muy largo ⚽🔥',
+          'El video no puede superar los 5 minutos.',
+        );
+        return;
+      }
+      this.selectedVideo = file;
+    };
+    video.src = URL.createObjectURL(file);
   }
 
   async uploadVideo() {

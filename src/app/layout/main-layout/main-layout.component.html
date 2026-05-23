@@ -114,18 +114,15 @@
         ☰
       </button>
 
-      <div>
+      <div class="team-title">
+        <div class="team-icon">⚽</div>
+
         <h3>
-          {{ ((authService.currentUser | async)?.name || "").toUpperCase() }}
-          👋
+          {{ teamName.toUpperCase() }}
         </h3>
       </div>
 
-      <!-- PROFILE -->
-
       <div class="profile-section">
-        <!-- SETTINGS -->
-
         @if ((authService.currentUser | async)?.role === "captain") {
           <button
             class="settings-btn"

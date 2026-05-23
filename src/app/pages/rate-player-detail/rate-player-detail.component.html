@@ -104,15 +104,17 @@
           }
         </div>
         @if ((authService.currentUser | async)?.role === "captain") {
-          <div class="tags-section">
-            <span
-              class="tag"
-              [class.active]="player.get('isMvp')?.value"
-              (click)="toggleMvp(i)"
-            >
-              🔥 MVP
-            </span>
-          </div>
+          @if (!match.mvpPlayerId) {
+            <div class="tags-section">
+              <span
+                class="tag"
+                [class.active]="player.get('isMvp')?.value"
+                (click)="toggleMvp(i)"
+              >
+                🔥 MVP
+              </span>
+            </div>
+          }
         }
 
         <textarea

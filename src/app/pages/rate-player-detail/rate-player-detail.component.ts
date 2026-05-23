@@ -245,10 +245,12 @@ export class RatePlayerDetailComponent implements OnInit {
           updateData.mvps = (currentPlayer.mvps || 0) + 1;
         }
         await this.playerService.updatePlayer(value.playerId!, updateData);
-        await this.matchService.updateMatch(this.matchId, {
-          mvpPlayerId: value.isMvp ? value.playerId! : null,
-          mvpPlayerName: value.isMvp ? value.name! : 'Sin MVP',
-        });
+        if (value.isMvp) {
+          await this.matchService.updateMatch(this.matchId, {
+            mvpPlayerId: value.playerId!,
+            mvpPlayerName: value.name!,
+          });
+        }
       }
 
       successAlert(
