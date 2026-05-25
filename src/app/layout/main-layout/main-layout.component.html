@@ -2,6 +2,8 @@
   <!-- SIDEBAR -->
 
   <aside class="sidebar" [class.open]="sidebarOpen">
+    <!-- LOGO -->
+
     <div class="logo-section">
       <div class="logo-circle">⚽</div>
 
@@ -12,95 +14,27 @@
       </div>
     </div>
 
+    <!-- MENU -->
+
     <nav class="menu">
-      <a
-        routerLink="/"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        (click)="closeSidebar()"
-      >
-        🏠 Dashboard
-      </a>
-
-      @if ((authService.currentUser | async)?.role === "captain") {
+      @for (item of currentMenu; track item.route) {
         <a
-          routerLink="/ai-analysis"
+          [routerLink]="item.route"
           routerLinkActive="active"
+          [routerLinkActiveOptions]="{
+            exact: item.route === '/',
+          }"
           (click)="closeSidebar()"
         >
-          🤖 Análisis IA
+          <span class="menu-icon">
+            {{ item.icon }}
+          </span>
+
+          <span class="menu-label">
+            {{ item.label }}
+          </span>
         </a>
       }
-
-      <a
-        routerLink="/rate-players"
-        routerLinkActive="active"
-        (click)="closeSidebar()"
-      >
-        ⭐ Calificar
-      </a>
-
-      @if ((authService.currentUser | async)?.role === "captain") {
-        <a
-          routerLink="/create-competition"
-          routerLinkActive="active"
-          (click)="closeSidebar()"
-        >
-          🏆 Crear Competencia
-        </a>
-      }
-
-      <a
-        routerLink="/players"
-        routerLinkActive="active"
-        (click)="closeSidebar()"
-      >
-        👤 Jugadores
-      </a>
-
-      <a
-        routerLink="/matches"
-        routerLinkActive="active"
-        (click)="closeSidebar()"
-      >
-        ⚽ Partidos
-      </a>
-
-      <a
-        routerLink="/team-applications"
-        routerLinkActive="active"
-        (click)="closeSidebar()"
-      >
-        📥 Postulaciones
-      </a>
-
-      @if ((authService.currentUser | async)?.role === "captain") {
-        <a
-          routerLink="/team-builder"
-          routerLinkActive="active"
-          (click)="closeSidebar()"
-        >
-          🧠 Team Builder
-        </a>
-      }
-
-      @if ((authService.currentUser | async)?.role === "captain") {
-        <a
-          routerLink="/team-access"
-          routerLinkActive="active"
-          (click)="closeSidebar()"
-        >
-          🔐 Team Access
-        </a>
-      }
-
-      <a
-        routerLink="/match-history"
-        routerLinkActive="active"
-        (click)="closeSidebar()"
-      >
-        📜 Historial
-      </a>
     </nav>
   </aside>
 
@@ -110,9 +44,13 @@
     <!-- TOPBAR -->
 
     <header class="topbar">
-      <button class="menu-btn" (click)="toggleSidebar()" type="button">
+      <!-- MOBILE MENU -->
+
+      <button class="menu-btn" type="button" (click)="toggleSidebar()">
         ☰
       </button>
+
+      <!-- TEAM -->
 
       <div class="team-title">
         <div class="team-icon">⚽</div>
@@ -122,56 +60,58 @@
         </h3>
       </div>
 
+      <!-- PROFILE -->
+
       <div class="profile-section">
-        @if ((authService.currentUser | async)?.role === "captain") {
+        <!-- SETTINGS -->
+
+        <!-- @if (currentUser?.role === "captain") {
           <button
             class="settings-btn"
+            type="button"
             (click)="openTeamSettings = !openTeamSettings"
           >
             <i class="bi bi-gear-fill"></i>
           </button>
-        }
+        } -->
 
         <!-- USER -->
 
         <div class="user-info">
-          <img
-            [src]="
-              (authService.currentUser | async)?.photoURL ||
-              'https://i.pravatar.cc/100'
-            "
-          />
+          <img [src]="currentUser?.photoURL || 'https://i.pravatar.cc/100'" />
 
           <div class="user-text">
             <h4>
-              {{
-                ((authService.currentUser | async)?.name || "").toUpperCase()
-              }}
+              {{ (currentUser?.name || "").toUpperCase() }}
             </h4>
 
             <span>
-              {{
-                ((authService.currentUser | async)?.role || "").toUpperCase()
-              }}
+              {{ (currentUser?.role || "").toUpperCase() }}
             </span>
           </div>
         </div>
 
         <!-- LOGOUT -->
 
-        <button class="logout-btn" (click)="logout()">
+        <button class="logout-btn" type="button" (click)="logout()">
           <i class="bi bi-box-arrow-right"></i>
         </button>
 
+        <!-- SETTINGS DROPDOWN -->
+
         @if (openTeamSettings) {
           <div class="settings-dropdown">
+            <!-- HEADER -->
+
             <div class="settings-header">
               <h3>⚽ Configuración equipo</h3>
 
               <p>Personaliza tu equipo.</p>
             </div>
 
-            <div class="settings-body">
+            <!-- BODY -->
+
+            <!-- <div class="settings-body">
               <label> Nombre del equipo </label>
 
               <input
@@ -180,17 +120,23 @@
                 placeholder="Ej: Pull Request"
               />
 
-              <button class="save-settings-btn" (click)="saveTeamSettings()">
+              <button
+                class="save-settings-btn"
+                type="button"
+                (click)="saveTeamSettings()"
+              >
                 💾 Guardar cambios
               </button>
-            </div>
+            </div> -->
           </div>
         }
       </div>
     </header>
 
+    <!-- ROUTER -->
+
     <div class="router-container">
-      <router-outlet></router-outlet>
+      <router-outlet> </router-outlet>
     </div>
   </main>
 </div>

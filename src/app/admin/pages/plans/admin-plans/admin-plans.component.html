@@ -1,0 +1,144 @@
+<div class="plans-page">
+  <!-- TOP -->
+
+  <div class="top-section">
+    <div>
+      <span class="page-badge"> ADMIN PANEL </span>
+
+      <div class="title-row">
+        <div class="title-icon">💳</div>
+
+        <div>
+          <h1>Gestión de planes</h1>
+
+          <p>Configura límites, precios y beneficios.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+
+  <div class="content-grid">
+    <!-- LEFT -->
+
+    <div class="form-card">
+      <div class="form-header">
+        <span> FUT RANK PLANS </span>
+      </div>
+
+      <form [formGroup]="planForm" (ngSubmit)="createPlan()">
+        <div class="form-group">
+          <label> Nombre </label>
+
+          <input type="text" formControlName="name" placeholder="Ej: PRO" />
+        </div>
+
+        <div class="form-group">
+          <label> Precio mensual </label>
+
+          <input
+            type="number"
+            formControlName="price"
+            placeholder="Ej: 39900"
+          />
+        </div>
+
+        <div class="form-group">
+          <label> Máx jugadores </label>
+
+          <input type="number" formControlName="maxPlayers" />
+        </div>
+
+        <div class="form-group">
+          <label> Máx videos </label>
+
+          <input type="number" formControlName="maxVideos" />
+        </div>
+
+        <div class="form-group">
+          <label> Máx IA análisis </label>
+
+          <input type="number" formControlName="maxAnalysis" />
+        </div>
+
+        <button type="submit" class="save-btn">
+          @if (editingPlan) {
+            ✏️ Actualizar plan
+          } @else {
+            🚀 Guardar plan
+          }
+        </button>
+      </form>
+    </div>
+
+    <!-- RIGHT -->
+
+    <div class="plans-section">
+      <div class="plans-header">
+        <h3>💳 Planes registrados</h3>
+
+        <div class="plans-count">
+          {{ plans.length }}
+        </div>
+      </div>
+
+      <div class="plans-grid">
+        @for (plan of plans; track plan.name) {
+          <div class="plan-card">
+            <div class="plan-top">
+              <div class="plan-icon">💳</div>
+
+              <div>
+                <h4>
+                  {{ plan.name }}
+                </h4>
+
+                <span> Plan activo </span>
+              </div>
+            </div>
+
+            <div class="price-section">
+              @if (plan.price === 0) {
+                GRATIS
+              } @else {
+                ${{ plan.price | number }}
+              }
+            </div>
+
+            <div class="features">
+              <div class="feature">
+                {{ plan.maxPlayers }}
+                jugadores
+              </div>
+
+              <div class="feature">
+                {{ plan.maxVideos }}
+                videos
+              </div>
+
+              <div class="feature">
+                {{ plan.maxAnalysis }}
+                IA
+              </div>
+            </div>
+
+            <div class="card-actions">
+              <button class="edit-btn" type="button" (click)="editPlan(plan)">
+                ✏️ Editar
+              </button>
+
+              <button
+                class="delete-btn"
+                type="button"
+                (click)="deletePlan(plan)"
+              >
+                🗑 Eliminar
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

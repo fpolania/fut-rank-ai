@@ -1,0 +1,83 @@
+<div class="admin-dashboard">
+  <!-- TOP -->
+
+  <div class="top-section">
+    <div>
+      <span class="page-badge"> FUT RANK ADMIN </span>
+
+      <h1>Dashboard ⚙️</h1>
+
+      <p>Control general de la plataforma.</p>
+    </div>
+  </div>
+
+  <!-- STATS -->
+
+  <div class="row g-4">
+    @for (stat of stats; track stat.title) {
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="stat-card">
+          <div class="stat-icon">
+            {{ stat.icon }}
+          </div>
+
+          <div>
+            <h2>
+              {{ stat.value }}
+            </h2>
+
+            <span>
+              {{ stat.title }}
+            </span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- QUICK ACTIONS -->
+
+  <div class="quick-section">
+    <div class="section-header">
+      <h3>Acciones rápidas</h3>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-12 col-lg-4">
+        <div class="action-card">
+          <div class="action-icon">⚽</div>
+
+          <h4>Crear Team</h4>
+
+          <p>Registra nuevos equipos en la plataforma.</p>
+
+          <button class="btn action-btn">Crear</button>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-4">
+        <div class="action-card">
+          <div class="action-icon">🤖</div>
+
+          <h4>IA Usage</h4>
+
+          <p>Consulta el consumo actual de IA.</p>
+
+          <button class="btn action-btn">Ver métricas</button>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-4">
+        <div class="action-card">
+          <div class="action-icon">💳</div>
+
+          <h4>Subscripciones</h4>
+
+          <p>Administra planes y límites.</p>
+
+          <button class="btn action-btn">Administrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

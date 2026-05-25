@@ -90,31 +90,22 @@ export class AiAnalysisComponent implements OnInit {
 
   onVideoSelected(event: Event) {
     const input = event.target as HTMLInputElement;
-
     if (!input.files?.length) {
       return;
     }
 
     const file = input.files[0];
-
-    /* VALID VIDEO */
-
     if (!file.type.includes('video')) {
       warningAlert(
         'Archivo no válido ⚽🔥',
-
         'El archivo seleccionado no es un video. Por favor, selecciona un archivo de video.',
       );
 
       return;
     }
 
-    /* VALID DURATION */
-
     const video = document.createElement('video');
-
     video.preload = 'metadata';
-
     video.onloadedmetadata = () => {
       window.URL.revokeObjectURL(video.src);
       const duration = video.duration;

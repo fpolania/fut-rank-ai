@@ -1,0 +1,149 @@
+<div class="teams-page">
+  <!-- TOP -->
+
+  <div class="top-section">
+    <div>
+      <span class="page-badge"> ADMIN PANEL </span>
+
+      <div class="title-row">
+        <div class="title-icon">⚽</div>
+
+        <div>
+          <h1>Gestión de equipos</h1>
+
+          <p>Administra teams, jugadores y accesos.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <div class="form-card">
+      <div class="form-header">
+        <span>➕ NUEVO TEAM </span>
+      </div>
+
+      <form [formGroup]="teamForm" (ngSubmit)="createTeam()">
+        <div class="form-group">
+          <label> Nombre del team </label>
+
+          <input
+            type="text"
+            formControlName="name"
+            placeholder="Ej: Pull Request"
+          />
+        </div>
+
+        <div class="form-group">
+          <label> Ciudad </label>
+          <input type="text" formControlName="city" placeholder="Ej: Bogotá" />
+        </div>
+        <div class="form-group">
+          <label> Nombre Completo </label>
+          <input
+            type="text"
+            formControlName="ownerName"
+            placeholder="Ej: Juan Pérez"
+          />
+        </div>
+        <div class="form-group">
+          <label> Documento </label>
+          <input
+            type="text"
+            formControlName="ownerId"
+            placeholder="Ej: 123456789"
+          />
+        </div>
+        <div class="form-group">
+          <label> Correo Electrónico </label>
+          <input
+            type="email"
+            formControlName="ownerEmail"
+            placeholder="Ej: juan.perez@example.com"
+          />
+        </div>
+
+        <div class="form-group">
+          <label> Plan </label>
+          <select formControlName="plan" (change)="onPlanChange($event)">
+            <option value="">Seleccionar plan</option>
+            @for (plan of plans; track plan.name) {
+              <option [value]="plan.id">
+                {{ plan.name }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <button type="submit" class="save-btn">
+          @if (editingTeam) {
+            ✏️ Actualizar team
+          } @else {
+            🚀 Guardar team
+          }
+        </button>
+      </form>
+    </div>
+
+    <div class="teams-section">
+      <div class="teams-header">
+        <h3>👥 Teams registrados</h3>
+
+        <div class="teams-count">
+          {{ teams.length }}
+        </div>
+      </div>
+
+      <div class="teams-grid">
+        @for (team of teams; track team.name) {
+          <div class="team-card">
+            <div class="team-top">
+              <div class="team-icon">⚽</div>
+
+              <div>
+                <h4>
+                  {{ team.name }}
+                </h4>
+
+                <span> Team registrado </span>
+              </div>
+            </div>
+
+            <div class="team-plan">
+              <span class="plan-badge">
+                {{ team.planName }}
+              </span>
+            </div>
+
+            <div class="team-info">
+              <div class="info-item">
+                👥
+                {{ team.maxPlayers }}
+                jugadores
+              </div>
+
+              <div class="status" [class.active]="team.active">
+                ●
+                {{ team.active ? "Activo" : "Inactivo" }}
+              </div>
+            </div>
+
+            <div class="card-actions">
+              <button class="edit-btn" type="button" (click)="editTeam(team)">
+                ✏️ Editar
+              </button>
+
+              <button
+                class="delete-btn"
+                type="button"
+                (click)="deleteTeam(team)"
+              >
+                🗑 Eliminar
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

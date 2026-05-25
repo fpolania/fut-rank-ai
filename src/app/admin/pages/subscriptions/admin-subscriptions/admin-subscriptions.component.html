@@ -1,0 +1,140 @@
+<div class="subscriptions-page">
+  <!-- TOP -->
+
+  <div class="top-section">
+    <div>
+      <span class="page-badge"> ADMIN PANEL </span>
+
+      <div class="title-row">
+        <div class="title-icon">💳</div>
+
+        <div>
+          <h1>Subscriptions</h1>
+
+          <p>Gestiona planes, renovaciones y estados.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <div class="form-card">
+      <div class="form-header">
+        <span> ➕ Nueva suscripción </span>
+      </div>
+      <form [formGroup]="subscriptionForm" (ngSubmit)="createSubscription()">
+        <div class="form-group">
+          <label> Team </label>
+          <select formControlName="teamId" (change)="onTeamChange($event)">
+            <option value="">Seleccionar equipo</option>
+            @for (team of teams; track team.id) {
+              <option [value]="team.id">
+                {{ team.name }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label> Plan </label>
+          <select formControlName="planId" (change)="onPlanChange($event)">
+            <option value="">Seleccionar plan</option>
+            @for (plan of plans; track plan.id) {
+              <option [value]="plan.id">
+                {{ plan.name }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label> Estado </label>
+          <select formControlName="status">
+            <option value="active">Activo</option>
+            <option value="inactive">Inactivo</option>
+            <option value="cancelled">Cancelado</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label> Vencimiento </label>
+          <input type="date" formControlName="currentPeriodEnd" />
+        </div>
+
+        <button type="submit" class="save-btn">
+          @if (editingSubscription) {
+            ✏️ Actualizar
+          } @else {
+            🚀 Crear suscripción
+          }
+        </button>
+      </form>
+    </div>
+
+    <div class="subscriptions-section">
+      <div class="subscriptions-header">
+        <h3>💳 Suscripciones</h3>
+
+        <div class="subscriptions-count">
+          {{ subscriptions.length }}
+        </div>
+      </div>
+
+      <div class="subscriptions-grid">
+        @for (subscription of subscriptions; track subscription.id) {
+          <div class="subscription-card">
+            <div class="subscription-top">
+              <div class="subscription-icon">💳</div>
+
+              <div>
+                <h4>
+                  {{ subscription.teamName }}
+                </h4>
+
+                <span>
+                  <strong> {{ subscription.planName }} </strong>
+                </span>
+              </div>
+            </div>
+
+            <div
+              class="status-badge"
+              [class.active]="subscription.status === 'active'"
+              [class.inactive]="subscription.status === 'inactive'"
+            >
+              {{ subscription.status | uppercase }}
+            </div>
+
+            <div class="subscription-info">
+              <div class="info-item">
+                <strong>
+                  📅 Vence:
+
+                  {{ formatDate(subscription.currentPeriodEnd) }}
+                </strong>
+              </div>
+            </div>
+
+            <div class="card-actions">
+              <button
+                class="edit-btn"
+                type="button"
+                (click)="editSubscription(subscription)"
+              >
+                ✏️ Editar
+              </button>
+
+              <button
+                class="delete-btn"
+                type="button"
+                (click)="deleteSubscription(subscription)"
+              >
+                🗑 Eliminar
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

@@ -9,4 +9,5 @@ export interface User {
   active: boolean;
   createdAt: Timestamp;
   document: string;
+  isSuperAdmin: boolean;
 }

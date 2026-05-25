@@ -42,6 +42,7 @@ export class AuthService {
         document: player?.document || '',
         active: true,
         createdAt: Timestamp.now(),
+        isSuperAdmin: false,
       });
 
       this.router.navigate(['/dashboard']);

@@ -1,0 +1,422 @@
+.subscriptions-page {
+  min-height: 100vh;
+
+  color: white;
+}
+
+/* TOP */
+
+.top-section {
+  margin-bottom: 2rem;
+}
+
+.page-badge {
+  color: #39ff14;
+
+  letter-spacing: 3px;
+
+  font-size: 0.8rem;
+
+  font-weight: 800;
+}
+
+.title-row {
+  display: flex;
+
+  align-items: center;
+
+  gap: 1.2rem;
+
+  margin-top: 1rem;
+}
+
+.title-icon {
+  width: 72px;
+
+  height: 72px;
+
+  border-radius: 24px;
+
+  background: linear-gradient(135deg, #39ff14, #16c60c);
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  font-size: 2rem;
+
+  flex-shrink: 0;
+
+  box-shadow: 0 15px 35px rgba(57, 255, 20, 0.25);
+}
+
+.title-row h1 {
+  margin: 0;
+
+  font-size: clamp(2rem, 4vw, 4rem);
+
+  font-weight: 900;
+}
+
+.title-row p {
+  margin-top: 0.6rem;
+
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* CONTENT */
+
+.content-grid {
+  display: grid;
+
+  grid-template-columns:
+    340px
+    1fr;
+
+  gap: 1.5rem;
+
+  align-items: start;
+}
+
+/* FORM */
+
+.form-card,
+.subscriptions-section {
+  background: rgba(255, 255, 255, 0.04);
+
+  border: 1px solid rgba(255, 255, 255, 0.05);
+
+  border-radius: 30px;
+
+  padding: 1.5rem;
+}
+
+.form-card {
+  position: sticky;
+
+  top: 110px;
+}
+
+.form-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 1rem;
+
+  margin-bottom: 2rem;
+}
+
+.form-header h3 {
+  margin: 0;
+
+  color: white;
+
+  font-size: 1.3rem;
+
+  font-weight: 900;
+}
+
+.form-header span {
+  color: #39ff14;
+
+  font-size: 0.72rem;
+
+  font-weight: 800;
+
+  letter-spacing: 1px;
+}
+
+/* FORM */
+
+form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 1.2rem;
+}
+
+.form-group {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0.6rem;
+}
+
+.form-group label {
+  color: white;
+
+  font-size: 0.9rem;
+
+  font-weight: 700;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+
+  min-height: 56px;
+
+  border: 1px solid transparent;
+
+  outline: none;
+
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.05);
+
+  padding: 0 1rem;
+
+  color: white;
+
+  font-weight: 600;
+}
+
+.form-group select option {
+  background: #0f172a;
+
+  color: white;
+}
+
+/* SAVE */
+
+.save-btn {
+  width: 100%;
+
+  min-height: 56px;
+
+  border: none;
+
+  border-radius: 18px;
+
+  background: linear-gradient(135deg, #39ff14, #16c60c);
+
+  color: #020617;
+
+  font-weight: 900;
+
+  margin-top: 0.5rem;
+}
+
+/* HEADER */
+
+.subscriptions-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 1.5rem;
+}
+
+.subscriptions-header h3 {
+  margin: 0;
+
+  font-size: 1.3rem;
+
+  font-weight: 900;
+}
+
+.subscriptions-count {
+  width: 42px;
+
+  height: 42px;
+
+  border-radius: 14px;
+
+  background: rgba(57, 255, 20, 0.12);
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  color: #39ff14;
+
+  font-weight: 900;
+}
+
+/* GRID */
+
+.subscriptions-grid {
+  display: grid;
+
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+
+  gap: 1rem;
+}
+
+/* CARD */
+
+.subscription-card {
+  background: rgba(255, 255, 255, 0.04);
+
+  border: 1px solid rgba(255, 255, 255, 0.05);
+
+  border-radius: 26px;
+
+  padding: 1.2rem;
+}
+
+.subscription-top {
+  display: flex;
+
+  align-items: center;
+
+  gap: 1rem;
+
+  margin-bottom: 1rem;
+}
+
+.subscription-icon {
+  width: 52px;
+
+  height: 52px;
+
+  border-radius: 18px;
+
+  background: linear-gradient(135deg, #39ff14, #16c60c);
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  font-size: 1.3rem;
+}
+
+.subscription-top h4 {
+  margin: 0;
+
+  font-weight: 800;
+}
+
+.subscription-top span {
+  color: rgba(255, 255, 255, 0.5);
+
+  font-size: 0.82rem;
+}
+
+/* STATUS */
+
+.status-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 0.4rem;
+
+  padding: 0.5rem 1rem;
+
+  border-radius: 30px;
+
+  margin-bottom: 1rem;
+
+  font-size: 0.8rem;
+
+  font-weight: 700;
+}
+
+.status-badge.active {
+  background: rgba(57, 255, 20, 0.12);
+
+  color: #39ff14;
+}
+
+.status-badge.inactive {
+  background: rgba(255, 255, 255, 0.08);
+
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* INFO */
+
+.subscription-info {
+  margin-bottom: 1.5rem;
+}
+
+.info-item {
+  color: rgba(255, 255, 255, 0.7);
+
+  font-size: 0.85rem;
+
+  font-weight: 700;
+}
+
+/* ACTIONS */
+
+.card-actions {
+  display: flex;
+
+  gap: 0.8rem;
+}
+
+.edit-btn,
+.delete-btn {
+  flex: 1;
+
+  min-height: 48px;
+
+  border: none;
+
+  border-radius: 16px;
+
+  font-weight: 700;
+}
+
+.edit-btn {
+  background: rgba(57, 255, 20, 0.12);
+
+  color: #39ff14;
+}
+
+.delete-btn {
+  background: rgba(255, 77, 77, 0.12);
+
+  color: #ff4d4d;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 992px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-card {
+    position: relative;
+
+    top: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .subscriptions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .title-row {
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+
+  .title-row h1 {
+    font-size: 2.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-actions {
+    flex-direction: column;
+  }
+}

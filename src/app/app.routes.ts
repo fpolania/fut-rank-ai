@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { loginGuard } from './core/guards/login.guard';
 import { JoinTeamComponent } from './pages/join-team/join-team.component';
+import { adminRoutes } from './admin/admin.routes';
 
 export const routes: Routes = [
   { path: 'join-team', component: JoinTeamComponent },
@@ -151,6 +152,10 @@ export const routes: Routes = [
           import('./pages/ai-analysis/ai-analysis.component').then(
             (m) => m.AiAnalysisComponent,
           ),
+      },
+      {
+        path: 'admin',
+        children: adminRoutes,
       },
     ],
   },
