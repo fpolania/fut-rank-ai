@@ -8,4 +8,5 @@ export interface Plan {
   maxAnalysis: number;
   active: boolean;
   createdAt?: Timestamp;
+  types: any;
 }

@@ -25,6 +25,7 @@ export interface Match {
   competitionId?: string;
   competitionName?: string;
   status?: 'En curso' | 'Finalizado';
+  teamId?: string;
 }
 export interface MatchPlayer {
   playerId: string;

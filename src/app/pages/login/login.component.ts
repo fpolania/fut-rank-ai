@@ -67,6 +67,7 @@ export class LoginComponent {
       this.loadingService.show();
       this.playerLoged =
         await this.teamPlayersService.getPlayerByDocument(normalizedDocument);
+        console.log(this.playerLoged)
       if (!this.playerLoged) {
         this.loadingService.hide();
         await Swal.fire({

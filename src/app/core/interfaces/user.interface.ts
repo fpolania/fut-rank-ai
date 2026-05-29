@@ -10,4 +10,5 @@ export interface User {
   createdAt: Timestamp;
   document: string;
   isSuperAdmin: boolean;
+  teamId?: string
 }

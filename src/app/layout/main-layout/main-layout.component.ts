@@ -39,17 +39,11 @@ import { errorAlert, successAlert } from '../../core/utils/alert.util';
 })
 export class MainLayoutComponent implements OnInit {
   authService = inject(AuthService);
-
   private loadingService = inject(LoadingService);
-
   private teamSettingsService = inject(TeamSettingsService);
-
   sidebarOpen = false;
-
   openTeamSettings = false;
-
   teamName = 'NO DEFINIDO';
-
   currentUser: any = null;
 
   userMenu = [
@@ -137,13 +131,7 @@ export class MainLayoutComponent implements OnInit {
   ];
 
   adminMenu = [
-    {
-      label: 'Admin Dashboard',
 
-      icon: '⚙️',
-
-      route: '/admin',
-    },
 
     {
       label: 'Plans',
@@ -178,13 +166,19 @@ export class MainLayoutComponent implements OnInit {
     this.authService.currentUser.subscribe({
       next: (user) => {
         this.currentUser = user;
+        if(this.currentUser.uid){
+          this.getName(this.currentUser.teamId);
+        }
       },
-
       error: (error) => {
         console.error(error);
       },
     });
   }
+  async getName(teamId:string){
+    this.teamName = await this.authService.getTeamName(teamId)
+  }
+
 
   get currentMenu() {
     let menu = [...this.userMenu];

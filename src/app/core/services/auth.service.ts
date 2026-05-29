@@ -8,7 +8,7 @@ import {
   user,
 } from '@angular/fire/auth';
 
-import { Timestamp } from '@angular/fire/firestore';
+import { doc, Firestore, getDoc, Timestamp } from '@angular/fire/firestore';
 
 import { Router } from '@angular/router';
 import { UserService } from './user.service';
@@ -21,6 +21,7 @@ export class AuthService {
   private auth = inject(Auth);
   private router = inject(Router);
   private userService = inject(UserService);
+  private firestore = inject(Firestore);
   currentUser = user(this.auth).pipe(
     switchMap((firebaseUser) => {
       if (!firebaseUser) return of(null);
@@ -42,7 +43,9 @@ export class AuthService {
         document: player?.document || '',
         active: true,
         createdAt: Timestamp.now(),
-        isSuperAdmin: false,
+        isSuperAdmin: true,
+        teamId: player.teamId
+
       });
 
       this.router.navigate(['/dashboard']);
@@ -61,5 +64,21 @@ export class AuthService {
     } catch (error) {
       console.error('Logout Error', error);
     }
+  }
+  async getTeamName(teamId: string): Promise<string> {
+    try {
+      const teamDoc = doc(this.firestore, `teams/${teamId}`);
+      const response = await getDoc(teamDoc);
+      if (response.exists()) {
+        return response.data()?.['name'];
+
+      }
+      return ''
+    } catch (error) {
+      console.error(error);
+      return '';
+    }
+
+
   }
 }

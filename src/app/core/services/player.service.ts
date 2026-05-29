@@ -10,6 +10,8 @@ import {
   updateDoc,
   deleteDoc,
   setDoc,
+  where,
+  query,
 } from '@angular/fire/firestore';
 
 import { Observable } from 'rxjs';
@@ -28,9 +30,13 @@ export class PlayerService {
     const playerRef = doc(this.firestore, `players/${id}`);
     return setDoc(playerRef, player);
   }
+  getPlayers(teamId?: string): Observable<Player[]> {
 
-  getPlayers(): Observable<Player[]> {
-    return collectionData(this.playersCollection, {
+    const q = teamId
+      ? query(this.playersCollection, where('teamId', '==', teamId))
+      : this.playersCollection;
+  
+    return collectionData(q, {
       idField: 'id',
     }) as Observable<Player[]>;
   }

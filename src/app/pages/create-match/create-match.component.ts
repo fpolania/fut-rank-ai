@@ -15,6 +15,7 @@ import {
 import { CompetitionService } from '../../core/services/competition.service';
 import { Competition } from '../../core/interfaces/competition.interface';
 import { TeamSettingsService } from '../../core/services/settings.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-create-match',
@@ -28,7 +29,7 @@ export class CreateMatchComponent implements OnInit {
   private matchService = inject(MatchService);
   private loadingService = inject(LoadingService);
   private competitionService = inject(CompetitionService);
-  private teamSettingsService = inject(TeamSettingsService);
+   authService = inject(AuthService);
   players: Player[] = [];
   selectedPlayers: Player[] = [];
   selectedMatchType = 'FUT 5';
@@ -36,6 +37,7 @@ export class CreateMatchComponent implements OnInit {
   competitions: Competition[] = [];
   selectedCompetition: Competition | null = null;
   teamName: string = '';
+  currentUser: any = null;
   matchForm = this.fb.group({
     name: ['', Validators.required],
     date: ['', Validators.required],
@@ -44,19 +46,12 @@ export class CreateMatchComponent implements OnInit {
     competitionId: ['', Validators.required],
   });
   ngOnInit(): void {
-    this.getPlayers();
-    this.getCompetitions();
-    this.loadTeamSettings();
+    this.getCurrentUser();
   }
-  async loadTeamSettings() {
-    const settings = await this.teamSettingsService.getTeamSettings();
-    if (settings?.['name']) {
-      this.teamName = settings['name'];
-    }
-  }
+  
   getCompetitions() {
     this.loadingService.show();
-    this.competitionService.getCompetitions().subscribe({
+    this.competitionService.getCompetitions(this.currentUser.teamId).subscribe({
       next: (competitions) => {
         this.competitions = competitions.filter((c) => c.active);
       },
@@ -66,10 +61,29 @@ export class CreateMatchComponent implements OnInit {
     });
     this.loadingService.hide();
   }
+  getCurrentUser() {
+    this.authService.currentUser.subscribe({
+      next: (user) => {
+        this.currentUser = user;
+        if(this.currentUser.uid){
+          this.getName(this.currentUser.teamId);
+          this.getCompetitions();
+          this.getPlayers();
+        }
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
+    
+  }
+  async getName(teamId:string){
+    this.teamName = await this.authService.getTeamName(teamId)
+  }
 
   getPlayers() {
     this.loadingService.show();
-    this.playerService.getPlayers().subscribe({
+    this.playerService.getPlayers(this.currentUser.teamId).subscribe({
       next: (players) => {
         this.players = players;
       },
@@ -110,6 +124,7 @@ export class CreateMatchComponent implements OnInit {
       this.competitions.find((c) => c.id === competitionId) || null;
   }
   async createMatch() {
+    debugger;
     if (this.matchForm.invalid) {
       this.matchForm.markAllAsTouched();
       return;
@@ -134,6 +149,7 @@ export class CreateMatchComponent implements OnInit {
         assists: 0,
         isMvp: false,
         attended: true,
+        teamId: player.teamId
       }));
       const title = this.matchForm.value.name || '';
       const splitTitle = title.split(/vs/i);
@@ -169,6 +185,7 @@ export class CreateMatchComponent implements OnInit {
         competitionId: this.matchForm.value.competitionId || '',
         competitionName: this.selectedCompetition?.name || '',
         status: 'En curso',
+        teamId: this.currentUser.teamId
       };
 
       await this.matchService.addMatch(match as any);

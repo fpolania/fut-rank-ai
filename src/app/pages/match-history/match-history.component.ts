@@ -32,17 +32,17 @@ export class MatchHistoryComponent implements OnInit {
   private loadingService = inject(LoadingService);
   authService = inject(AuthService);
   matches: Match[] = [];
-
+  currentUser: any = null;
   filteredMatches: Match[] = [];
   selectedFilter = 'Todos';
 
   ngOnInit(): void {
-    this.getMatches();
+    this.getCurrentUser();
   }
 
   getMatches() {
     this.loadingService.show();
-    this.matchService.getMatches().subscribe({
+    this.matchService.getMatches(this.currentUser.teamId).subscribe({
       next: (matches) => {
         this.matches = [...matches].reverse();
         this.filteredMatches = this.matches;
@@ -52,6 +52,19 @@ export class MatchHistoryComponent implements OnInit {
       error: (error) => {
         console.error(error);
         this.loadingService.hide();
+      },
+    });
+  }
+  getCurrentUser() {
+    this.authService.currentUser.subscribe({
+      next: (user) => {
+        this.currentUser = user;
+        if(this.currentUser.uid){
+          this.getMatches();
+        }
+      },
+      error: (error) => {
+        console.error(error);
       },
     });
   }

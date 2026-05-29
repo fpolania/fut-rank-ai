@@ -55,11 +55,16 @@
 
           <input type="number" formControlName="maxVideos" />
         </div>
+        
 
         <div class="form-group">
           <label> Máx IA análisis </label>
 
           <input type="number" formControlName="maxAnalysis" />
+        </div>
+        <div class="form-group">
+          <label for="type">Tipos</label>
+          <input type="text" formControlName="types" placeholder="FUT5-FUT8-FUT11" >
         </div>
 
         <button type="submit" class="save-btn">
@@ -71,6 +76,7 @@
         </button>
       </form>
     </div>
+
 
     <!-- RIGHT -->
 
@@ -120,6 +126,9 @@
               <div class="feature">
                 {{ plan.maxAnalysis }}
                 IA
+              </div>
+              <div class="feature">
+                {{plan.types}}
               </div>
             </div>
 

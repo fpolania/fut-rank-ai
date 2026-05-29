@@ -12,7 +12,9 @@ import {
   doc,
   docData,
   updateDoc,
-  deleteDoc
+  deleteDoc,
+  query,
+  where
 }
   from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
@@ -37,14 +39,14 @@ export class MatchService {
     );
   }
 
-  getMatches():
-    Observable<Match[]> {
-    return collectionData(
+  getMatches(teamId: string): Observable<Match[]> {
+    const q = query(
       this.matchesCollection,
-      {
-        idField: 'id'
-      }
-    ) as Observable<Match[]>;
+      where('teamId', '==', teamId)
+    );
+    return collectionData(q, {
+      idField: 'id'
+    }) as Observable<Match[]>;
   }
   getMatchById(id: string) {
     const matchDoc =

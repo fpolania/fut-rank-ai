@@ -40,12 +40,11 @@ export class MatchesComponent implements OnInit {
   filteredMatches: Match[] = [];
   competitions: Competition[] = [];
   selectedFilter = 'Todos';
+  currentUser: any = null;
   selectedCompetitionFilter = '';
 
   ngOnInit(): void {
-    this.getMatches();
-
-    this.getCompetitions();
+    this.getCurrentUser();
   }
 
   applyFilters() {
@@ -71,10 +70,9 @@ export class MatchesComponent implements OnInit {
   }
 
   getMatches() {
-    this.matchService.getMatches().subscribe({
+    this.matchService.getMatches(this.currentUser.teamId).subscribe({
       next: (matches) => {
         this.matches = matches;
-
         this.filteredMatches = matches;
       },
 
@@ -83,9 +81,21 @@ export class MatchesComponent implements OnInit {
       },
     });
   }
+  getCurrentUser() {
+    this.authService.currentUser.subscribe({
+      next: (user) => {
+        this.currentUser = user;
+        if (this.currentUser.uid) {
+          this.getMatches();
+          this.getCompetitions();
+        }
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
 
-  /* OPEN */
-
+  }
   openMatch(match: Match) {
     this.router.navigate(['/match-detail', match.id]);
   }
@@ -122,7 +132,7 @@ export class MatchesComponent implements OnInit {
   getCompetitions() {
     this.loadingService.show();
 
-    this.competitionService.getCompetitions().subscribe({
+    this.competitionService.getCompetitions(this.currentUser.teamId).subscribe({
       next: (competitions) => {
         this.competitions = competitions.filter((c) => c.active);
         this.loadingService.hide();

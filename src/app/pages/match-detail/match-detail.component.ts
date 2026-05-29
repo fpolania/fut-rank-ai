@@ -42,7 +42,6 @@ export class MatchDetailComponent implements OnInit {
 
   getMatch(): void {
     if (!this.matchId) return;
-
     this.matchService.getMatchById(this.matchId).subscribe({
       next: (match: any) => {
         this.match = match;
@@ -56,7 +55,6 @@ export class MatchDetailComponent implements OnInit {
 
   increaseGoals(player: MatchPlayer): void {
     player.goals++;
-
     this.calculateScore();
   }
 

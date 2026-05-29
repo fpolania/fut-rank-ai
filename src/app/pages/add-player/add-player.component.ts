@@ -8,6 +8,7 @@ import { UploadFileService } from '../../core/services/upload-file.service';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingService } from '../../core/services/loading.service';
 import { errorAlert, successAlert } from '../../core/utils/alert.util';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-add-player',
@@ -16,12 +17,14 @@ import { errorAlert, successAlert } from '../../core/utils/alert.util';
   styleUrl: './add-player.component.css',
 })
 export class AddPlayerComponent implements OnInit {
+  authService = inject(AuthService);
   loading = false;
   playerId: string | null = null;
   editMode = false;
   selectedFile!: File;
   previewImage = 'https://i.pravatar.cc/150';
   positions = ['Arquero', 'Defensa', 'Mediocampo', 'Delantero'];
+  currentUser: any = null;
   private fb = inject(FormBuilder);
   private fileUpload = inject(UploadFileService);
   private playerService = inject(PlayerService);
@@ -35,6 +38,7 @@ export class AddPlayerComponent implements OnInit {
         this.loadPlayer();
       }
     });
+    this.getCurrentUser();
   }
 
   playerForm = this.fb.group({
@@ -44,7 +48,16 @@ export class AddPlayerComponent implements OnInit {
     preferredFoot: ['', [Validators.required]],
     numberDoc: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
   });
-
+  getCurrentUser() {
+    this.authService.currentUser.subscribe({
+      next: (user) => {
+        this.currentUser = user;
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
+  }
   async savePlayer() {
     if (this.playerForm.invalid) return;
     try {
@@ -62,6 +75,7 @@ export class AddPlayerComponent implements OnInit {
         position: this.playerForm.value.position,
         preferredFoot: this.playerForm.value.preferredFoot,
         numberDoc: this.playerForm.value.numberDoc,
+        teamId: this.currentUser.teamId
       };
       if (this.editMode && this.playerId) {
         await this.playerService.updatePlayer(this.playerId, player);

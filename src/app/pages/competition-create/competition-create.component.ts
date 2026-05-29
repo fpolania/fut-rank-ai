@@ -12,6 +12,10 @@ import { CompetitionService } from '../../core/services/competition.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { errorAlert, successAlert } from '../../core/utils/alert.util';
 import { Competition } from '../../core/interfaces/competition.interface';
+import { Team } from '../../admin/models/team.interface';
+import { TeamService } from '../../admin/services/team.service';
+import { error } from 'console';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-competition-create',
@@ -23,20 +27,50 @@ import { Competition } from '../../core/interfaces/competition.interface';
 export class CompetitionCreateComponent implements OnInit {
   competitionForm!: FormGroup;
   private loadingService = inject(LoadingService);
+   authService = inject(AuthService);
   competitions: Competition[] = [];
   selectedCompetition: Competition | null = null;
+  teams: Team[] = [];
+  currentUser: any = null;
   constructor(
     private fb: FormBuilder,
     private competitionService: CompetitionService,
+    private  teamService: TeamService
+  
   ) {}
 
   ngOnInit(): void {
     this.initForm();
-    this.getCompetitions();
+    this.getTemans();
+    this.getCurrentUser();
+  }
+  getTemans(){
+    this.teamService.getTeams().subscribe({
+      next:(teams) =>{
+        this.teams=teams;
+      },
+      error: (error:any) =>{
+        console.error (error);
+      },
+    })
+  }
+  getCurrentUser() {
+    this.authService.currentUser.subscribe({
+      next: (user) => {
+        this.currentUser = user;
+        if(this.currentUser.uid){
+          this.getCompetitions();
+        }
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
+    
   }
   getCompetitions() {
     this.loadingService.show();
-    this.competitionService.getCompetitions().subscribe({
+    this.competitionService.getCompetitions(this.currentUser.teamId).subscribe({
       next: (competitions) => {
         this.competitions = competitions;
         this.loadingService.hide();
@@ -53,6 +87,7 @@ export class CompetitionCreateComponent implements OnInit {
       type: ['tournament', [Validators.required]],
       season: ['2026', [Validators.required]],
       active: [true, [Validators.required]],
+      teamId:['', [Validators.required]],
     });
   }
 

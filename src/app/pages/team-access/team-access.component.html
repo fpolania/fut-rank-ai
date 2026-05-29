@@ -74,6 +74,18 @@
           <option value="captain">Capitán</option>
         </select>
       </div>
+      <div class="form-group">
+        <label for="team">Team</label>
+        <select class="form-select custom-input" formControlName="teamId">
+          <option value="">Selecciona Equipo</option>
+          @for (item of teams; track $index) {
+            <option [value]="item.id">{{item.name}} </option>
+
+          }
+        </select>
+
+
+      </div>
 
       <button
         class="save-btn"

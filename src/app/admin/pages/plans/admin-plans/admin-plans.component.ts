@@ -34,6 +34,7 @@ export class AdminPlansComponent implements OnInit {
       maxPlayers: [15, [Validators.required]],
       maxVideos: [1, [Validators.required]],
       maxAnalysis: [5, [Validators.required]],
+      types: ['', [Validators.required]]
     });
   }
 
@@ -45,6 +46,7 @@ export class AdminPlansComponent implements OnInit {
     this.planService.getPlans().subscribe({
       next: (plans) => {
         this.plans = plans;
+        console.log(this.plans);
       },
       error: (error) => {
         console.error(error);
@@ -93,6 +95,7 @@ export class AdminPlansComponent implements OnInit {
           'El plan fue actualizado correctamente.',
         );
       } else {
+      console.log(this.planForm.controls['types'].value)  
         await this.planService.createPlan({
           ...this.planForm.value,
           active: true,

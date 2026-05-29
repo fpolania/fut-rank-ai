@@ -8,6 +8,8 @@ import {
   doc,
   updateDoc,
   deleteDoc,
+  query,
+  where,
 } from '@angular/fire/firestore';
 
 import { Observable } from 'rxjs';
@@ -24,8 +26,13 @@ export class CompetitionService {
     return addDoc(this.competitionCollection, competition);
   }
 
-  getCompetitions(): Observable<Competition[]> {
-    return collectionData(this.competitionCollection, {
+  
+  getCompetitions(teamId: string): Observable<Competition[]> {
+    const q = teamId
+      ? query(this.competitionCollection, where('teamId', '==', teamId))
+      : this.competitionCollection;
+  
+    return collectionData(q, {
       idField: 'id',
     }) as Observable<Competition[]>;
   }

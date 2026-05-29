@@ -21,11 +21,12 @@ export class RatePlayersComponent implements OnInit {
   private router = inject(Router);
   authService = inject(AuthService);
   matches: Match[] = [];
+  currentUser: any = null;
   ngOnInit(): void {
-    this.getMatches();
+    this.getCurrentUser();
   }
   getMatches() {
-    this.matchService.getMatches().subscribe({
+    this.matchService.getMatches(this.currentUser.teamId).subscribe({
       next: (matches) => {
         this.matches = matches
           .filter((match) => {
@@ -40,6 +41,19 @@ export class RatePlayersComponent implements OnInit {
           .reverse();
       },
 
+      error: (error) => {
+        console.error(error);
+      },
+    });
+  }
+  getCurrentUser() {
+    this.authService.currentUser.subscribe({
+      next: (user) => {
+        this.currentUser = user;
+        if(this.currentUser.uid){
+          this.getMatches();
+        }
+      },
       error: (error) => {
         console.error(error);
       },

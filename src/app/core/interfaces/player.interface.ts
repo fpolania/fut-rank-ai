@@ -21,4 +21,5 @@ export interface Player {
   dribbling: number;
   age?: number;
   number?: string;
+  teamId?: string
 }

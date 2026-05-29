@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { PlayerService } from '../../core/services/player.service';
 import { Player } from '../../core/interfaces/player.interface';
 import { LoadingService } from '../../core/services/loading.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-rankings',
@@ -13,14 +14,17 @@ import { LoadingService } from '../../core/services/loading.service';
 })
 export class RankingsComponent implements OnInit {
   private loadingService = inject(LoadingService);
+    authService = inject(AuthService);
   selectedFilter = 'Todos';
   players: Player[] = [];
+  currentUser: any = null;
   topPlayers: Player[] = [];
 
   private playerService = inject(PlayerService);
   ngOnInit(): void {
-    this.getPlayers();
+    this.getCurrentUser();
   }
+  
 
   filterRanking(filter: string) {
     this.selectedFilter = filter;
@@ -39,7 +43,7 @@ export class RankingsComponent implements OnInit {
 
   getPlayers() {
     this.loadingService.show();
-    this.playerService.getPlayers().subscribe({
+    this.playerService.getPlayers(this.currentUser.teamId).subscribe({
       next: (players) => {
         this.players = [...players].sort(
           (a, b) => b.averageRating - a.averageRating,
@@ -51,6 +55,19 @@ export class RankingsComponent implements OnInit {
       error: (error: any) => {
         console.error(error);
         this.loadingService.hide();
+      },
+    });
+  }
+  getCurrentUser() {
+    this.authService.currentUser.subscribe({
+      next: (user) => {
+        this.currentUser = user;
+        if(this.currentUser.uid){
+          this.getPlayers();
+        }
+      },
+      error: (error) => {
+        console.error(error);
       },
     });
   }

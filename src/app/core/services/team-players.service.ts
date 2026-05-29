@@ -24,13 +24,18 @@ export class TeamPlayersService {
   private firestore = inject(Firestore);
 
   private teamPlayersRef = collection(this.firestore, 'team_players');
+  getPlayers(teamId?: string): Observable<TeamPlayer[]> {
 
-  getPlayers(): Observable<TeamPlayer[]> {
-    const playersQuery = query(
-      this.teamPlayersRef,
-      orderBy('createdAt', 'desc'),
-    );
-
+    const playersQuery = teamId
+      ? query(
+          this.teamPlayersRef,
+          where('teamId', '==', teamId),
+        )
+      : query(
+          this.teamPlayersRef,
+          orderBy('createdAt', 'desc'),
+        );
+  
     return collectionData(playersQuery, {
       idField: 'id',
     }) as Observable<TeamPlayer[]>;

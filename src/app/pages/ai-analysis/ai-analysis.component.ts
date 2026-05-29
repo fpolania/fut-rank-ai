@@ -15,6 +15,7 @@ import { AnalysisService } from '../../core/services/analysis.service';
 import { MatchAnalysis } from '../../core/interfaces/match-analysis.interface';
 import { get } from 'http';
 import { TeamSettingsService } from '../../core/services/settings.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-ai-analysis',
@@ -34,6 +35,7 @@ export class AiAnalysisComponent implements OnInit {
   private fileUpload = inject(UploadFileService);
   private loadingService = inject(LoadingService);
   private aiAnalysisService = inject(AnalysisService);
+   authService = inject(AuthService);
   private teamSettingsService = inject(TeamSettingsService);
   matches: Match[] = [];
   selectedColor = 'black';
@@ -41,6 +43,7 @@ export class AiAnalysisComponent implements OnInit {
   selectedVideo: File | null = null;
   videoUrl = '';
   loading = false;
+  currentUser: any = null;
   uploadingVideo = false;
   matchSelected: any = '';
   analyses: MatchAnalysis[] = [];
@@ -51,15 +54,10 @@ export class AiAnalysisComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.getMatches();
     this.getAnalyses();
+    this.getCurrentUser();
   }
-  async loadTeamSettings() {
-    const settings = await this.teamSettingsService.getTeamSettings();
-    if (settings?.['name']) {
-      this.teamName = settings['name'];
-    }
-  }
+
   getAnalyses() {
     this.loadingService.show();
     this.aiAnalysisService.getAnalysis().subscribe({
@@ -78,7 +76,7 @@ export class AiAnalysisComponent implements OnInit {
     console.log('MATCH SELECTED:', this.matchSelected);
   }
   getMatches() {
-    this.matchService.getMatches().subscribe({
+    this.matchService.getMatches(this.currentUser.teamId).subscribe({
       next: (matches) => {
         this.matches = matches.filter((match) => match.finished);
       },
@@ -87,7 +85,23 @@ export class AiAnalysisComponent implements OnInit {
       },
     });
   }
-
+  getCurrentUser() {
+    this.authService.currentUser.subscribe({
+      next: (user) => {
+        this.currentUser = user;
+        if (this.currentUser.uid) {
+          this.getName(this.currentUser.teamId)
+          this.getMatches();
+        }
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
+  }
+  async getName(teamId:string){
+    this.teamName = await this.authService.getTeamName(teamId)
+  }
   onVideoSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) {

@@ -1,7 +1,5 @@
 import { Routes } from '@angular/router';
 
-import { AdminDashboardComponent } from './pages/dashboard/admin-dashboard/admin-dashboard.component';
-
 import { AdminPlansComponent } from './pages/plans/admin-plans/admin-plans.component';
 
 import { AdminSubscriptionsComponent } from './pages/subscriptions/admin-subscriptions/admin-subscriptions.component';
@@ -17,11 +15,6 @@ export const adminRoutes: Routes = [
     canActivate: [adminGuard],
 
     children: [
-      {
-        path: '',
-
-        component: AdminDashboardComponent,
-      },
 
       {
         path: 'plans',

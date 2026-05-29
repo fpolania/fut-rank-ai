@@ -19,17 +19,34 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class PlayersComponent implements OnInit {
   players: Player[] = [];
+  currentUser: any = null;
   searchTerm = '';
   private router = inject(Router);
   private playerService = inject(PlayerService);
   private loadingService = inject(LoadingService);
   authService = inject(AuthService);
   ngOnInit() {
+    this.getCurrentUser();
+  }
+  getPlayers() {
     this.loadingService.show();
     this.playerService.getPlayers().subscribe({
       next: (players) => {
         this.players = players;
         this.loadingService.hide();
+      },
+    });
+  }
+  getCurrentUser() {
+    this.authService.currentUser.subscribe({
+      next: (user) => {
+        this.currentUser = user;
+        if (this.currentUser.uid) {
+          this.getPlayers();
+        }
+      },
+      error: (error) => {
+        console.error(error);
       },
     });
   }
