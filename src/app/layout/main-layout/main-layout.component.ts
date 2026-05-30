@@ -51,6 +51,7 @@ export class MainLayoutComponent implements OnInit {
   teamName = 'NO DEFINIDO';
   currentUser: any = null;
   subscriptionLoaded = false;
+  currentPlan = 'FREE';
 
   userMenu = [
     {
@@ -181,6 +182,7 @@ export class MainLayoutComponent implements OnInit {
             await this.subscriptionService.getSubscriptionByTeamId(
               this.currentUser.teamId,
             );
+          this.currentPlan = subscription?.planName as any;
           if (!subscription) {
             this.loadingService.hide();
             warningAlert(

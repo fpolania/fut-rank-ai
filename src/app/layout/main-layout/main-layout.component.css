@@ -546,7 +546,50 @@
 
   min-width: 0;
 }
+.team-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
 
+.team-info h3 {
+  margin: 0;
+
+  font-size: 1.4rem;
+
+  font-weight: 900;
+
+  letter-spacing: 1px;
+
+  line-height: 1.1;
+
+  background: linear-gradient(135deg, #39ff14, #16c60c);
+
+  -webkit-background-clip: text;
+
+  -webkit-text-fill-color: transparent;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+.plan-name {
+  margin-top: 2px;
+
+  font-size: 0.7rem;
+
+  font-weight: 700;
+
+  letter-spacing: 1px;
+
+  text-transform: uppercase;
+
+  color: rgba(255, 255, 255, 0.55);
+}
 .team-icon {
   width: 42px;
 

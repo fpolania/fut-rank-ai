@@ -1,9 +1,5 @@
 <div class="layout-container">
-  <!-- SIDEBAR -->
-
   <aside class="sidebar" [class.open]="sidebarOpen">
-    <!-- LOGO -->
-
     <div class="logo-section">
       <div class="logo-circle">⚽</div>
 
@@ -13,8 +9,6 @@
         <span> AI Platform </span>
       </div>
     </div>
-
-    <!-- MENU -->
 
     <nav class="menu">
       @for (item of currentMenu; track item.route) {
@@ -38,14 +32,8 @@
     </nav>
   </aside>
 
-  <!-- CONTENT -->
-
   <main class="content-area">
-    <!-- TOPBAR -->
-
     <header class="topbar">
-      <!-- MOBILE MENU -->
-
       <button class="menu-btn" type="button" (click)="toggleSidebar()">
         ☰
       </button>
@@ -53,9 +41,15 @@
       <div class="team-title">
         <div class="team-icon">⚽</div>
 
-        <h3>
-          {{ teamName.toUpperCase() }}
-        </h3>
+        <div class="team-info">
+          <h3>
+            {{ teamName.toUpperCase() }}
+          </h3>
+
+          <span class="plan-name">
+            {{ currentPlan }}
+          </span>
+        </div>
       </div>
 
       <div class="profile-section">

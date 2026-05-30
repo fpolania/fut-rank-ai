@@ -132,6 +132,7 @@ export class SubscriptionService {
     return this.currentSubscription;
   }
   validateAccess(subscription: Subscription | null): string | null {
+    debugger;
     if (!subscription) {
       return 'No se encontró una suscripción para tu equipo.';
     }
@@ -145,7 +146,14 @@ export class SubscriptionService {
     }
 
     const now = new Date();
-    const endDate = new Date(subscription.currentPeriodEnd as any);
+
+    if (!subscription.currentPeriodEnd) {
+      return 'No existe fecha de vencimiento.';
+    }
+
+    const endDate = new Date(
+      (subscription.currentPeriodEnd as any).seconds * 1000,
+    );
 
     if (now > endDate) {
       return `Tu suscripción venció el ${endDate.toLocaleDateString('es-CO')}.`;
