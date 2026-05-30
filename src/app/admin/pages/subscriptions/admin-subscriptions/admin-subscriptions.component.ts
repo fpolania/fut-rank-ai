@@ -125,6 +125,7 @@ export class AdminSubscriptionsComponent implements OnInit {
             maxVideos: this.selectedPlan?.maxVideos,
             maxAnalysis: this.selectedPlan?.maxAnalysis,
             updatedAt: new Date(),
+            types: this.selectedPlan?.types,
           },
         );
 
@@ -143,6 +144,7 @@ export class AdminSubscriptionsComponent implements OnInit {
           maxVideos: this.selectedPlan?.maxVideos,
           maxAnalysis: this.selectedPlan?.maxAnalysis,
           status: 'active',
+          types: this.selectedPlan?.types,
           currentPeriodStart: new Date(),
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -153,7 +155,6 @@ export class AdminSubscriptionsComponent implements OnInit {
           'La suscripción fue creada exitosamente.',
         );
       }
-
       this.resetForm();
     } catch (error) {
       console.error(error);

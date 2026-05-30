@@ -6,7 +6,9 @@ import {
   collection,
   collectionData,
   doc,
+  query,
   updateDoc,
+  where,
 } from '@angular/fire/firestore';
 
 import { Observable } from 'rxjs';
@@ -26,8 +28,9 @@ export class AnalysisService {
     return addDoc(this.analysisCollection, analysis);
   }
 
-  getAnalysis(): Observable<MatchAnalysis[]> {
-    return collectionData(this.analysisCollection, {
+  getAnalysisByTeam(teamId: string): Observable<MatchAnalysis[]> {
+    const q = query(this.analysisCollection, where('teamId', '==', teamId));
+    return collectionData(q, {
       idField: 'id',
     }) as Observable<MatchAnalysis[]>;
   }

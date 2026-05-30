@@ -8,7 +8,7 @@
 
     <a
       *ngIf="(authService.currentUser | async)?.role === 'captain'"
-      routerLink="/add-player"
+      (click)="validatePlayers()"
       class="add-btn"
     >
       + Crear Jugador

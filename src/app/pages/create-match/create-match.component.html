@@ -77,8 +77,6 @@
     </div>
   </section>
 
-  <!-- PLAYERS -->
-
   <section class="players-section">
     <div class="players-header">
       <div class="section-title">🔥 Seleccionar Jugadores</div>
@@ -99,12 +97,7 @@
           [class.selected]="isSelected(player)"
           (click)="togglePlayer(player)"
         >
-          <!-- IMAGE -->
-
           <img [src]="player.photo" />
-
-          <!-- INFO -->
-
           <h3>
             {{ player.name }}
           </h3>
@@ -112,8 +105,6 @@
           <span>
             {{ player.position }}
           </span>
-
-          <!-- RATING -->
 
           <div class="player-rating">
             ⭐

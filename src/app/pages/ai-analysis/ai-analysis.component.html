@@ -71,23 +71,16 @@
             <label> Tipo </label>
 
             <div class="types">
-              <button
-                type="button"
-                class="type-btn"
-                [class.active]="selectedType === 'FUT 5'"
-                (click)="selectType('FUT 5')"
-              >
-                FUT 5
-              </button>
-
-              <button
-                type="button"
-                class="type-btn"
-                [class.active]="selectedType === 'FUT 8'"
-                (click)="selectType('FUT 8')"
-              >
-                FUT 8
-              </button>
+              @for (item of types; track $index) {
+                <button
+                  type="button"
+                  class="type-btn"
+                  [class.active]="selectedType === item"
+                  (click)="selectType(item)"
+                >
+                  {{ item }}
+                </button>
+              }
             </div>
           </div>
         </div>

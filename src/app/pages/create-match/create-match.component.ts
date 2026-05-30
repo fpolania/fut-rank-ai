@@ -16,6 +16,7 @@ import { CompetitionService } from '../../core/services/competition.service';
 import { Competition } from '../../core/interfaces/competition.interface';
 import { TeamSettingsService } from '../../core/services/settings.service';
 import { AuthService } from '../../core/services/auth.service';
+import { SubscriptionService } from '../../admin/services/subscription.service';
 
 @Component({
   selector: 'app-create-match',
@@ -29,11 +30,12 @@ export class CreateMatchComponent implements OnInit {
   private matchService = inject(MatchService);
   private loadingService = inject(LoadingService);
   private competitionService = inject(CompetitionService);
-   authService = inject(AuthService);
+  authService = inject(AuthService);
+  private subscriptionService = inject(SubscriptionService);
   players: Player[] = [];
   selectedPlayers: Player[] = [];
-  selectedMatchType = 'FUT 5';
-  matchTypes = ['FUT 5', 'FUT 8'];
+  selectedMatchType = 'FUT5';
+  matchTypes: any = [];
   competitions: Competition[] = [];
   selectedCompetition: Competition | null = null;
   teamName: string = '';
@@ -48,7 +50,7 @@ export class CreateMatchComponent implements OnInit {
   ngOnInit(): void {
     this.getCurrentUser();
   }
-  
+
   getCompetitions() {
     this.loadingService.show();
     this.competitionService.getCompetitions(this.currentUser.teamId).subscribe({
@@ -65,7 +67,7 @@ export class CreateMatchComponent implements OnInit {
     this.authService.currentUser.subscribe({
       next: (user) => {
         this.currentUser = user;
-        if(this.currentUser.uid){
+        if (this.currentUser.uid) {
           this.getName(this.currentUser.teamId);
           this.getCompetitions();
           this.getPlayers();
@@ -75,12 +77,21 @@ export class CreateMatchComponent implements OnInit {
         console.error(error);
       },
     });
-    
   }
-  async getName(teamId:string){
-    this.teamName = await this.authService.getTeamName(teamId)
+  async getName(teamId: string) {
+    this.teamName = await this.authService.getTeamName(teamId);
+    this.getTypesFut();
   }
-
+  getTypesFut() {
+    const subscription =
+      this.subscriptionService.getCurrentSubscription() as any;
+    if (!subscription?.types) {
+      return;
+    }
+    this.matchTypes = subscription.types
+      .split('-')
+      .map((type: string) => type.trim());
+  }
   getPlayers() {
     this.loadingService.show();
     this.playerService.getPlayers(this.currentUser.teamId).subscribe({
@@ -105,7 +116,7 @@ export class CreateMatchComponent implements OnInit {
       );
       return;
     }
-    const limit = this.selectedMatchType === 'FUT 5' ? 10 : 16;
+    const limit = this.selectedMatchType === 'FUT5' ? 8 : 14;
     if (this.selectedPlayers.length >= limit) {
       warningAlert(
         'Plantilla completa ⚽🔥',
@@ -149,7 +160,7 @@ export class CreateMatchComponent implements OnInit {
         assists: 0,
         isMvp: false,
         attended: true,
-        teamId: player.teamId
+        teamId: player.teamId,
       }));
       const title = this.matchForm.value.name || '';
       const splitTitle = title.split(/vs/i);
@@ -185,7 +196,7 @@ export class CreateMatchComponent implements OnInit {
         competitionId: this.matchForm.value.competitionId || '',
         competitionName: this.selectedCompetition?.name || '',
         status: 'En curso',
-        teamId: this.currentUser.teamId
+        teamId: this.currentUser.teamId,
       };
 
       await this.matchService.addMatch(match as any);

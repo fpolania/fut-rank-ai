@@ -1,5 +1,4 @@
 import { Component, OnInit, inject } from '@angular/core';
-
 import {
   FormBuilder,
   FormGroup,
@@ -11,7 +10,6 @@ import { TeamPlayer } from '../../core/interfaces/teamPlayer.interface';
 import { CommonModule } from '@angular/common';
 import { errorAlert, successAlert } from '../../core/utils/alert.util';
 import { LoadingService } from '../../core/services/loading.service';
-import { TeamService } from '../../admin/services/team.service';
 import { Team } from '../../admin/models/team.interface';
 import { AuthService } from '../../core/services/auth.service';
 
@@ -26,7 +24,6 @@ export class TeamAccessComponent implements OnInit {
   private fb = inject(FormBuilder);
   private teamPlayersService = inject(TeamPlayersService);
   private loadingService = inject(LoadingService);
-  private teamService = inject(TeamService);
   authService = inject(AuthService);
   teamPlayerForm!: FormGroup;
   players: TeamPlayer[] = [];
@@ -37,18 +34,7 @@ export class TeamAccessComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    this.getTeams();
     this.getCurrentUser();
-  }
-  getTeams(){
-    this.teamService.getTeams().subscribe({
-      next:(teams) => {
-        this.teams=teams;
-      },
-      error: (error) =>{
-        console.error(error);
-      },
-    })
   }
 
   initForm(): void {
@@ -71,12 +57,10 @@ export class TeamAccessComponent implements OnInit {
         ],
       ],
       role: ['player', [Validators.required]],
-      teamId: ['', [Validators.required]],
     });
   }
 
   getPlayers(): void {
-    debugger;
     this.loadingService.show();
     this.teamPlayersService.getPlayers(this.currentUser.teamId).subscribe({
       next: (response) => {
@@ -93,8 +77,8 @@ export class TeamAccessComponent implements OnInit {
     this.authService.currentUser.subscribe({
       next: (user) => {
         this.currentUser = user;
-        if(this.currentUser.uid){
-         this.getPlayers();
+        if (this.currentUser.uid) {
+          this.getPlayers();
         }
       },
       error: (error) => {
@@ -110,7 +94,11 @@ export class TeamAccessComponent implements OnInit {
     }
     try {
       this.loadingService.show();
-      const payload = this.teamPlayerForm.getRawValue();
+      const payload = {
+        ...this.teamPlayerForm.getRawValue(),
+        teamId: this.currentUser.teamId,
+      };
+
       if (this.editingPlayerId) {
         await this.teamPlayersService.updatePlayer(
           this.editingPlayerId,
@@ -164,17 +152,5 @@ export class TeamAccessComponent implements OnInit {
     });
 
     this.editingPlayerId = null;
-  }
-
-  get nameControl() {
-    return this.teamPlayerForm.get('name');
-  }
-
-  get documentControl() {
-    return this.teamPlayerForm.get('document');
-  }
-
-  get roleControl() {
-    return this.teamPlayerForm.get('role');
   }
 }

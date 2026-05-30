@@ -1,45 +1,34 @@
 import { Component, OnInit, inject } from '@angular/core';
-
 import { CommonModule } from '@angular/common';
-
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-
 import { MatchService } from '../../core/services/match.service';
-
 import { Match } from '../../core/interfaces/match.interface';
-
 import { UploadFileService } from '../../core/services/upload-file.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { successAlert, warningAlert } from '../../core/utils/alert.util';
 import { AnalysisService } from '../../core/services/analysis.service';
 import { MatchAnalysis } from '../../core/interfaces/match-analysis.interface';
-import { get } from 'http';
-import { TeamSettingsService } from '../../core/services/settings.service';
 import { AuthService } from '../../core/services/auth.service';
+import { SubscriptionService } from '../../admin/services/subscription.service';
 
 @Component({
   selector: 'app-ai-analysis',
-
   standalone: true,
-
   imports: [CommonModule, ReactiveFormsModule],
-
   templateUrl: './ai-analysis.component.html',
-
   styleUrl: './ai-analysis.component.css',
 })
 export class AiAnalysisComponent implements OnInit {
   private fb = inject(FormBuilder);
-
   private matchService = inject(MatchService);
   private fileUpload = inject(UploadFileService);
   private loadingService = inject(LoadingService);
   private aiAnalysisService = inject(AnalysisService);
-   authService = inject(AuthService);
-  private teamSettingsService = inject(TeamSettingsService);
+  authService = inject(AuthService);
+  private subscriptionService = inject(SubscriptionService);
   matches: Match[] = [];
   selectedColor = 'black';
-  selectedType: 'FUT 5' | 'FUT 8' = 'FUT 5';
+  selectedType: any;
   selectedVideo: File | null = null;
   videoUrl = '';
   loading = false;
@@ -48,32 +37,43 @@ export class AiAnalysisComponent implements OnInit {
   matchSelected: any = '';
   analyses: MatchAnalysis[] = [];
   teamName: string = '';
+  types: any = [];
   analysisForm = this.fb.group({
     matchId: ['', [Validators.required]],
     focus: ['', [Validators.required]],
   });
 
   ngOnInit(): void {
-    this.getAnalyses();
     this.getCurrentUser();
   }
 
   getAnalyses() {
     this.loadingService.show();
-    this.aiAnalysisService.getAnalysis().subscribe({
-      next: (analyses) => {
-        this.analyses = analyses;
-        this.loadingService.hide();
-      },
-      error: (error: any) => {
-        console.error(error);
-        this.loadingService.hide();
-      },
-    });
+    this.aiAnalysisService
+      .getAnalysisByTeam(this.currentUser.teamId)
+      .subscribe({
+        next: (analyses) => {
+          this.analyses = analyses;
+          this.loadingService.hide();
+        },
+        error: (error: any) => {
+          console.error(error);
+          this.loadingService.hide();
+        },
+      });
+  }
+  getTypesFut() {
+    const subscription =
+      this.subscriptionService.getCurrentSubscription() as any;
+    if (!subscription?.types) {
+      return;
+    }
+    this.types = subscription.types
+      .split('-')
+      .map((type: string) => type.trim());
   }
   macthSelected(event: any) {
     this.matchSelected = this.matches.find((m) => m.id === event.target.value);
-    console.log('MATCH SELECTED:', this.matchSelected);
   }
   getMatches() {
     this.matchService.getMatches(this.currentUser.teamId).subscribe({
@@ -90,8 +90,9 @@ export class AiAnalysisComponent implements OnInit {
       next: (user) => {
         this.currentUser = user;
         if (this.currentUser.uid) {
-          this.getName(this.currentUser.teamId)
+          this.getName(this.currentUser.teamId);
           this.getMatches();
+          this.getAnalyses();
         }
       },
       error: (error) => {
@@ -99,8 +100,9 @@ export class AiAnalysisComponent implements OnInit {
       },
     });
   }
-  async getName(teamId:string){
-    this.teamName = await this.authService.getTeamName(teamId)
+  async getName(teamId: string) {
+    this.teamName = await this.authService.getTeamName(teamId);
+    this.getTypesFut();
   }
   onVideoSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -179,7 +181,6 @@ export class AiAnalysisComponent implements OnInit {
     if (this.analysisForm.invalid) {
       return;
     }
-
     if (!this.videoUrl) {
       warningAlert(
         'Video requerido ⚽🔥',
@@ -187,6 +188,40 @@ export class AiAnalysisComponent implements OnInit {
       );
       return;
     }
+    const subscription = this.subscriptionService.getCurrentSubscription();
+    if (!subscription) {
+      warningAlert(
+        'Plan no encontrado ⚽',
+        'No se encontró una suscripción activa.',
+      );
+      return;
+    }
+    if (!subscription.currentPeriodStart) {
+      warningAlert(
+        'Error de suscripción ⚽',
+        'La suscripción no tiene fecha de inicio configurada.',
+      );
+      return;
+    }
+    const totalVideos = this.analyses.filter(
+      (analysis) =>
+        analysis.createdAt &&
+        new Date(analysis.createdAt) >=
+          new Date(subscription.currentPeriodStart!),
+    ).length;
+
+    const canUploadVideo = this.subscriptionService.canUploadVideo(
+      subscription,
+      totalVideos,
+    );
+    if (!canUploadVideo) {
+      warningAlert(
+        'Límite alcanzado 🎥',
+        `Tu plan permite máximo ${subscription.maxVideos} videos por período.`,
+      );
+      return;
+    }
+
     try {
       this.loadingService.show();
       this.loading = true;
@@ -198,14 +233,15 @@ export class AiAnalysisComponent implements OnInit {
         videoUrl: this.videoUrl,
         status: 'pending',
         matchName: this.matchSelected?.title || 'Partido sin nombre',
+        teamId: this.currentUser.teamId,
         createdAt: Date.now(),
       };
-
       await this.aiAnalysisService.createAnalysis(payload as any);
       successAlert(
         'Análisis iniciado 🤖🔥',
         'La IA comenzará a procesar el video.',
       );
+
       this.analysisForm.reset();
       this.selectedColor = 'black';
       this.selectedType = 'FUT 5';

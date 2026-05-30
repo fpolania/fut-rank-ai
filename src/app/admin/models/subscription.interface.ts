@@ -14,4 +14,5 @@ export interface Subscription {
   maxAnalysis?: number;
   createdAt?: Date;
   updatedAt?: Date;
+  types: any;
 }

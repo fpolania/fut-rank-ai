@@ -17,6 +17,7 @@ import {
   warningAlert,
 } from '../../core/utils/alert.util';
 import { AuthService } from '../../core/services/auth.service';
+import { SubscriptionService } from '../../admin/services/subscription.service';
 
 @Component({
   selector: 'app-match-history',
@@ -30,11 +31,13 @@ export class MatchHistoryComponent implements OnInit {
   private ratingService = inject(RatingService);
   private playerService = inject(PlayerService);
   private loadingService = inject(LoadingService);
+  private subscriptionService = inject(SubscriptionService);
   authService = inject(AuthService);
   matches: Match[] = [];
   currentUser: any = null;
   filteredMatches: Match[] = [];
   selectedFilter = 'Todos';
+  types: any = [];
 
   ngOnInit(): void {
     this.getCurrentUser();
@@ -46,7 +49,6 @@ export class MatchHistoryComponent implements OnInit {
       next: (matches) => {
         this.matches = [...matches].reverse();
         this.filteredMatches = this.matches;
-        console.log(this.matches);
         this.loadingService.hide();
       },
       error: (error) => {
@@ -55,12 +57,23 @@ export class MatchHistoryComponent implements OnInit {
       },
     });
   }
+  getTypesFut() {
+    const subscription =
+      this.subscriptionService.getCurrentSubscription() as any;
+    if (!subscription?.types) {
+      return;
+    }
+    this.types = subscription.types
+      .split('-')
+      .map((type: string) => type.trim());
+  }
   getCurrentUser() {
     this.authService.currentUser.subscribe({
       next: (user) => {
         this.currentUser = user;
-        if(this.currentUser.uid){
+        if (this.currentUser.uid) {
           this.getMatches();
+          this.getTypesFut();
         }
       },
       error: (error) => {
@@ -70,16 +83,22 @@ export class MatchHistoryComponent implements OnInit {
   }
 
   filterMatches(filter: string) {
+    debugger;
     this.selectedFilter = filter;
     switch (filter) {
-      case 'FUT 5':
+      case 'FUT5':
         this.filteredMatches = this.matches.filter(
-          (match) => match.type === 'FUT 5',
+          (match) => match.type === 'FUT5',
         );
         break;
-      case 'FUT 8':
+      case 'FUT8':
         this.filteredMatches = this.matches.filter(
-          (match) => match.type === 'FUT 8',
+          (match) => match.type === 'FUT8',
+        );
+        break;
+      case 'FUT11':
+        this.filteredMatches = this.matches.filter(
+          (match) => match.type === 'FUT11',
         );
         break;
       default:
@@ -89,8 +108,29 @@ export class MatchHistoryComponent implements OnInit {
   }
 
   async generateAnalysis(match: Match) {
-    const canGenerate = this.validateCompetitionDate(match.finishedAt);
+    const subscription =
+      this.subscriptionService.getCurrentSubscription() as any;
+    const totalAnalysis = this.matches.filter(
+      (match) =>
+        match.analyzed &&
+        match.finishedAt &&
+        match.finishedAt.toDate() >= subscription.currentPeriodStart.toDate(),
+    ).length;
 
+    const canGenerateAnalysis = this.subscriptionService.canGenerateAnalysis(
+      subscription,
+      totalAnalysis,
+    );
+
+    if (!canGenerateAnalysis) {
+      warningAlert(
+        'Límite alcanzado 🤖',
+        `Tu plan permite máximo ${subscription.maxAnalysis} análisis por período.`,
+      );
+
+      return;
+    }
+    const canGenerate = this.validateCompetitionDate(match.finishedAt);
     if (!canGenerate) {
       return;
     }

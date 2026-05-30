@@ -7,10 +7,13 @@ import {
   collectionData,
   deleteDoc,
   doc,
+  getDocs,
+  query,
   updateDoc,
+  where,
 } from '@angular/fire/firestore';
 
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Team } from '../models/team.interface';
 import { Subscription } from '../models/subscription.interface';
 
@@ -20,6 +23,12 @@ import { Subscription } from '../models/subscription.interface';
 export class SubscriptionService {
   private firestore = inject(Firestore);
   private subscriptionsRef = collection(this.firestore, 'subscriptions');
+
+  private currentSubscription: Subscription | null = null;
+
+  private subscriptionSubject = new BehaviorSubject<Subscription | null>(null);
+
+  currentSubscription$ = this.subscriptionSubject.asObservable();
 
   createSubscription(subscription: Subscription) {
     return addDoc(
@@ -35,8 +44,6 @@ export class SubscriptionService {
     );
   }
 
-  /* GET */
-
   getSubscriptions(): Observable<Subscription[]> {
     return collectionData(
       this.subscriptionsRef,
@@ -46,8 +53,6 @@ export class SubscriptionService {
       },
     ) as Observable<Subscription[]>;
   }
-
-  /* UPDATE */
 
   updateSubscription(id: string, data: Partial<Subscription>) {
     const subscriptionDoc = doc(
@@ -67,8 +72,6 @@ export class SubscriptionService {
     );
   }
 
-  /* DELETE */
-
   deleteSubscription(id: string) {
     const subscriptionDoc = doc(
       this.firestore,
@@ -79,41 +82,75 @@ export class SubscriptionService {
     return deleteDoc(subscriptionDoc);
   }
 
-  /* =========================================================
-    VALIDATIONS
-  ========================================================= */
-
-  /* PLAYERS */
-
-  canCreatePlayer(team: Team, currentPlayers: number): boolean {
-    return currentPlayers < (team.maxPlayers || 0);
+  canCreatePlayer(subscription: Subscription, currentPlayers: number): boolean {
+    return currentPlayers < (subscription.maxPlayers ?? 0);
   }
 
-  /* VIDEOS */
-
-  canUploadVideo(team: Team, currentVideos: number): boolean {
-    return currentVideos < (team.maxVideos || 0);
+  canUploadVideo(subscription: Subscription, currentVideos: number): boolean {
+    return currentVideos < (subscription.maxVideos ?? 0);
   }
 
-  /* IA */
-
-  canGenerateAnalysis(team: Team, currentAnalysis: number): boolean {
-    return currentAnalysis < (team.maxAnalysis || 0);
+  canGenerateAnalysis(
+    subscription: Subscription,
+    currentAnalysis: number,
+  ): boolean {
+    return currentAnalysis < (subscription.maxAnalysis ?? 0);
   }
 
-  /* =========================================================
-    SUBSCRIPTION STATUS
-  ========================================================= */
-
-  isSubscriptionActive(team: Team): boolean {
-    if (!team.currentPeriodEnd) {
+  isSubscriptionActive(subscription: Subscription): boolean {
+    if (!subscription.currentPeriodEnd) {
       return false;
+    }
+    const now = new Date();
+    const endDate = new Date(subscription.currentPeriodEnd);
+    return now <= endDate && subscription.status === 'active';
+  }
+  async getSubscriptionByTeamId(teamId: string): Promise<Subscription | null> {
+    try {
+      const q = query(this.subscriptionsRef, where('teamId', '==', teamId));
+      const response = await getDocs(q);
+      if (response.empty) {
+        return null;
+      }
+
+      const doc = response.docs[0];
+      return {
+        id: doc.id,
+        ...doc.data(),
+      } as Subscription;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+  setCurrentSubscription(subscription: Subscription) {
+    this.currentSubscription = subscription;
+
+    this.subscriptionSubject.next(subscription);
+  }
+  getCurrentSubscription(): Subscription | null {
+    return this.currentSubscription;
+  }
+  validateAccess(subscription: Subscription | null): string | null {
+    if (!subscription) {
+      return 'No se encontró una suscripción para tu equipo.';
+    }
+
+    if (subscription.status === 'cancelled') {
+      return 'Tu suscripción fue cancelada.';
+    }
+
+    if (subscription.status !== 'active') {
+      return 'Tu suscripción está inactiva.';
     }
 
     const now = new Date();
+    const endDate = new Date(subscription.currentPeriodEnd as any);
 
-    const endDate = new Date(team.currentPeriodEnd);
+    if (now > endDate) {
+      return `Tu suscripción venció el ${endDate.toLocaleDateString('es-CO')}.`;
+    }
 
-    return now <= endDate && team.subscriptionStatus === 'active';
+    return null;
   }
 }

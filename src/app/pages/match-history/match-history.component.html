@@ -23,22 +23,23 @@
     >
       Todos
     </button>
+    @for (item of types; track $index) {
+      <button
+        class="filter"
+        [class.active]="selectedFilter === item"
+        (click)="filterMatches(item)"
+      >
+        {{ item }}
+      </button>
+    }
 
-    <button
-      class="filter"
-      [class.active]="selectedFilter === 'FUT 5'"
-      (click)="filterMatches('FUT 5')"
-    >
-      FUT 5
-    </button>
-
-    <button
+    <!-- <button
       class="filter"
       [class.active]="selectedFilter === 'FUT 8'"
       (click)="filterMatches('FUT 8')"
     >
       FUT 8
-    </button>
+    </button> -->
   </section>
   @if (filteredMatches.length > 0) {
     <section class="matches-grid">

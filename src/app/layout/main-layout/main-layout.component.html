@@ -50,8 +50,6 @@
         ☰
       </button>
 
-      <!-- TEAM -->
-
       <div class="team-title">
         <div class="team-icon">⚽</div>
 
@@ -60,23 +58,7 @@
         </h3>
       </div>
 
-      <!-- PROFILE -->
-
       <div class="profile-section">
-        <!-- SETTINGS -->
-
-        <!-- @if (currentUser?.role === "captain") {
-          <button
-            class="settings-btn"
-            type="button"
-            (click)="openTeamSettings = !openTeamSettings"
-          >
-            <i class="bi bi-gear-fill"></i>
-          </button>
-        } -->
-
-        <!-- USER -->
-
         <div class="user-info">
           <img [src]="currentUser?.photoURL || 'https://i.pravatar.cc/100'" />
 
@@ -91,13 +73,9 @@
           </div>
         </div>
 
-        <!-- LOGOUT -->
-
         <button class="logout-btn" type="button" (click)="logout()">
           <i class="bi bi-box-arrow-right"></i>
         </button>
-
-        <!-- SETTINGS DROPDOWN -->
 
         @if (openTeamSettings) {
           <div class="settings-dropdown">
@@ -108,35 +86,15 @@
 
               <p>Personaliza tu equipo.</p>
             </div>
-
-            <!-- BODY -->
-
-            <!-- <div class="settings-body">
-              <label> Nombre del equipo </label>
-
-              <input
-                type="text"
-                [(ngModel)]="teamName"
-                placeholder="Ej: Pull Request"
-              />
-
-              <button
-                class="save-settings-btn"
-                type="button"
-                (click)="saveTeamSettings()"
-              >
-                💾 Guardar cambios
-              </button>
-            </div> -->
           </div>
         }
       </div>
     </header>
 
-    <!-- ROUTER -->
-
     <div class="router-container">
-      <router-outlet> </router-outlet>
+      @if (subscriptionLoaded) {
+        <router-outlet></router-outlet>
+      }
     </div>
   </main>
 </div>

@@ -17,7 +17,12 @@ import { LoadingService } from '../../core/services/loading.service';
 
 import { TeamSettingsService } from '../../core/services/settings.service';
 
-import { errorAlert, successAlert } from '../../core/utils/alert.util';
+import {
+  errorAlert,
+  successAlert,
+  warningAlert,
+} from '../../core/utils/alert.util';
+import { SubscriptionService } from '../../admin/services/subscription.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -28,7 +33,6 @@ import { errorAlert, successAlert } from '../../core/utils/alert.util';
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
-    AsyncPipe,
     CommonModule,
     FormsModule,
   ],
@@ -41,10 +45,12 @@ export class MainLayoutComponent implements OnInit {
   authService = inject(AuthService);
   private loadingService = inject(LoadingService);
   private teamSettingsService = inject(TeamSettingsService);
+  private subscriptionService = inject(SubscriptionService);
   sidebarOpen = false;
   openTeamSettings = false;
   teamName = 'NO DEFINIDO';
   currentUser: any = null;
+  subscriptionLoaded = false;
 
   userMenu = [
     {
@@ -131,8 +137,6 @@ export class MainLayoutComponent implements OnInit {
   ];
 
   adminMenu = [
-
-
     {
       label: 'Plans',
 
@@ -159,26 +163,61 @@ export class MainLayoutComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.loadTeamSettings();
     this.getCurrentUser();
   }
   getCurrentUser() {
+    this.loadingService.show();
     this.authService.currentUser.subscribe({
-      next: (user) => {
+      next: async (user) => {
         this.currentUser = user;
-        if(this.currentUser.uid){
-          this.getName(this.currentUser.teamId);
+        if (!this.currentUser?.uid) {
+          this.loadingService.hide();
+          return;
+        }
+
+        try {
+          await this.getName(this.currentUser.teamId);
+          const subscription =
+            await this.subscriptionService.getSubscriptionByTeamId(
+              this.currentUser.teamId,
+            );
+          if (!subscription) {
+            this.loadingService.hide();
+            warningAlert(
+              'Acceso restringido ⚽',
+              'No se encontró una suscripción asociada a tu equipo. Comunícate con el administrador.',
+            );
+            await this.authService.logout();
+            return;
+          }
+          const accessError =
+            this.subscriptionService.validateAccess(subscription);
+          if (accessError) {
+            this.loadingService.hide();
+            warningAlert(
+              'Suscripción inválida ⚽',
+              `${accessError} Comunícate con el administrador.`,
+            );
+            this.logout();
+            return;
+          }
+          this.subscriptionService.setCurrentSubscription(subscription);
+          this.subscriptionLoaded = true;
+        } catch (error) {
+          console.error(error);
+        } finally {
+          this.loadingService.hide();
         }
       },
       error: (error) => {
         console.error(error);
+        this.loadingService.hide();
       },
     });
   }
-  async getName(teamId:string){
-    this.teamName = await this.authService.getTeamName(teamId)
+  async getName(teamId: string) {
+    this.teamName = await this.authService.getTeamName(teamId);
   }
-
 
   get currentMenu() {
     let menu = [...this.userMenu];
@@ -190,13 +229,6 @@ export class MainLayoutComponent implements OnInit {
       menu.push(...this.adminMenu);
     }
     return menu;
-  }
-
-  async loadTeamSettings() {
-    const settings = await this.teamSettingsService.getTeamSettings();
-    if (settings?.['name']) {
-      this.teamName = settings['name'];
-    }
   }
 
   async saveTeamSettings() {

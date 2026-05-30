@@ -13,6 +13,7 @@ import { doc, Firestore, getDoc, Timestamp } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { UserService } from './user.service';
 import { of, switchMap } from 'rxjs';
+import { SUPER_ADMINS } from '../constants/emails.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -34,6 +35,7 @@ export class AuthService {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(this.auth, provider);
       const firebaseUser = result.user;
+      const isSuperAdmin = SUPER_ADMINS.includes(firebaseUser.email || '');
       await this.userService.createUser({
         uid: firebaseUser.uid,
         name: firebaseUser.displayName || '',
@@ -43,9 +45,8 @@ export class AuthService {
         document: player?.document || '',
         active: true,
         createdAt: Timestamp.now(),
-        isSuperAdmin: true,
-        teamId: player.teamId
-
+        isSuperAdmin,
+        teamId: player.teamId,
       });
 
       this.router.navigate(['/dashboard']);
@@ -54,12 +55,9 @@ export class AuthService {
     }
   }
 
-  /* LOGOUT */
-
   async logout() {
     try {
       await signOut(this.auth);
-
       this.router.navigate(['/login']);
     } catch (error) {
       console.error('Logout Error', error);
@@ -71,14 +69,11 @@ export class AuthService {
       const response = await getDoc(teamDoc);
       if (response.exists()) {
         return response.data()?.['name'];
-
       }
-      return ''
+      return '';
     } catch (error) {
       console.error(error);
       return '';
     }
-
-
   }
 }
