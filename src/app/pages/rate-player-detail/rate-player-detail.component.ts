@@ -39,7 +39,7 @@ export class RatePlayerDetailComponent implements OnInit {
   private ratingService = inject(RatingService);
   private playerService = inject(PlayerService);
   private loadingService = inject(LoadingService);
-
+  isSaving = false;
   matchId: string | null = null;
   match: any;
   currentPlayerDocument = '';
@@ -159,16 +159,22 @@ export class RatePlayerDetailComponent implements OnInit {
   }
 
   async sendRatings() {
-    if (!this.matchId || !this.canSendRatings()) {
+    if (!this.matchId || !this.canSendRatings() || this.isSaving) {
       return;
     }
+
+    this.isSaving = true;
+
     this.loadingService.show();
+
     try {
       const validPlayers = this.playersArray.controls.filter(
         (control) => control.valid,
       );
+
       for (const player of validPlayers) {
         const value = player.value;
+
         const newData = {
           ratedBy: this.currentPlayerDocument,
           rating: value.rating,
@@ -177,19 +183,33 @@ export class RatePlayerDetailComponent implements OnInit {
           isMvp: value.isMvp,
           createdAt: new Date(),
         };
-        const currentRating = await new Promise<any>((resolve) => {
-          this.ratingService
-            .getRatingByPlayerAndMatch(value.playerId!, this.matchId!)
-            .subscribe((data) => resolve(data));
-        });
+
+        const currentRating: any = await firstValueFrom(
+          this.ratingService.getRatingByPlayerAndMatch(
+            value.playerId!,
+            this.matchId!,
+          ),
+        );
 
         if (currentRating) {
+          const alreadyRated = currentRating.data.some(
+            (item: any) =>
+              String(item.ratedBy) === String(this.currentPlayerDocument),
+          );
+
+          if (alreadyRated) {
+            continue;
+          }
+
           const updatedData = [...currentRating.data, newData];
+
           const total = updatedData.reduce(
             (acc: number, item: any) => acc + item.rating,
             0,
           );
+
           const averageRating = Number((total / updatedData.length).toFixed(1));
+
           await this.ratingService.updateRating(currentRating.id, {
             data: updatedData,
             averageRating,
@@ -207,11 +227,9 @@ export class RatePlayerDetailComponent implements OnInit {
           });
         }
 
-        const playerRatings = await new Promise<any[]>((resolve) => {
-          this.ratingService
-            .getPlayerRatings(value.playerId!)
-            .subscribe((data) => resolve(data));
-        });
+        const playerRatings: any[] = await firstValueFrom(
+          this.ratingService.getPlayerRatings(value.playerId!),
+        );
 
         const totalGlobal = playerRatings.reduce(
           (acc, rating) => acc + rating.averageRating,
@@ -222,11 +240,9 @@ export class RatePlayerDetailComponent implements OnInit {
           ? Number((totalGlobal / playerRatings.length).toFixed(1))
           : 0;
 
-        const currentPlayer = await new Promise<any>((resolve) => {
-          this.playerService
-            .getPlayerById(value.playerId!)
-            .subscribe((data) => resolve(data));
-        });
+        const currentPlayer: any = await firstValueFrom(
+          this.playerService.getPlayerById(value.playerId!),
+        );
 
         const updateData: any = {
           averageRating: globalAverage,
@@ -235,7 +251,9 @@ export class RatePlayerDetailComponent implements OnInit {
         if (value.isMvp) {
           updateData.mvps = (currentPlayer.mvps || 0) + 1;
         }
+
         await this.playerService.updatePlayer(value.playerId!, updateData);
+
         if (value.isMvp) {
           await this.matchService.updateMatch(this.matchId, {
             mvpPlayerId: value.playerId!,
@@ -248,11 +266,15 @@ export class RatePlayerDetailComponent implements OnInit {
         'Calificaciones enviadas ⭐🔥',
         'Las calificaciones fueron registradas correctamente.',
       );
-      await this.getMatch();
+
+      this.router.navigate(['/rate-players']);
     } catch (error) {
       console.error(error);
+
       errorAlert('Ups 😮‍💨', 'Ocurrió un error enviando las calificaciones.');
     } finally {
+      this.isSaving = false;
+
       this.loadingService.hide();
     }
   }

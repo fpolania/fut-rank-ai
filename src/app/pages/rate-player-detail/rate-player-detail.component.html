@@ -20,7 +20,7 @@
       type="button"
       class="send-btn"
       (click)="sendRatings()"
-      [disabled]="!canSendRatings()"
+      [disabled]="!canSendRatings() || isSaving"
     >
       Enviar Calificaciones
     </button>
