@@ -21,6 +21,7 @@ import {
 import { PlayerService } from '../../core/services/player.service';
 import { BAD_WORDS } from '../../core/constants/bad-words.constant';
 import { AuthService } from '../../core/services/auth.service';
+import { firstValueFrom, take } from 'rxjs';
 
 @Component({
   selector: 'app-rate-player-detail',
@@ -50,7 +51,7 @@ export class RatePlayerDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.matchId = this.route.snapshot.paramMap.get('id');
-    this.authService.currentUser.subscribe((user: any) => {
+    this.authService.currentUser.pipe(take(1)).subscribe((user: any) => {
       if (!user) {
         return;
       }
@@ -74,28 +75,20 @@ export class RatePlayerDetailComponent implements OnInit {
     if (!this.matchId) return;
     this.loadingService.show();
     try {
-      const match = await new Promise<any>((resolve) => {
-        this.matchService
-          .getMatchById(this.matchId!)
-          .subscribe((data) => resolve(data));
-      });
-
+      const match: any = await firstValueFrom(
+        this.matchService.getMatchById(this.matchId!),
+      );
       this.match = match;
-      const ratings = await new Promise<any[]>((resolve) => {
-        this.ratingService
-          .getMatchRatings(this.matchId!)
-          .subscribe((data) => resolve(data));
-      });
-
+      const ratings = await firstValueFrom(
+        this.ratingService.getMatchRatings(this.matchId!),
+      );
       const players = match.players.filter((player: any) => {
-        if (player.attended !== true) {
+        if (!player.attended) {
           return false;
         }
-
         if (String(player.playerId) === String(this.currentPlayerDocument)) {
           return false;
         }
-
         const playerRating = ratings.find(
           (rating: any) => String(rating.playerId) === String(player.playerId),
         );
@@ -121,13 +114,12 @@ export class RatePlayerDetailComponent implements OnInit {
       this.buildForm(players);
     } catch (error) {
       console.error(error);
+
       errorAlert('Ups 😮‍💨', 'Error cargando el partido.');
     } finally {
       this.loadingService.hide();
     }
   }
-
-  /* BUILD FORM */
 
   buildForm(players: any[]) {
     this.playersArray.clear();
@@ -139,7 +131,7 @@ export class RatePlayerDetailComponent implements OnInit {
           photo: [player.photo],
           position: [player.position],
           rating: [
-            0,
+            1,
             [Validators.required, Validators.min(1), Validators.max(5)],
           ],
           comment: [
@@ -157,7 +149,6 @@ export class RatePlayerDetailComponent implements OnInit {
   }
 
   toggleMvp(index: number) {
-    debugger;
     const player = this.playersArray.at(index);
     const currentValue = player.get('isMvp')?.value;
     player.get('isMvp')?.setValue(!currentValue);
@@ -257,9 +248,7 @@ export class RatePlayerDetailComponent implements OnInit {
         'Calificaciones enviadas ⭐🔥',
         'Las calificaciones fueron registradas correctamente.',
       );
-      this.getMatch();
-      this.playersForm.reset();
-      this.buildForm([]);
+      await this.getMatch();
     } catch (error) {
       console.error(error);
       errorAlert('Ups 😮‍💨', 'Ocurrió un error enviando las calificaciones.');

@@ -1,13 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core';
-
 import { CommonModule } from '@angular/common';
-
 import { Router } from '@angular/router';
 
 import { MatchService } from '../../core/services/match.service';
-
 import { Match } from '../../core/interfaces/match.interface';
-import { errorAlert } from '../../core/utils/alert.util';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
@@ -19,26 +15,24 @@ import { AuthService } from '../../core/services/auth.service';
 export class RatePlayersComponent implements OnInit {
   private matchService = inject(MatchService);
   private router = inject(Router);
+
   authService = inject(AuthService);
+
   matches: Match[] = [];
   currentUser: any = null;
+
   ngOnInit(): void {
     this.getCurrentUser();
   }
-  getMatches() {
-    this.matchService.getMatches(this.currentUser.teamId).subscribe({
-      next: (matches) => {
-        this.matches = matches
-          .filter((match) => {
-            if (!match.finished) return false;
-            if (!match.finishedAt) return false;
-            const finishDate = match.finishedAt.toDate();
-            const now = new Date();
-            const diffHours =
-              (now.getTime() - finishDate.getTime()) / (1000 * 60 * 60);
-            return diffHours <= 24;
-          })
-          .reverse();
+
+  getCurrentUser() {
+    this.authService.currentUser.subscribe({
+      next: (user) => {
+        this.currentUser = user;
+
+        if (this.currentUser?.uid) {
+          this.getMatches();
+        }
       },
 
       error: (error) => {
@@ -46,14 +40,38 @@ export class RatePlayersComponent implements OnInit {
       },
     });
   }
-  getCurrentUser() {
-    this.authService.currentUser.subscribe({
-      next: (user) => {
-        this.currentUser = user;
-        if(this.currentUser.uid){
-          this.getMatches();
-        }
+
+  getMatches() {
+    this.matchService.getMatches(this.currentUser.teamId).subscribe({
+      next: (matches) => {
+        this.matches = matches
+          .filter((match) => {
+            if (!match.finished) {
+              return false;
+            }
+            if (!match.finishedAt) {
+              return false;
+            }
+            const finishDate = match.finishedAt.toDate();
+            const now = new Date();
+
+            const diffHours =
+              (now.getTime() - finishDate.getTime()) / (1000 * 60 * 60);
+
+            if (diffHours > 24) {
+              return false;
+            }
+            const currentPlayer = match.players.find(
+              (player: any) =>
+                String(player.playerId) === String(this.currentUser.document),
+            );
+            return currentPlayer?.attended === true;
+          })
+          .reverse();
+
+        console.log(this.matches);
       },
+
       error: (error) => {
         console.error(error);
       },
@@ -61,25 +79,6 @@ export class RatePlayersComponent implements OnInit {
   }
 
   openRate(match: Match) {
-    this.authService.currentUser.subscribe((user: any) => {
-      if (!user) {
-        return;
-      }
-
-      const player = match.players.find(
-        (p: any) => p.playerId === user.document,
-      );
-
-      if (player?.attended === false) {
-        errorAlert(
-          'Ups 😮‍💨',
-          'No puedes calificar este partido porque no participaste en él.',
-        );
-
-        return;
-      }
-
-      this.router.navigate(['/rate-players', match.id]);
-    });
+    this.router.navigate(['/rate-players', match.id]);
   }
 }
