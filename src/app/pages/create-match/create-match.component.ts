@@ -135,7 +135,6 @@ export class CreateMatchComponent implements OnInit {
       this.competitions.find((c) => c.id === competitionId) || null;
   }
   async createMatch() {
-    debugger;
     if (this.matchForm.invalid) {
       this.matchForm.markAllAsTouched();
       return;
