@@ -7,4 +7,5 @@ export interface TeamPlayer {
   role: 'captain' | 'player';
   active: boolean;
   createdAt: Timestamp;
+  teamId: string;
 }

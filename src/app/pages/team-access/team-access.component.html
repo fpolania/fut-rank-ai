@@ -47,6 +47,7 @@
           class="form-control custom-input"
           formControlName="document"
           placeholder="Número de llave"
+          (blur)="validatePlayer($event)"
           [class.is-invalid]="
             teamPlayerForm.get('document')?.invalid &&
             teamPlayerForm.get('document')?.touched
@@ -58,7 +59,7 @@
           } @else if (teamPlayerForm.get("document")?.hasError("minlength")) {
             <small class="text-danger"> Debe tener mínimo 6 números. </small>
           } @else if (teamPlayerForm.get("document")?.hasError("maxlength")) {
-            <small class="text-danger"> Máximo 10 números permitidos. </small>
+            <small class="text-danger"> Máximo 13 números permitidos. </small>
           } @else if (teamPlayerForm.get("document")?.hasError("pattern")) {
             <small class="text-danger">
               Debe contener solo números y no iniciar en 0.
@@ -74,6 +75,19 @@
           <option value="captain">Capitán</option>
         </select>
       </div>
+      @if (currentUser.isSuperAdmin) {
+        <div class="form-group">
+          <label> Team </label>
+          <select formControlName="teamId">
+            <option value="">Seleccionar equipo</option>
+            @for (team of teams; track team.id) {
+              <option [value]="team.id">
+                {{ team.name }}
+              </option>
+            }
+          </select>
+        </div>
+      }
 
       <button
         class="save-btn"

@@ -27,7 +27,81 @@
     transparent 25%
   );
 }
+.plans-banner {
+  margin-top: 1rem;
 
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 14px;
+
+  border-radius: 16px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(57, 255, 20, 0.08),
+    rgba(57, 255, 20, 0.03)
+  );
+
+  border: 1px solid rgba(57, 255, 20, 0.15);
+
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+}
+
+.plans-banner:hover {
+  transform: translateY(-2px);
+
+  border-color: rgba(57, 255, 20, 0.35);
+
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.12);
+}
+
+.plans-banner-icon {
+  width: 45px;
+  height: 45px;
+
+  border-radius: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(57, 255, 20, 0.12);
+
+  color: #39ff14;
+
+  font-size: 1.2rem;
+}
+
+.plans-banner-content {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.plans-title {
+  color: #fff;
+
+  font-weight: 700;
+
+  font-size: 0.95rem;
+}
+
+.plans-subtitle {
+  color: rgba(255, 255, 255, 0.65);
+
+  font-size: 0.78rem;
+}
+
+.plans-banner .bi-chevron-right {
+  color: #39ff14;
+
+  font-size: 1rem;
+}
 .stadium-lights {
   position: absolute;
 

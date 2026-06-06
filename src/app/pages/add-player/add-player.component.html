@@ -21,6 +21,7 @@
           accept="image/*"
           hidden
           (change)="onFileSelected($event)"
+          [disabled]="editMode"
         />
       </div>
     </div>
@@ -57,16 +58,12 @@
           type="text"
           placeholder="Ej: 12345678"
           formControlName="numberDoc"
+          (blur)="validatePlayerKey($event)"
         />
       </div>
     </div>
-    <button type="submit" [disabled]="loading">
-      @if (!loading) {
-        <span> Guardar Jugador </span>
-      }
-      @if (loading) {
-        <span> Guardando... </span>
-      }
+    <button type="submit" [disabled]="playerForm.invalid">
+      <span> Guardar Jugador </span>
     </button>
   </form>
 </div>

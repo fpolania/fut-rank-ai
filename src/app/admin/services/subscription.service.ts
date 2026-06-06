@@ -132,7 +132,6 @@ export class SubscriptionService {
     return this.currentSubscription;
   }
   validateAccess(subscription: Subscription | null): string | null {
-    debugger;
     if (!subscription) {
       return 'No se encontró una suscripción para tu equipo.';
     }

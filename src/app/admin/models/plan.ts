@@ -9,4 +9,5 @@ export interface Plan {
   active: boolean;
   createdAt?: Timestamp;
   types: any;
+  featured?: boolean;
 }

@@ -1,14 +1,30 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 import { Timestamp } from '@angular/fire/firestore';
 import { PlayerService } from '../../core/services/player.service';
 import { UploadFileService } from '../../core/services/upload-file.service';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingService } from '../../core/services/loading.service';
-import { errorAlert, successAlert } from '../../core/utils/alert.util';
+import {
+  errorAlert,
+  successAlert,
+  warningAlert,
+} from '../../core/utils/alert.util';
 import { AuthService } from '../../core/services/auth.service';
+import { TeamPlayersService } from '../../core/services/team-players.service';
 
 @Component({
   selector: 'app-add-player',
@@ -17,18 +33,22 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrl: './add-player.component.css',
 })
 export class AddPlayerComponent implements OnInit {
+  @ViewChild('photoInput')
+  photoInput!: ElementRef<HTMLInputElement>;
   authService = inject(AuthService);
-  loading = false;
+  private teamPlayersService = inject(TeamPlayersService);
+  private fb = inject(FormBuilder);
+  private fileUpload = inject(UploadFileService);
+  private playerService = inject(PlayerService);
+  private route = inject(ActivatedRoute);
+  private loadingService = inject(LoadingService);
   playerId: string | null = null;
   editMode = false;
   selectedFile!: File;
   previewImage = 'https://i.pravatar.cc/150';
   positions = ['Arquero', 'Defensa', 'Mediocampo', 'Delantero'];
   currentUser: any = null;
-  private fb = inject(FormBuilder);
-  private fileUpload = inject(UploadFileService);
-  private playerService = inject(PlayerService);
-  private route = inject(ActivatedRoute);
+  playerForm: FormGroup;
 
   ngOnInit() {
     this.route.params.subscribe((params) => {
@@ -38,16 +58,24 @@ export class AddPlayerComponent implements OnInit {
         this.loadPlayer();
       }
     });
+    this.initForm();
     this.getCurrentUser();
   }
-
-  playerForm = this.fb.group({
-    name: ['', [Validators.required]],
-    photo: ['', [Validators.required]],
-    position: ['', [Validators.required]],
-    preferredFoot: ['', [Validators.required]],
-    numberDoc: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
-  });
+  initForm() {
+    this.playerForm = this.fb.group({
+      name: ['', [Validators.required]],
+      photo: ['', [Validators.required]],
+      position: ['', [Validators.required]],
+      preferredFoot: ['', [Validators.required]],
+      numberDoc: [
+        {
+          value: '',
+          disabled: this.editMode,
+        },
+        [Validators.required, Validators.pattern(/^[0-9]{6,13}$/)],
+      ],
+    });
+  }
   getCurrentUser() {
     this.authService.currentUser.subscribe({
       next: (user) => {
@@ -61,7 +89,7 @@ export class AddPlayerComponent implements OnInit {
   async savePlayer() {
     if (this.playerForm.invalid) return;
     try {
-      this.loading = true;
+      this.loadingService.show();
       let photoURL = this.previewImage;
       if (this.selectedFile) {
         photoURL = await this.fileUpload.uploadFile(
@@ -75,7 +103,7 @@ export class AddPlayerComponent implements OnInit {
         position: this.playerForm.value.position,
         preferredFoot: this.playerForm.value.preferredFoot,
         numberDoc: this.playerForm.value.numberDoc,
-        teamId: this.currentUser.teamId
+        teamId: this.currentUser.teamId,
       };
       if (this.editMode && this.playerId) {
         await this.playerService.updatePlayer(this.playerId, player);
@@ -109,8 +137,7 @@ export class AddPlayerComponent implements OnInit {
           'El jugador fue agregado correctamente al equipo.',
         );
       }
-      this.playerForm.reset();
-      this.previewImage = 'https://i.pravatar.cc/150';
+      this.resetForm();
     } catch (error) {
       errorAlert(
         'No se pudo registrar 😮‍💨',
@@ -118,7 +145,43 @@ export class AddPlayerComponent implements OnInit {
       );
       console.error(error);
     } finally {
-      this.loading = false;
+      this.loadingService.hide();
+    }
+  }
+  async validatePlayerKey(event: any) {
+    const document = event.target.value;
+    if (!document) {
+      return;
+    }
+    try {
+      this.loadingService.show();
+      const access =
+        await this.teamPlayersService.getPlayerByDocument(document);
+      if (!access) {
+        warningAlert(
+          'Acceso no encontrado',
+          'La llave ingresada no existe en Gestión de Accesos. Primero debes ir a la pagina de Team Access para crear el acceso del jugador.',
+        );
+        this.playerForm.patchValue({
+          numberDoc: '',
+        });
+        return;
+      }
+
+      this.playerForm.patchValue({
+        numberDoc: access.document,
+        name: access.name,
+      });
+
+      successAlert(
+        'Jugador encontrado ⚽',
+        `${access.name} fue encontrado en Gestión de Accesos. La llave fue validada correctamente y ya puedes completar la información restante para registrar al jugador.`,
+      );
+    } catch (error) {
+      console.error(error);
+      errorAlert('Error', 'No fue posible validar la llave ingresada.');
+    } finally {
+      this.loadingService.hide();
     }
   }
   onFileSelected(event: any) {
@@ -149,5 +212,13 @@ export class AddPlayerComponent implements OnInit {
         console.error(error);
       },
     });
+  }
+  resetForm() {
+    this.playerForm.reset();
+    this.previewImage = 'https://i.pravatar.cc/150';
+    this.selectedFile = null as any;
+    if (this.photoInput) {
+      this.photoInput.nativeElement.value = '';
+    }
   }
 }

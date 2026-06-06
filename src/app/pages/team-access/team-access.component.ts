@@ -8,10 +8,16 @@ import {
 import { TeamPlayersService } from '../../core/services/team-players.service';
 import { TeamPlayer } from '../../core/interfaces/teamPlayer.interface';
 import { CommonModule } from '@angular/common';
-import { errorAlert, successAlert } from '../../core/utils/alert.util';
+import {
+  errorAlert,
+  infoAlert,
+  successAlert,
+  warningAlert,
+} from '../../core/utils/alert.util';
 import { LoadingService } from '../../core/services/loading.service';
 import { Team } from '../../admin/models/team.interface';
 import { AuthService } from '../../core/services/auth.service';
+import { TeamService } from '../../admin/services/team.service';
 
 @Component({
   selector: 'app-team-access',
@@ -24,6 +30,7 @@ export class TeamAccessComponent implements OnInit {
   private fb = inject(FormBuilder);
   private teamPlayersService = inject(TeamPlayersService);
   private loadingService = inject(LoadingService);
+  private teamService = inject(TeamService);
   authService = inject(AuthService);
   teamPlayerForm!: FormGroup;
   players: TeamPlayer[] = [];
@@ -36,7 +43,16 @@ export class TeamAccessComponent implements OnInit {
     this.initForm();
     this.getCurrentUser();
   }
-
+  getTeams() {
+    this.teamService.getTeams().subscribe({
+      next: (teams) => {
+        this.teams = teams;
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
+  }
   initForm(): void {
     this.teamPlayerForm = this.fb.group({
       name: [
@@ -52,11 +68,12 @@ export class TeamAccessComponent implements OnInit {
         [
           Validators.required,
           Validators.minLength(6),
-          Validators.maxLength(10),
-          Validators.pattern(/^[1-9][0-9]{5,9}$/),
+          Validators.maxLength(13),
+          Validators.pattern(/^[1-9][0-9]{5,12}$/),
         ],
       ],
       role: ['player', [Validators.required]],
+      teamId: ['', [Validators.required]],
     });
   }
 
@@ -79,6 +96,7 @@ export class TeamAccessComponent implements OnInit {
         this.currentUser = user;
         if (this.currentUser.uid) {
           this.getPlayers();
+          this.getTeams();
         }
       },
       error: (error) => {
@@ -96,7 +114,7 @@ export class TeamAccessComponent implements OnInit {
       this.loadingService.show();
       const payload = {
         ...this.teamPlayerForm.getRawValue(),
-        teamId: this.currentUser.teamId,
+        teamId: this.teamPlayerForm.value.teamId,
       };
 
       if (this.editingPlayerId) {
@@ -118,13 +136,32 @@ export class TeamAccessComponent implements OnInit {
       this.loadingService.hide();
     }
   }
-
+  generateAccessKey(document: string): string {
+    const suffix = Math.floor(100 + Math.random() * 900);
+    return `${document}${suffix}`;
+  }
+  validatePlayer(event: any): void {
+    this.teamPlayersService
+      .getPlayerByDocument(event.target.value)
+      .then((existingPlayer) => {
+        if (existingPlayer) {
+          const accessKey = this.generateAccessKey(event.target.value);
+          this.teamPlayerForm.patchValue({ document: accessKey });
+          infoAlert(
+            '🔑 Llave generada',
+            `La llave ${accessKey} será utilizada por el jugador para ingresar a FutRankAI. Compártela con él y recuerda usar esta misma llave en el campo Documento cuando registres su perfil de jugador.`,
+            accessKey,
+          );
+        }
+      });
+  }
   editPlayer(player: TeamPlayer): void {
     this.editingPlayerId = player.id || null;
     this.teamPlayerForm.patchValue({
       name: player.name,
       document: player.document,
       role: player.role,
+      teamId: player.teamId,
     });
 
     window.scrollTo({

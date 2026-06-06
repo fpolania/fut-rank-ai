@@ -3,9 +3,11 @@ import { authGuard } from './core/guards/auth.guard';
 import { loginGuard } from './core/guards/login.guard';
 import { JoinTeamComponent } from './pages/join-team/join-team.component';
 import { adminRoutes } from './admin/admin.routes';
+import { SubscriptionPlansComponent } from './pages/subscription-plans/subscription-plans.component';
 
 export const routes: Routes = [
   { path: 'join-team', component: JoinTeamComponent },
+  { path: 'team-plans', component: SubscriptionPlansComponent },
   {
     path: 'login',
     canActivate: [loginGuard],

@@ -1,0 +1,86 @@
+<div class="plans-page">
+  <div class="container">
+    <div class="hero-section">
+      <h1>
+        Elige el plan ideal para
+        <span>tu equipo</span>
+      </h1>
+
+      <p>
+        Lleva a tu equipo al siguiente nivel con estadísticas, rankings, MVPs e
+        inteligencia artificial.
+      </p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+      @for (plan of plans; track plan.id) {
+        <div class="col-lg-4 col-md-6">
+          <div class="plan-card" [class.featured]="plan.featured">
+            @if (plan.featured) {
+              <div class="popular-badge">⭐ MÁS POPULAR</div>
+            }
+
+            <div class="plan-icon">
+              @if (plan.featured) {
+                <i class="bi bi-trophy-fill"></i>
+              } @else if (plan.price === 0) {
+                <i class="bi bi-lightning-charge-fill"></i>
+              } @else {
+                <i class="bi bi-robot"></i>
+              }
+            </div>
+
+            <h3>{{ plan.name }}</h3>
+
+            <div class="price">
+              @if (plan.price === 0) {
+                GRATIS
+              } @else {
+                {{ plan.price | currency: "COP" : "symbol" : "1.0-0" }}
+                <span>/ mes</span>
+              }
+            </div>
+
+            <ul class="features-list">
+              <li>
+                <i class="bi bi-people-fill fs-4"></i>
+                Gestiona hasta {{ plan.maxPlayers }} jugadores en tu equipo
+              </li>
+
+              <li>
+                <i class="bi bi-camera-video-fill fs-4"></i>
+                Analiza hasta {{ plan.maxVideos }} video(s) de partidos con IA
+              </li>
+
+              <li>
+                <i class="bi bi-cpu-fill fs-4"></i>
+                Hasta {{ plan.maxAnalysis }} análisis IA de rendimiento por
+                jugador
+              </li>
+              <li class="plan-types">
+                <i class="bi bi-diagram-3-fill fs-4"></i>
+                Compatible con:
+                <div class="type-badges">
+                  @for (type of plan.types.split("-"); track type) {
+                    <span class="type-badge">
+                      {{ type }}
+                    </span>
+                  }
+                </div>
+              </li>
+            </ul>
+
+            <button
+              class="btn plan-btn"
+              [class.featured-btn]="plan.featured"
+              (click)="selectPlan(plan)"
+            >
+              <i class="bi bi-whatsapp fs-5"></i>
+              Activar por WhatsApp
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>
