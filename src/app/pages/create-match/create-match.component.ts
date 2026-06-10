@@ -116,7 +116,12 @@ export class CreateMatchComponent implements OnInit {
       );
       return;
     }
-    const limit = this.selectedMatchType === 'FUT5' ? 8 : 14;
+    const limit =
+      {
+        FUT5: 10,
+        FUT8: 16,
+        FUT11: 22,
+      }[this.selectedMatchType] ?? 10;
     if (this.selectedPlayers.length >= limit) {
       warningAlert(
         'Plantilla completa ⚽🔥',
@@ -139,10 +144,16 @@ export class CreateMatchComponent implements OnInit {
       this.matchForm.markAllAsTouched();
       return;
     }
-    if (this.selectedPlayers.length === 0) {
+    const minimumPlayers =
+      {
+        FUT5: 5,
+        FUT8: 8,
+        FUT11: 11,
+      }[this.selectedMatchType] ?? 5;
+    if (this.selectedPlayers.length < minimumPlayers) {
       warningAlert(
-        'Selecciona jugadores ⚽🔥',
-        'Debes seleccionar al menos un jugador para crear el partido.',
+        'Faltan jugadores ⚽',
+        `Para ${this.selectedMatchType} necesitas mínimo ${minimumPlayers} jugadores convocados.`,
       );
       return;
     }
