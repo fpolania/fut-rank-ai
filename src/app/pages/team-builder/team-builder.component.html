@@ -19,24 +19,16 @@
     </button>
   </div>
 
-  <!-- FORMAT -->
-
-  <div class="format-selector">
-    <button
-      class="format-btn"
-      [class.active]="selectedFormat === 'FUT 5'"
-      (click)="selectedFormat = 'FUT 5'"
-    >
-      FUT 5
-    </button>
-
-    <button
-      class="format-btn"
-      [class.active]="selectedFormat === 'FUT 8'"
-      (click)="selectedFormat = 'FUT 8'"
-    >
-      FUT 8
-    </button>
+  <div class="formats-container mt-3">
+    @for (item of matchTypes; track $index) {
+      <button
+        class="format-btn"
+        [class.active]="selectedFormat === item"
+        (click)="selectedFormat = item"
+      >
+        {{ item }}
+      </button>
+    }
   </div>
 
   <div class="builder-layout">
@@ -55,8 +47,9 @@
 
       <div
         class="football-field"
-        [class.fut5]="selectedFormat === 'FUT 5'"
-        [class.fut8]="selectedFormat === 'FUT 8'"
+        [class.fut5]="selectedFormat === 'FUT5'"
+        [class.fut8]="selectedFormat === 'FUT8'"
+        [class.fut8]="selectedFormat === 'FUT11'"
       >
         @if (isGenerating) {
           <div class="ai-loading">
@@ -85,8 +78,6 @@
           }
         </div>
 
-        <!-- MIDFIELD -->
-
         <div class="field-row midfield">
           @for (player of midfielders; track player.id) {
             <div class="field-player">
@@ -103,8 +94,6 @@
           }
         </div>
 
-        <!-- DEFENSE -->
-
         <div class="field-row defense">
           @for (player of defenders; track player.id) {
             <div class="field-player">
@@ -120,8 +109,6 @@
             </div>
           }
         </div>
-
-        <!-- GOALKEEPER -->
 
         <div class="field-row goalkeeper">
           @for (player of goalkeeper; track player.id) {
@@ -140,8 +127,6 @@
         </div>
       </div>
     </section>
-
-    <!-- SIDEBAR -->
 
     <aside class="players-sidebar">
       <div class="sidebar-title">🔥 Suplentes</div>

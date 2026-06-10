@@ -6,6 +6,7 @@ import { PlayerService } from '../../core/services/player.service';
 import { TeamSettingsService } from '../../core/services/settings.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { AuthService } from '../../core/services/auth.service';
+import { SubscriptionService } from '../../admin/services/subscription.service';
 
 @Component({
   selector: 'app-team-builder',
@@ -15,16 +16,16 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrl: './team-builder.component.css',
 })
 export class TeamBuilderComponent implements OnInit {
-  selectedFormat: 'FUT 5' | 'FUT 8' = 'FUT 5';
+  selectedFormat: 'FUT5' | 'FUT8' | 'FUT11' = 'FUT5';
   private playerService = inject(PlayerService);
   authService = inject(AuthService);
-
+  private subscriptionService = inject(SubscriptionService);
   players: any[] = [];
   starters: any[] = [];
   substitutes: any[] = [];
   goalkeeper: any[] = [];
   defenders: any[] = [];
-
+  matchTypes: any = [];
   midfielders: any[] = [];
 
   forwards: any[] = [];
@@ -34,31 +35,48 @@ export class TeamBuilderComponent implements OnInit {
   teamName: string = '';
 
   formations = {
-    'FUT 5': {
+    FUT5: {
       Arquero: 1,
       Defensa: 1,
       Mediocampo: 2,
       Delantero: 1,
     },
 
-    'FUT 8': {
+    FUT8: {
       Arquero: 1,
       Defensa: 3,
       Mediocampo: 3,
       Delantero: 1,
+    },
+    FUT11: {
+      Arquero: 1,
+      Defensa: 4,
+      Mediocampo: 3,
+      Delantero: 3,
     },
   };
 
   ngOnInit(): void {
     this.getCurrentUser();
   }
-
+  getTypesFut() {
+    const subscription =
+      this.subscriptionService.getCurrentSubscription() as any;
+    if (!subscription?.types) {
+      return;
+    }
+    //const types = "FUT5-FUT8-FUT11"
+    this.matchTypes = subscription.types
+      .split('-')
+      .map((type: string) => type.trim());
+  }
   getCurrentUser() {
     this.authService.currentUser.subscribe({
       next: (user) => {
         this.currentUser = user;
         if (this.currentUser.uid) {
           this.getPlayers();
+          this.getTypesFut();
         }
       },
       error: (error) => {

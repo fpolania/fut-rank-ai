@@ -8,7 +8,14 @@
   background: linear-gradient(180deg, #020617, #071226);
 }
 
-/* TOP */
+.formats-container {
+  display: flex;
+  gap: 12px;
+}
+
+.format-btn {
+  min-width: 60px;
+}
 
 .top-section {
   display: flex;
