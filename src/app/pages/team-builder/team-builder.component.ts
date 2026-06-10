@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 
 import { PlayerService } from '../../core/services/player.service';
 import { TeamSettingsService } from '../../core/services/settings.service';
+import { LoadingService } from '../../core/services/loading.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-team-builder',
@@ -15,7 +17,7 @@ import { TeamSettingsService } from '../../core/services/settings.service';
 export class TeamBuilderComponent implements OnInit {
   selectedFormat: 'FUT 5' | 'FUT 8' = 'FUT 5';
   private playerService = inject(PlayerService);
-  private teamSettingsService = inject(TeamSettingsService);
+  authService = inject(AuthService);
 
   players: any[] = [];
   starters: any[] = [];
@@ -27,7 +29,7 @@ export class TeamBuilderComponent implements OnInit {
 
   forwards: any[] = [];
   teamRating = 0;
-
+  currentUser: any = null;
   isGenerating = false;
   teamName: string = '';
 
@@ -48,19 +50,25 @@ export class TeamBuilderComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    this.getPlayers();
-    this.loadTeamSettings();
+    this.getCurrentUser();
   }
 
-  async loadTeamSettings() {
-    const settings = await this.teamSettingsService.getTeamSettings();
-    if (settings?.['name']) {
-      this.teamName = settings['name'];
-    }
+  getCurrentUser() {
+    this.authService.currentUser.subscribe({
+      next: (user) => {
+        this.currentUser = user;
+        if (this.currentUser.uid) {
+          this.getPlayers();
+        }
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
   }
 
   getPlayers(): void {
-    this.playerService.getPlayers().subscribe({
+    this.playerService.getPlayers(this.currentUser.teamId).subscribe({
       next: (players) => {
         this.players = players
           .map((player) => ({
@@ -94,24 +102,17 @@ export class TeamBuilderComponent implements OnInit {
     }
   }
 
-  /* AI INSIGHT */
-
   getAIInsight(player: any): string {
     if (player.averageRating >= 9) return 'Dominó los últimos partidos';
-
     switch (player.position) {
       case 'Delantero':
         return 'Gran impacto ofensivo';
-
       case 'Defensa':
         return 'Solidez defensiva destacada';
-
       default:
         return 'Buen momento competitivo';
     }
   }
-
-  /* POSITION PLAYERS */
 
   getPlayersByPosition(
     position: string,
@@ -140,40 +141,23 @@ export class TeamBuilderComponent implements OnInit {
     }
     return finalPlayers;
   }
-
-  /* GENERATE TEAMS */
-
   generateTeams(): void {
     this.isGenerating = true;
-
     setTimeout(() => {
       const formation = this.formations[this.selectedFormat];
-
-      /* SELECTED PLAYERS */
-
       const selectedPlayers: any[] = [];
-
-      /* GOALKEEPER */
-
       this.goalkeeper = this.getPlayersByPosition(
         'Arquero',
         formation.Arquero,
         selectedPlayers,
       );
-
       selectedPlayers.push(...this.goalkeeper);
-
-      /* DEFENDERS */
-
       this.defenders = this.getPlayersByPosition(
         'Defensa',
         formation.Defensa,
         selectedPlayers,
       );
-
       selectedPlayers.push(...this.defenders);
-
-      /* MIDFIELDERS */
 
       this.midfielders = this.getPlayersByPosition(
         'Mediocampo',
@@ -182,9 +166,6 @@ export class TeamBuilderComponent implements OnInit {
       );
 
       selectedPlayers.push(...this.midfielders);
-
-      /* FORWARDS */
-
       this.forwards = this.getPlayersByPosition(
         'Delantero',
         formation.Delantero,
@@ -192,9 +173,6 @@ export class TeamBuilderComponent implements OnInit {
       );
 
       selectedPlayers.push(...this.forwards);
-
-      /* STARTERS */
-
       this.starters = [
         ...this.goalkeeper,
         ...this.defenders,
@@ -202,14 +180,9 @@ export class TeamBuilderComponent implements OnInit {
         ...this.forwards,
       ];
 
-      /* SUBSTITUTES */
-
       this.substitutes = this.players.filter(
         (player) => !this.starters.some((starter) => starter.id === player.id),
       );
-
-      /* TEAM RATING */
-
       const total = this.starters.reduce(
         (acc, player) => acc + player.aiScore,
         0,

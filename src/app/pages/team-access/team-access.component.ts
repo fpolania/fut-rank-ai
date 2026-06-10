@@ -73,7 +73,7 @@ export class TeamAccessComponent implements OnInit {
         ],
       ],
       role: ['player', [Validators.required]],
-      teamId: ['', [Validators.required]],
+      teamId: [''],
     });
   }
 
@@ -114,13 +114,14 @@ export class TeamAccessComponent implements OnInit {
       this.loadingService.show();
       const payload = {
         ...this.teamPlayerForm.getRawValue(),
-        teamId: this.teamPlayerForm.value.teamId,
+        teamId: this.currentUser.isSuperAdmin
+          ? this.teamPlayerForm.value.teamId
+          : this.currentUser.teamId,
       };
 
       if (this.editingPlayerId) {
         await this.teamPlayersService.updatePlayer(
           this.editingPlayerId,
-
           payload,
         );
         successAlert('Estado actualizado ⚽', 'Jugador actualizado.');
@@ -174,7 +175,10 @@ export class TeamAccessComponent implements OnInit {
     if (!player.id) return;
     try {
       this.loadingService.show();
-      await this.teamPlayersService.deletePlayer(player.id);
+      await this.teamPlayersService.deletePlayer(
+        player.id,
+        this.currentUser.teamId,
+      );
       this.loadingService.hide();
       successAlert('Estado actualizado ⚽', 'Jugador eliminado.');
     } catch {

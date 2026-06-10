@@ -11,17 +11,17 @@
     </div>
   </div>
 
-  <!-- CONTENT -->
-
   <div class="row g-4 mt-2">
-    <!-- FORM -->
-
     <div class="col-12 col-xl-4">
       <form [formGroup]="competitionForm" class="competition-form">
         <div class="form-group">
           <label> Nombre </label>
 
-          <input type="text" formControlName="name" placeholder="Ej: Torneo Apertura 2026" />
+          <input
+            type="text"
+            formControlName="name"
+            placeholder="Ej: Torneo Apertura 2026"
+          />
         </div>
 
         <div class="form-group">
@@ -33,24 +33,22 @@
           </select>
         </div>
 
-        <!-- SEASON -->
-
         <div class="form-group">
           <label> Temporada </label>
 
           <input type="text" formControlName="season" placeholder="2026" />
         </div>
-        <div class="form-group">
-          <label for="team">team</label>
-          <select class="form-select custom-input" formControlName="teamId">
-            <option value="">Selecciona Equipo</option>
-            @for (item of teams; track $index) {
-            <option [value]="item.id">{{item.name}} </option>
-            }
-          </select>
-        </div>
-
-        <!-- ACTIVE -->
+        @if (currentUser.isSuperAdmin) {
+          <div class="form-group">
+            <label for="team">team</label>
+            <select class="form-select custom-input" formControlName="teamId">
+              <option value="">Selecciona Equipo</option>
+              @for (item of teams; track $index) {
+                <option [value]="item.id">{{ item.name }}</option>
+              }
+            </select>
+          </div>
+        }
 
         <div class="switch-group">
           <label> Competencia activa </label>
@@ -58,26 +56,25 @@
           <input type="checkbox" formControlName="active" />
         </div>
 
-        <!-- BTN -->
-
-        <button type="button" class="save-btn" [disabled]="competitionForm.invalid" (click)="saveCompetition()">
+        <button
+          type="button"
+          class="save-btn"
+          [disabled]="competitionForm.invalid"
+          (click)="saveCompetition()"
+        >
           <i class="bi bi-trophy-fill"></i>
 
           @if (selectedCompetition) {
-          Actualizar competencia
+            Actualizar competencia
           } @else {
-          Crear competencia
+            Crear competencia
           }
         </button>
       </form>
     </div>
 
-    <!-- LIST -->
-
     <div class="col-12 col-xl-8">
       <div class="competition-list-card">
-        <!-- HEADER -->
-
         <div class="list-header">
           <div>
             <h3>Competiciones ⚽</h3>
@@ -90,85 +87,87 @@
           </span>
         </div>
 
-        <!-- EMPTY -->
-
         @if (competitions.length === 0) {
-        <div class="empty-state">
-          <i class="bi bi-trophy"></i>
+          <div class="empty-state">
+            <i class="bi bi-trophy"></i>
 
-          <p>No hay competencias creadas.</p>
-        </div>
+            <p>No hay competencias creadas.</p>
+          </div>
         }
-
-        <!-- GRID -->
 
         <div class="competition-grid">
           @for (competition of competitions; track competition.id) {
-          <div class="competition-card">
-            <!-- TOP -->
-
-            <div class="competition-card-top">
-              <!-- LEFT -->
-
-              <div class="competition-card-left">
-                <div class="competition-icon" [ngClass]="{
+            <div class="competition-card">
+              <div class="competition-card-top">
+                <div class="competition-card-left">
+                  <div
+                    class="competition-icon"
+                    [ngClass]="{
                       tournament: competition.type === 'tournament',
 
                       friendly: competition.type === 'friendly',
 
                       reta: competition.type === 'reta',
-                    }">
-                  @if (competition.type === "tournament") {
-                  🏆
-                  }
+                    }"
+                  >
+                    @if (competition.type === "tournament") {
+                      🏆
+                    }
 
-                  @if (competition.type === "friendly") {
-                  🤝
-                  }
+                    @if (competition.type === "friendly") {
+                      🤝
+                    }
 
-                  @if (competition.type === "reta") {
-                  ⚡
-                  }
+                    @if (competition.type === "reta") {
+                      ⚡
+                    }
+                  </div>
+
+                  <div class="competition-info">
+                    <strong>
+                      {{ competition.name }}
+                    </strong>
+
+                    <small>
+                      {{ competition.season }}
+
+                      •
+
+                      {{ competition.type }}
+                    </small>
+                  </div>
                 </div>
 
-                <!-- INFO -->
-
-                <div class="competition-info">
-                  <strong>
-                    {{ competition.name }}
-                  </strong>
-
-                  <small>
-                    {{ competition.season }}
-
-                    •
-
-                    {{ competition.type }}
-                  </small>
+                <div
+                  class="competition-status"
+                  [class.active]="competition.active"
+                >
+                  @if (competition.active) {
+                    Activa
+                  } @else {
+                    Inactiva
+                  }
                 </div>
               </div>
 
-              <!-- STATUS -->
-
-              <div class="competition-status" [class.active]="competition.active">
-                @if (competition.active) {
-                Activa
-                } @else {
-                Inactiva
+              <div class="competition-actions">
+                @if (currentUser.isSuperAdmin) {
+                  <button
+                    class="action-btn edit"
+                    (click)="editCompetition(competition)"
+                  >
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
                 }
+
+                <button
+                  class="action-btn delete"
+                  (click)="deleteCompetition(competition.id!)"
+                >
+                  <i class="bi bi-trash3"></i>
+                </button>
               </div>
             </div>
-
-            <div class="competition-actions">
-              <button class="action-btn edit" (click)="editCompetition(competition)">
-                <i class="bi bi-pencil-square"></i>
-              </button>
-
-              <button class="action-btn delete" (click)="deleteCompetition(competition.id!)">
-                <i class="bi bi-trash3"></i>
-              </button>
-            </div>
-          </div>
           }
         </div>
       </div>

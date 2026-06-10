@@ -27,7 +27,7 @@ import { AuthService } from '../../core/services/auth.service';
 export class CompetitionCreateComponent implements OnInit {
   competitionForm!: FormGroup;
   private loadingService = inject(LoadingService);
-   authService = inject(AuthService);
+  authService = inject(AuthService);
   competitions: Competition[] = [];
   selectedCompetition: Competition | null = null;
   teams: Team[] = [];
@@ -35,8 +35,7 @@ export class CompetitionCreateComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private competitionService: CompetitionService,
-    private  teamService: TeamService
-  
+    private teamService: TeamService,
   ) {}
 
   ngOnInit(): void {
@@ -44,21 +43,21 @@ export class CompetitionCreateComponent implements OnInit {
     this.getTemans();
     this.getCurrentUser();
   }
-  getTemans(){
+  getTemans() {
     this.teamService.getTeams().subscribe({
-      next:(teams) =>{
-        this.teams=teams;
+      next: (teams) => {
+        this.teams = teams;
       },
-      error: (error:any) =>{
-        console.error (error);
+      error: (error: any) => {
+        console.error(error);
       },
-    })
+    });
   }
   getCurrentUser() {
     this.authService.currentUser.subscribe({
       next: (user) => {
         this.currentUser = user;
-        if(this.currentUser.uid){
+        if (this.currentUser.uid) {
           this.getCompetitions();
         }
       },
@@ -66,7 +65,6 @@ export class CompetitionCreateComponent implements OnInit {
         console.error(error);
       },
     });
-    
   }
   getCompetitions() {
     this.loadingService.show();
@@ -87,7 +85,7 @@ export class CompetitionCreateComponent implements OnInit {
       type: ['tournament', [Validators.required]],
       season: ['2026', [Validators.required]],
       active: [true, [Validators.required]],
-      teamId:['', [Validators.required]],
+      teamId: [''],
     });
   }
 
@@ -95,13 +93,18 @@ export class CompetitionCreateComponent implements OnInit {
     if (this.competitionForm.invalid) {
       return;
     }
-
     try {
       this.loadingService.show();
+      const payload = {
+        ...this.competitionForm.getRawValue(),
+        teamId: this.currentUser.isSuperAdmin
+          ? this.competitionForm.value.teamId
+          : this.currentUser.teamId,
+      };
       if (this.selectedCompetition) {
         await this.competitionService.updateCompetition(
           this.selectedCompetition.id!,
-          this.competitionForm.value,
+          payload,
         );
 
         successAlert(
@@ -109,10 +112,8 @@ export class CompetitionCreateComponent implements OnInit {
           'La competencia fue actualizada correctamente.',
         );
       } else {
-        /* CREATE */
         await this.competitionService.createCompetition({
-          ...this.competitionForm.value,
-
+          ...payload,
           createdAt: new Date(),
         } as any);
 
@@ -138,13 +139,15 @@ export class CompetitionCreateComponent implements OnInit {
   deleteCompetition(id: string) {
     try {
       this.loadingService.show();
-      this.competitionService.deleteCompetition(id).then(() => {
-        this.loadingService.hide();
-        successAlert(
-          'Competencia eliminada 🏆🔥',
-          'La competencia fue eliminada correctamente.',
-        );
-      });
+      this.competitionService
+        .deleteCompetition(id, this.currentUser.teamId)
+        .then(() => {
+          this.loadingService.hide();
+          successAlert(
+            'Competencia eliminada 🏆🔥',
+            'La competencia fue eliminada correctamente.',
+          );
+        });
     } catch (error) {
       console.error(error);
       this.loadingService.hide();

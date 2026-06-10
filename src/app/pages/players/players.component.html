@@ -39,7 +39,11 @@
             <i class="bi bi-trash fs-2"></i>
           </button>
         </div>
-        <img class="player-img" [src]="player.photo" />
+        <img
+          class="player-img"
+          [src]="player.photo"
+          (error)="onImageError($event)"
+        />
         <h2>
           {{ player.name }}
         </h2>

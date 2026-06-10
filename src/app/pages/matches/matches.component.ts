@@ -1,32 +1,19 @@
 import { Component, OnInit, inject } from '@angular/core';
-
 import { CommonModule } from '@angular/common';
-
 import { Router, RouterLink } from '@angular/router';
-
 import { FormsModule } from '@angular/forms';
-
 import { MatchService } from '../../core/services/match.service';
-
 import { Match } from '../../core/interfaces/match.interface';
-
 import { AuthService } from '../../core/services/auth.service';
-
 import { errorAlert, successAlert } from '../../core/utils/alert.util';
-
 import { LoadingService } from '../../core/services/loading.service';
-
 import { CompetitionService } from '../../core/services/competition.service';
-
 import { Competition } from '../../core/interfaces/competition.interface';
 
 @Component({
   selector: 'app-matches',
-
   imports: [CommonModule, RouterLink, FormsModule],
-
   templateUrl: './matches.component.html',
-
   styleUrl: './matches.component.css',
 })
 export class MatchesComponent implements OnInit {
@@ -75,7 +62,6 @@ export class MatchesComponent implements OnInit {
         this.matches = matches;
         this.filteredMatches = matches;
       },
-
       error: (error) => {
         console.error(error);
       },
@@ -94,54 +80,41 @@ export class MatchesComponent implements OnInit {
         console.error(error);
       },
     });
-
   }
   openMatch(match: Match) {
     this.router.navigate(['/match-detail', match.id]);
   }
 
-  /* DELETE */
-
   async deleteMatch(event: Event, match: Match) {
     event.stopPropagation();
-
     if (!match.id) {
       return;
     }
-
     try {
       this.loadingService.show();
-
-      await this.matchService.deleteMatch(match.id);
-
+      await this.matchService.deleteMatch(match.id, this.currentUser.teamId);
       successAlert(
         'Partido eliminado ⚽🔥',
         'El partido fue eliminado correctamente.',
       );
     } catch (error) {
       console.error(error);
-
       errorAlert('Ups 😮‍💨', 'No se pudo eliminar el partido.');
     } finally {
       this.loadingService.hide();
     }
   }
 
-  /* COMPETITIONS */
-
   getCompetitions() {
     this.loadingService.show();
-
     this.competitionService.getCompetitions(this.currentUser.teamId).subscribe({
       next: (competitions) => {
         this.competitions = competitions.filter((c) => c.active);
         this.loadingService.hide();
       },
-
       error: (error) => {
         console.error(error);
       },
-
       complete: () => {
         this.loadingService.hide();
       },
@@ -151,7 +124,6 @@ export class MatchesComponent implements OnInit {
     const competition = this.competitions.find(
       (c) => c.id === this.selectedCompetitionFilter,
     );
-
     return competition?.name || '';
   }
 }

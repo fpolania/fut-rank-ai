@@ -32,7 +32,7 @@ export class PlayersComponent implements OnInit {
   }
   getPlayers() {
     this.loadingService.show();
-    this.playerService.getPlayers().subscribe({
+    this.playerService.getPlayers(this.currentUser.teamId).subscribe({
       next: (players) => {
         this.players = players;
         this.loadingService.hide();
@@ -59,10 +59,13 @@ export class PlayersComponent implements OnInit {
   editPlayer(player: any) {
     this.router.navigate(['/add-player', player.id]);
   }
+  onImageError(event: any) {
+    console.log('Error cargando imagen', event.target.src);
+  }
   async deletePlayer(player: any) {
     try {
       this.loadingService.show();
-      await this.playerService.deletePlayer(player.id);
+      await this.playerService.deletePlayer(player.id, this.currentUser.teamId);
       successAlert(
         'Jugador eliminado 🗑️🔥',
         'El jugador fue eliminado correctamente.',

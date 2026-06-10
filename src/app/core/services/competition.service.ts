@@ -10,6 +10,7 @@ import {
   deleteDoc,
   query,
   where,
+  getDocs,
 } from '@angular/fire/firestore';
 
 import { Observable } from 'rxjs';
@@ -26,12 +27,11 @@ export class CompetitionService {
     return addDoc(this.competitionCollection, competition);
   }
 
-  
   getCompetitions(teamId: string): Observable<Competition[]> {
     const q = teamId
       ? query(this.competitionCollection, where('teamId', '==', teamId))
       : this.competitionCollection;
-  
+
     return collectionData(q, {
       idField: 'id',
     }) as Observable<Competition[]>;
@@ -43,9 +43,21 @@ export class CompetitionService {
     return updateDoc(competitionDoc, data);
   }
 
-  deleteCompetition(id: string) {
-    const competitionDoc = doc(this.firestore, `competitions/${id}`);
+  async deleteCompetition(
+    competitionId: string,
+    teamId: string,
+  ): Promise<void> {
+    const competitionsRef = collection(this.firestore, 'competitions');
 
-    return deleteDoc(competitionDoc);
+    const q = query(
+      competitionsRef,
+      where('id', '==', competitionId),
+      where('teamId', '==', teamId),
+    );
+
+    const snapshot = await getDocs(q);
+    snapshot.forEach(async (docSnap) => {
+      await deleteDoc(docSnap.ref);
+    });
   }
 }

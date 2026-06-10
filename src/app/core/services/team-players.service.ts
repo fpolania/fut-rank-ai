@@ -25,17 +25,10 @@ export class TeamPlayersService {
 
   private teamPlayersRef = collection(this.firestore, 'team_players');
   getPlayers(teamId?: string): Observable<TeamPlayer[]> {
-
     const playersQuery = teamId
-      ? query(
-          this.teamPlayersRef,
-          where('teamId', '==', teamId),
-        )
-      : query(
-          this.teamPlayersRef,
-          orderBy('createdAt', 'desc'),
-        );
-  
+      ? query(this.teamPlayersRef, where('teamId', '==', teamId))
+      : query(this.teamPlayersRef, orderBy('createdAt', 'desc'));
+
     return collectionData(playersQuery, {
       idField: 'id',
     }) as Observable<TeamPlayer[]>;
@@ -56,9 +49,20 @@ export class TeamPlayersService {
     });
   }
 
-  async deletePlayer(id: string): Promise<void> {
-    const playerDoc = doc(this.firestore, `team_players/${id}`);
-    await deleteDoc(playerDoc);
+  async deletePlayer(playerId: string, teamId: string): Promise<void> {
+    const playersRef = collection(this.firestore, 'team_players');
+
+    const q = query(
+      playersRef,
+      where('id', '==', playerId),
+      where('teamId', '==', teamId),
+    );
+
+    const snapshot = await getDocs(q);
+
+    snapshot.forEach(async (docSnap) => {
+      await deleteDoc(docSnap.ref);
+    });
   }
 
   async getPlayerByDocument(
