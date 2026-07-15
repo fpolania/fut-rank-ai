@@ -32,6 +32,7 @@ export interface Rating {
   totalRatings: number;
 
   createdAt: Timestamp;
+  matchName: string;
 
   data: RatingItem[];
 }

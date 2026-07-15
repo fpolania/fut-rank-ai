@@ -138,11 +138,21 @@ export class PlayerProfileComponent implements OnInit {
   }
   getPlayerComments() {
     if (!this.playerId) return;
+
     this.loadingService.show();
+
     this.ratingService.getPlayerRatings(this.playerId).subscribe({
       next: (ratings: any) => {
         this.ratings = ratings
-          .flatMap((rating: any) => rating.data || [])
+          .flatMap((rating: any) =>
+            (rating.data || []).map((item: any) => ({
+              ...item,
+              matchName: rating.matchName,
+              matchId: rating.matchId,
+              playerName: rating.playerName,
+              playerId: rating.playerId,
+            })),
+          )
           .filter((item: any) => item.comment)
           .sort(
             (a: any, b: any) =>
@@ -153,6 +163,8 @@ export class PlayerProfileComponent implements OnInit {
                 a.createdAt?.seconds ? a.createdAt.seconds * 1000 : a.createdAt,
               ).getTime(),
           );
+
+        console.log('Fetched ratings:', this.ratings);
         this.loadingService.hide();
       },
 

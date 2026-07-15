@@ -219,6 +219,7 @@ export class RatePlayerDetailComponent implements OnInit {
           await this.ratingService.addRating({
             playerId: value.playerId!,
             matchId: this.matchId,
+            matchName: this.match.title || 'Partido sin nombre',
             playerName: value.name!,
             averageRating: value.rating!,
             totalRatings: 1,
